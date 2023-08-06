@@ -1,0 +1,34 @@
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.profilePhoto {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid black;
+}
+.card-body {
+  width: 100%;
+}
+.profileDetails {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(209, 207, 207);
+  margin-bottom: 2rem;
+}
+.profile-features {
+  display: grid;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  column-gap: 50px;
+}
+.profile-feature {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}

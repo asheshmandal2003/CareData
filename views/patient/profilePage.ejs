@@ -1,0 +1,49 @@
+<% layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/profilePage.css" />
+<div class="row">
+  <div class="col-5">
+    <div class="card p-3 profile">
+      <img
+        src="<%= user.image %>"
+        class="card-img-top img-fluid profilePhoto mt-3"
+        alt="image"
+      />
+      <div class="card-body">
+        <div class="profileDetails">
+          <b class="card-title">Full Name</b>
+          <span class="card-text"><%= user.fullName %></span>
+        </div>
+        <div class="profileDetails">
+          <b class="card-title">Username</b>
+          <span class="card-text"><%= user.username %></span>
+        </div>
+        <div class="profileDetails">
+          <b class="card-title">Email</b>
+          <span class="card-text"><%= user.emailId %></span>
+        </div>
+        <div class="profileButton d-flex gap-3">
+          <button class="btn btn-warning w-100">Edit</button>
+          <button class="btn btn-danger w-100">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-7 profile-features">
+    <div class="row">
+      <div class="card me-3 mb-3 col profile-feature">
+        <h3>Upload Data</h3>
+      </div>
+      <div class="card me-3 mb-3 col profile-feature">
+        <h3>Consult with Doctor</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="card me-3 mb-3 col profile-feature">
+        <h3>Appointments</h3>
+      </div>
+      <div class="card me-3 mb-3 col profile-feature">
+        <h3>Book Appointments</h3>
+      </div>
+    </div>
+  </div>
+</div>
