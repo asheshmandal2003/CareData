@@ -124,6 +124,10 @@ app.post("/logout", async (req, res) => {
   });
 });
 
+app.get("/caredata/users/:id/upload", (req, res) => {
+  res.render("patient/uploadPage");
+});
+
 app.use((req, res, next) => {
   res.locals.user = req.user;
   res.locals.success = req.flash("success");
