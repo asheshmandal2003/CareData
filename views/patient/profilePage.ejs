@@ -22,8 +22,12 @@
           <span class="card-text"><%= user.emailId %></span>
         </div>
         <div class="profileButton d-flex gap-3">
-          <button class="btn btn-warning w-100">Edit</button>
-          <button class="btn btn-danger w-100">Log Out</button>
+          <a href="/caredata/users/<%= user._id %>/edit" class="w-100">
+            <button class="btn btn-warning w-100">Edit</button>
+          </a>
+          <form action="/logout" method="post" class="w-100">
+            <button class="btn btn-danger w-100">Log Out</button>
+          </form>
         </div>
       </div>
     </div>

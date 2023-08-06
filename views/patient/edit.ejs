@@ -1,0 +1,38 @@
+<% layout('layout/boilerplate') %>
+
+<h2>Edit Details</h2>
+<form
+  method="POST"
+  action="/caredata/users/<%= user._id %>?_method=PUT"
+  class="container"
+  novalidate
+>
+  <label for="fullName" class="form-label">Full Name</label>
+  <input
+    type="text"
+    name="fullName"
+    id="fullName"
+    class="form-control mb-3"
+    placeholder="Full Name"
+    value="<%= user.fullName %>"
+  />
+  <label for="username" class="form-label">Username</label>
+  <input
+    type="text"
+    name="username"
+    id="username"
+    class="form-control mb-3"
+    placeholder="Username"
+    value="<%= user.username %>"
+  />
+  <label for="emailId" class="form-label">Email</label>
+  <input
+    type="email"
+    name="emailId"
+    id="emailId"
+    class="form-control mb-3"
+    placeholder="name@example.com"
+    value="<%= user.emailId %>"
+  />
+  <button class="btn btn-info mb-3 w-100">Update</button>
+</form>

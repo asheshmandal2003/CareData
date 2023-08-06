@@ -8,6 +8,7 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const passportLocal = require("passport-local");
+const methodOverride = require("method-override");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/caredata", {
@@ -42,6 +43,7 @@ app.use(session(sessionConfig));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(methodOverride("_method"));
 passport.use(new passportLocal(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
@@ -60,7 +62,7 @@ app.post("/register", async (req, res, next) => {
       req.logIn(registeredUser, (err) => {
         if (err) next(err);
         req.flash("success", "Welcome to CareData");
-        res.redirect(`/caredata/${user._id}`);
+        res.redirect(`/caredata/users/${user._id}`);
       });
     } catch (error) {
       req.flash("error", error.message);
@@ -85,19 +87,41 @@ app.post(
     try {
       const user = await User.findOne({ username: req.body.username });
       req.flash("success", "Welocome Back to CareData :)");
-      res.redirect(`caredata/${user._id}`);
+      res.redirect(`caredata/users/${user._id}`);
     } catch (error) {
       next(error);
     }
   }
 );
 
-app.get("/caredata/:id", async (req, res) => {
+app.get("/caredata/users/:id", async (req, res) => {
   const user = await User.findById(req.params.id)
     .then((data) => data)
     .catch((e) => e);
-  console.log(user);
   res.render("patient/profilePage", { user });
+});
+
+app.get("/caredata/users/:id/edit", async (req, res) => {
+  const user = await User.findById(req.params.id)
+    .then((data) => data)
+    .catch((e) => e);
+  res.render("patient/edit", { user });
+});
+
+app.put("/caredata/users/:id", async (req, res, next) => {
+  await User.findByIdAndUpdate(req.params.id, req.body);
+  res.redirect(`/caredata/users/${req.params.id}`);
+});
+
+app.post("/logout", async (req, res) => {
+  req.logOut(() => {
+    try {
+      req.flash("success", "You're Logged Out Now!");
+      res.redirect("/login");
+    } catch (error) {
+      next(error);
+    }
+  });
 });
 
 app.use((req, res, next) => {
