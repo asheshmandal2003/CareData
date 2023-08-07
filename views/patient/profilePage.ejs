@@ -3,11 +3,8 @@
 <div class="row">
   <div class="col-5">
     <div class="card p-3 profile">
-      <img
-        src="<%= user.image %>"
-        class="card-img-top img-fluid profilePhoto mt-3"
-        alt="image"
-      />
+      <img src="<%=user.image ? user.image : "/image/defaultUser.png" %>" alt=""
+      class="card-img-top img-fluid profilePhoto mt-3" />
       <div class="card-body">
         <div class="profileDetails">
           <b class="card-title">Full Name</b>
@@ -35,8 +32,11 @@
   <div class="col-7 profile-features">
     <div class="row">
       <div class="card me-3 mb-3 col profile-feature">
-        <h3>Upload Data</h3>
+        <a href="/caredata/users/<%= user._id %>/upload">
+          <h3>Upload Data</h3>
+        </a>
       </div>
+
       <div class="card me-3 mb-3 col profile-feature">
         <h3>Consult with Doctor</h3>
       </div>

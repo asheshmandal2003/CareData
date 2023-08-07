@@ -9,6 +9,12 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const passportLocal = require("passport-local");
 const methodOverride = require("method-override");
+const multer = require("multer");
+const { storage } = require("./clodinary");
+const Upload = require("./models/upload");
+const moment = require("moment");
+
+moment().format();
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/caredata", {
@@ -31,6 +37,7 @@ const sessionConfig = {
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+const upload = multer({ storage });
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
@@ -124,15 +131,52 @@ app.post("/logout", async (req, res) => {
   });
 });
 
-app.get("/caredata/users/:id/upload", (req, res) => {
-  res.render("patient/uploadPage");
+app.get("/caredata/users/:id/upload", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate("files");
+    res.render("patient/uploadPage", { user, moment });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post(
+  "/caredata/users/:id/upload",
+  upload.single("image"),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findById(id);
+      const newUpload = new Upload({
+        path: req.file.path,
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        size: req.file.size,
+      });
+      user.files.push(newUpload._id);
+      await newUpload.save();
+      await user.save();
+      res.redirect(`/caredata/users/${req.params.id}/upload`);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const uploadFile = await Upload.findById(postId);
+    res.render("patient/showFile", { uploadFile });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  next();
 });
 
 app.listen(PORT, () => {

@@ -1,7 +1,8 @@
 <% layout('layout/boilerplate') %>
 <link rel="stylesheet" href="/css/generalMenu.css" />
+
 <div class="row">
-  <div class="general-menu col-2 card p-3">
+  <div class="general-menu col-2 card p-3 mb-3">
     <div class="card-body">
       <div class="card-text text-secondary mb-4">General Menu</div>
       <div class="card-text mb-4">
@@ -26,9 +27,107 @@
       </div>
     </div>
   </div>
+
   <div class="col-10">
-    <div class="container"></div>
-    <div class="container"></div>
-    <div class="container"></div>
+    <div class="ms-4">
+      <h4 class="mb-4">Recently Added</h4>
+      <div class="recently-edited mb-4">
+        <% for(let i = user.files.length-1; i >= (user.files.length < 3 ? 0 :
+        user.files.length-3) ; i--){ %>
+        <div class="recently-edited-file me-5">
+          <div class="recently-edited-file-img w-100 mb-3">
+            <img
+              src="<%= user.files[i].path %>"
+              class="img-fluid w-100 rounded"
+              alt="img"
+            />
+          </div>
+          <div class="recently-edited-file-details">
+            <div class="recently-edited-file-name-time">
+              <div class="recently-edited-file-name">
+                <b><%= user.files[i].originalname %></b>
+              </div>
+              <div class="recently-edited-file-time">
+                <small class="text-secondary"
+                  >Added <%= moment(user.files[i].createdAt).fromNow() %></small
+                >
+              </div>
+            </div>
+            <div class="more-options">
+              <h5 style="cursor: pointer">...</h5>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="upload-files">
+        <h4 class="mb-4">Upload Files</h4>
+        <div class="upload-container mb-4">
+          <form
+            action="/caredata/users/<%= user._id %>/upload"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <label for="images" class="drop-container" id="dropcontainer">
+              <span class="drop-title">Drop your files here</span>
+              <small class="text-secondary" style="font-size: smaller"
+                >Support jpeg, jpg, png files</small
+              >
+              or
+              <input
+                type="file"
+                id="images"
+                name="image"
+                class="mb-3"
+                accept="image/*"
+                required
+              />
+            </label>
+            <button class="btn btn-primary w-100 mt-3" type="submit">
+              Upload
+            </button>
+          </form>
+        </div>
+      </div>
+      <% if(user.files.length){ %>
+      <div class="user-files mb-5">
+        <h4 class="mb-4">Your Files</h4>
+        <table class="table">
+          <thead class="table-secondary">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Date</th>
+              <th scope="col">Size</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% user.files.map((file)=>{ %>
+            <tr>
+              <td class="text-secondary d-flex" style="cursor: pointer">
+                <ion-icon name="document" class="icon"></ion-icon>
+                <a
+                  style="text-decoration: none"
+                  class="text-secondary"
+                  href="/caredata/users/<%= user._id %>/upload/<%= file._id %>"
+                  ><%= file.originalname %></a
+                >
+              </td>
+              <td class="text-secondary">
+                <%= String(file.createdAt).slice(3, 10) %>, <%=
+                String(file.createdAt).slice(11, 15) %>
+              </td>
+              <td class="text-secondary">
+                <%= Math.round(file.size/1024) > 1024 ?
+                (file.size/(1024*1024)).toFixed(2): Math.round(file.size/1024)%>
+                <%= Math.round(file.size/1024) > 1024 ? "MB" : "KB" %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
   </div>
 </div>

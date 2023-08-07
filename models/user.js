@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
+const Upload = require("./upload");
 
 const { Schema } = mongoose;
 
@@ -14,6 +15,12 @@ const userSchema = new Schema({
   image: {
     type: String,
   },
+  files: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Upload",
+    },
+  ],
 });
 
 userSchema.plugin(passportLocalMongoose);
