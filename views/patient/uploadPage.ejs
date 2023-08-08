@@ -1,4 +1,5 @@
 <% layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/icon.css" />
 <link rel="stylesheet" href="/css/generalMenu.css" />
 
 <div class="row">
@@ -36,11 +37,15 @@
         user.files.length-3) ; i--){ %>
         <div class="recently-edited-file me-5">
           <div class="recently-edited-file-img w-100 mb-3">
-            <img
-              src="<%= user.files[i].path %>"
-              class="img-fluid w-100 rounded"
-              alt="img"
-            />
+            <a
+              href="/caredata/users/<%= user._id %>/upload/<%= user.files[i]._id %>"
+            >
+              <img
+                src="<%= user.files[i].path %>"
+                class="img-fluid w-100 rounded"
+                alt="img"
+              />
+            </a>
           </div>
           <div class="recently-edited-file-details">
             <div class="recently-edited-file-name-time">

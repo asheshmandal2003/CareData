@@ -1,10 +1,6 @@
 .general-menu {
   height: 80vh;
 }
-.icon {
-  font-size: 28px;
-  margin-right: 10px;
-}
 .card-text {
   display: flex;
   justify-content: flex-start;
