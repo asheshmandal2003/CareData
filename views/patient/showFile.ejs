@@ -1,2 +1,86 @@
-<% layout('layout/boilerplate') %>
-<img src="<%= uploadFile.path %>" alt="image" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/css/showFile.css" />
+    <link rel="stylesheet" href="/css/icon.css" />
+    <title>CareData</title>
+  </head>
+  <body>
+    <header><%- include("../partials/showFileNavbar") %></header>
+    <main>
+      <div class="img-container">
+        <img class="img img-fluid" src="<%= uploadFile.path %>" alt="image" />
+      </div>
+    </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
+    ></script>
+    <script>
+      const expand = document.querySelector(".expand");
+      const shrink = document.querySelector(".shrink");
+      const imgContainer = document.querySelector(".img-container");
+      const img = document.querySelector(".img");
+      const imgWidth = img.clientWidth;
+      const imgHeight = img.clientHeight;
+      expand.addEventListener("click", () => {
+        const currWidth = img.clientWidth;
+        const currHeight = img.clientHeight;
+        img.style.width = currWidth + 500 + "px";
+        img.style.height = currHeight + 500 + "px";
+        imgContainer.style.width = currWidth + 500 + "px";
+        imgContainer.style.height = currHeight + 500 + "px";
+      });
+      shrink.addEventListener("click", () => {
+        if (img.clientWidth > imgWidth && img.clientHeight > imgHeight) {
+          const currWidth = img.clientWidth;
+          const currHeight = img.clientHeight;
+          img.style.width = currWidth - 500 + "px";
+          img.style.height = currHeight - 500 + "px";
+          imgContainer.style.width = currWidth - 500 + "px";
+          imgContainer.style.height = currHeight - 500 + "px";
+        } else {
+          return false;
+        }
+      });
+    </script>
+    <script>
+      const favoriteFile = document.querySelector(".favorite");
+      if (localStorage.length === 0) {
+        localStorage.setItem("favorite", 0);
+      } else if (localStorage.getItem("favorite") === "0") {
+        favoriteFile.setAttribute("name", "star-outline");
+      } else if (localStorage.getItem("favorite") === "1") {
+        favoriteFile.setAttribute("name", "star");
+      }
+      favoriteFile.addEventListener("click", () => {
+        if (localStorage.getItem("favorite") === "1") {
+          localStorage.removeItem("favorite");
+          localStorage.setItem("favorite", 0);
+          favoriteFile.setAttribute("name", "star-outline");
+        } else if (localStorage.getItem("favorite") === "0") {
+          localStorage.removeItem("favorite");
+          localStorage.setItem("favorite", 1);
+          favoriteFile.setAttribute("name", "star");
+        }
+      });
+    </script>
+  </body>
+</html>

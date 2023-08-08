@@ -8,7 +8,9 @@
       <div class="card-text text-secondary mb-4">General Menu</div>
       <div class="card-text mb-4">
         <ion-icon name="document-outline" class="icon"></ion-icon
-        ><span class="fw-medium">My Files</span>
+        ><span class="fw-medium"
+          ><a href="/caredata/users/<%= user._id %>/files">My Files</a></span
+        >
       </div>
       <div class="card-text mb-4">
         <ion-icon name="share-social-outline" class="icon"></ion-icon
@@ -44,13 +46,21 @@
                 src="<%= user.files[i].path %>"
                 class="img-fluid w-100 rounded"
                 alt="img"
+                style="height: 170px"
               />
             </a>
           </div>
           <div class="recently-edited-file-details">
             <div class="recently-edited-file-name-time">
               <div class="recently-edited-file-name">
-                <b><%= user.files[i].originalname %></b>
+                <b
+                  ><a
+                    style="text-decoration: none"
+                    class="text-dark"
+                    href="/caredata/users/<%= user._id %>/upload/<%= user.files[i]._id %>"
+                    ><%= user.files[i].originalname %>
+                  </a></b
+                >
               </div>
               <div class="recently-edited-file-time">
                 <small class="text-secondary"

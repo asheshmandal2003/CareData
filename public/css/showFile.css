@@ -9,23 +9,24 @@
   justify-content: center;
   align-items: center;
   background: #000;
-  overflow: hidden;
 }
 .img {
   width: auto;
 }
 .icon-container {
-  width: 45px;
-  height: 45px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-left: 5px;
+  transition: 0.2s linear ease-in-out;
 }
 .icon {
   margin-left: 8px;
   margin-top: 2px;
 }
 .icon-container:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
 }

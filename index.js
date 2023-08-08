@@ -152,8 +152,9 @@ app.post(
         filename: req.file.filename,
         originalname: req.file.originalname,
         size: req.file.size,
+        author: user._id,
       });
-      user.files.push(newUpload._id);
+      user.files.unshift(newUpload._id);
       await newUpload.save();
       await user.save();
       res.redirect(`/caredata/users/${req.params.id}/upload`);
@@ -166,10 +167,20 @@ app.post(
 app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   try {
     const { postId } = req.params;
-    const uploadFile = await Upload.findById(postId);
+    const uploadFile = await Upload.findById(postId).populate("author");
     res.render("patient/showFile", { uploadFile });
   } catch (error) {
     next(error);
+  }
+});
+
+app.get("/caredata/users/:id/files", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).populate("files");
+    res.render("patient/allUploadedFiles", { user });
+  } catch (error) {
+    next();
   }
 });
 
