@@ -6,6 +6,7 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
+cloudinary.image("single_page_pdf", { format: "jpg" });
 
 const storage = new CloudinaryStorage({
   cloudinary,

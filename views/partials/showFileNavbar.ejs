@@ -38,12 +38,16 @@
             ></ion-icon
           ></a>
         </li>
+        <form method="POST" action="/caredata/users/<%= uploadFile.author._id %>/posts/<%= uploadFile._id %>/favorite?_method=PATCH">
         <li class="nav-item icon-container" style="cursor: pointer">
+          <button type="submit">
           <ion-icon
-            name="star-outline"
             class="icon text-light favorite"
-          ></ion-icon>
+            name="<%= uploadFile.favorite===true ? "star" : "star-outline" %>" >
+          </ion-icon>
+          </button>
         </li>
+        </form>
         <li class="nav-item icon-container">
           <a class="nav-link text-light" href="#"
             ><ion-icon name="trash-outline" class="icon"></ion-icon

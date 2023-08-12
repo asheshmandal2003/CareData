@@ -56,14 +56,24 @@ passport.use(new passportLocal(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
+
 app.get("/register", (req, res) => {
   res.render("login/registerPage");
 });
 
-app.post("/register", async (req, res, next) => {
+app.post("/register", upload.single("image"), async (req, res, next) => {
   try {
-    const { fullName, username, emailId, password } = req.body;
-    const user = new User({ fullName, username, emailId });
+    const { fullName, username, emailId, password, entryType } = req.body;
+    const user = new User({ fullName, username, emailId, entryType });
+    user.image.path = req.file.path;
+    user.image.filename = req.file.filename;
+    console.log(req.body);
     try {
       const registeredUser = await User.register(user, password);
       req.logIn(registeredUser, (err) => {
@@ -153,6 +163,7 @@ app.post(
         originalname: req.file.originalname,
         size: req.file.size,
         author: user._id,
+        favorite: false,
       });
       user.files.unshift(newUpload._id);
       await newUpload.save();
@@ -174,6 +185,28 @@ app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   }
 });
 
+app.get("/caredata/users/:id/posts/favorite", async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.render("patient/allFavoriteFiles", { user });
+});
+
+app.patch(
+  "/caredata/users/:id/posts/:postId/favorite",
+  async (req, res, next) => {
+    try {
+      const { postId } = req.params;
+      const uploadedFile = await User.findById(postId);
+      const favorite = uploadedFile.favorite;
+      console.log(favorite);
+      uploadedFile.favorite = !favorite;
+      await uploadedFile.save();
+      res.send("ok");
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 app.get("/caredata/users/:id/files", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -182,12 +215,6 @@ app.get("/caredata/users/:id/files", async (req, res, next) => {
   } catch (error) {
     next();
   }
-});
-
-app.use((req, res, next) => {
-  res.locals.user = req.user;
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
 });
 
 app.listen(PORT, () => {

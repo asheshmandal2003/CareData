@@ -1,22 +1,52 @@
 <% layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/login.css" />
 
-<h2>Sign In</h2>
-<form action="/login" method="post" class="container" novalidate>
-  <label for="username" class="form-label">Username</label>
-  <input
-    type="text"
-    name="username"
-    id="username"
-    class="form-control mb-3"
-    placeholder="Username"
-  />
-  <label for="password" class="form-label">Password</label>
-  <input
-    type="password"
-    name="password"
-    id="password"
-    class="form-control mb-3"
-    placeholder="Password"
-  />
-  <button class="btn btn-info mb-3 w-100">Submit</button>
-</form>
+<div class="row g-0">
+  <div class="col-10 bg-info offset-1 d-flex mt-4">
+    <div class="img-container w-50">
+      <img class="img-fluid w-80" src="/image/login.jpg" alt="image" />
+    </div>
+    <form
+      action="/login"
+      method="post"
+      class="ms-auto w-50 bg-light p-5"
+      novalidate
+    >
+      <div class="form-input w-100">
+        <h3 class="mb-3">Sign In</h3>
+        <label for="username" class="form-label">Username</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          class="form-control mb-3"
+          placeholder="Username"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          class="form-control mb-3"
+          placeholder="Password"
+        />
+      </div>
+      <div class="options mb-3 d-flex">
+        <small class="text-danger ms-auto" style="cursor: pointer"
+          >Forgot password?</small
+        >
+      </div>
+      <button class="btn btn-info mb-3 w-100">Sign In</button>
+      <div class="sign-in">
+        <p class="mt-3">
+          Don't have an account?
+          <a href="/register" class="text-primary" style="text-decoration: none"
+            >Sign up</a
+          >
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

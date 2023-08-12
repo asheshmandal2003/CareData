@@ -1,30 +1,34 @@
 <% layout('layout/boilerplate') %>
 <link rel="stylesheet" href="/css/icon.css" />
-<link rel="stylesheet" href="/css/generalMenu.css" />
+<link rel="stylesheet" href="/css/uploadPage.css" />
+<script src="/js/uploadPage.js"></script>
 
 <div class="row">
-  <div class="general-menu col-2 card p-3 mb-3">
-    <div class="card-body">
-      <div class="card-text text-secondary mb-4">General Menu</div>
-      <div class="card-text mb-4">
+  <div class="general-menu col-2">
+    <div class="options mt-5">
+      <div class="card-text">
         <ion-icon name="document-outline" class="icon"></ion-icon
         ><span class="fw-medium"
-          ><a href="/caredata/users/<%= user._id %>/files">My Files</a></span
+          ><a
+            href="/caredata/users/<%= user._id %>/files"
+            class="links text-dark"
+            >My Files</a
+          ></span
         >
       </div>
-      <div class="card-text mb-4">
+      <div class="card-text">
         <ion-icon name="share-social-outline" class="icon"></ion-icon
         ><span class="fw-medium">Shared Files</span>
       </div>
-      <div class="card-text mb-4">
+      <div class="card-text">
         <ion-icon name="star-outline" class="icon"></ion-icon
         ><span class="fw-medium">Favorites</span>
       </div>
-      <div class="card-text mb-4">
+      <div class="card-text">
         <ion-icon name="trash-outline" class="icon"></ion-icon
         ><span class="fw-medium">Recycle Bin</span>
       </div>
-      <div class="card-text mb-4">
+      <div class="card-text">
         <ion-icon name="settings-outline" class="icon"></ion-icon
         ><span class="fw-medium">Settings</span>
       </div>
@@ -33,24 +37,24 @@
 
   <div class="col-10">
     <div class="ms-4">
+      <% if(user.files.length){ %>
       <h4 class="mb-4">Recently Added</h4>
       <div class="recently-edited mb-4">
-        <% for(let i = user.files.length-1; i >= (user.files.length < 3 ? 0 :
-        user.files.length-3) ; i--){ %>
+        <% for(let i = 0; i<(user.files.length<3? user.files.length:3); i++){ %>
         <div class="recently-edited-file me-5">
           <div class="recently-edited-file-img w-100 mb-3">
             <a
+              class="img-container"
               href="/caredata/users/<%= user._id %>/upload/<%= user.files[i]._id %>"
             >
               <img
-                src="<%= user.files[i].path %>"
-                class="img-fluid w-100 rounded"
+                src="<%= user.files[i].thumbnail %>"
+                class="image img-fluid"
                 alt="img"
-                style="height: 170px"
               />
             </a>
           </div>
-          <div class="recently-edited-file-details">
+          <div class="recently-edited-file-details ms-3">
             <div class="recently-edited-file-name-time">
               <div class="recently-edited-file-name">
                 <b
@@ -68,13 +72,14 @@
                 >
               </div>
             </div>
-            <div class="more-options">
+            <div class="more-options me-3">
               <h5 style="cursor: pointer">...</h5>
             </div>
           </div>
         </div>
         <% } %>
       </div>
+      <% } %>
 
       <div class="upload-files">
         <h4 class="mb-4">Upload Files</h4>
@@ -87,15 +92,15 @@
             <label for="images" class="drop-container" id="dropcontainer">
               <span class="drop-title">Drop your files here</span>
               <small class="text-secondary" style="font-size: smaller"
-                >Support jpeg, jpg, png files</small
+                >Support pdf, jpeg, jpg, png files</small
               >
               or
               <input
                 type="file"
                 id="images"
                 name="image"
-                class="mb-3"
-                accept="image/*"
+                class="mb-3 file-input"
+                accept="image/*,application/pdf"
                 required
               />
             </label>
@@ -120,10 +125,15 @@
             <% user.files.map((file)=>{ %>
             <tr>
               <td class="text-secondary d-flex" style="cursor: pointer">
-                <ion-icon name="document" class="icon"></ion-icon>
+                <% if(file.originalname.endsWith('pdf')){ %>
+                <ion-icon name="document-outline" class="icon"></ion-icon>
+                <% }else{ %><ion-icon
+                  name="image-outline"
+                  class="icon"
+                ></ion-icon>
+                <% } %>
                 <a
-                  style="text-decoration: none"
-                  class="text-secondary"
+                  class="text-secondary links"
                   href="/caredata/users/<%= user._id %>/upload/<%= file._id %>"
                   ><%= file.originalname %></a
                 >

@@ -17,7 +17,11 @@
     <header><%- include("../partials/showFileNavbar") %></header>
     <main>
       <div class="img-container">
-        <img class="img img-fluid" src="<%= uploadFile.path %>" alt="image" />
+        <img
+          class="img img-fluid"
+          src="<%= uploadFile.thumbnail %>"
+          alt="image"
+        />
       </div>
     </main>
     <script
@@ -61,26 +65,6 @@
         }
       });
     </script>
-    <script>
-      const favoriteFile = document.querySelector(".favorite");
-      if (localStorage.length === 0) {
-        localStorage.setItem("favorite", 0);
-      } else if (localStorage.getItem("favorite") === "0") {
-        favoriteFile.setAttribute("name", "star-outline");
-      } else if (localStorage.getItem("favorite") === "1") {
-        favoriteFile.setAttribute("name", "star");
-      }
-      favoriteFile.addEventListener("click", () => {
-        if (localStorage.getItem("favorite") === "1") {
-          localStorage.removeItem("favorite");
-          localStorage.setItem("favorite", 0);
-          favoriteFile.setAttribute("name", "star-outline");
-        } else if (localStorage.getItem("favorite") === "0") {
-          localStorage.removeItem("favorite");
-          localStorage.setItem("favorite", 1);
-          favoriteFile.setAttribute("name", "star");
-        }
-      });
-    </script>
+    <script></script>
   </body>
 </html>

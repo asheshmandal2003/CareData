@@ -3,8 +3,8 @@
 <div class="row">
   <div class="col-5">
     <div class="card p-3 profile">
-      <img src="<%=user.image ? user.image : "/image/defaultUser.png" %>" alt=""
-      class="card-img-top img-fluid profilePhoto mt-3" />
+      <img src="<%=user.image.path ? user.image.path : "/image/defaultUser.png"
+      %>" alt="" class="card-img-top img-fluid profilePhoto mt-3" />
       <div class="card-body">
         <div class="profileDetails">
           <b class="card-title">Full Name</b>
@@ -30,24 +30,26 @@
     </div>
   </div>
   <div class="col-7 profile-features">
-    <div class="row">
-      <div class="card me-3 mb-3 col profile-feature">
-        <a href="/caredata/users/<%= user._id %>/upload">
-          <h3>Upload Data</h3>
-        </a>
-      </div>
-
-      <div class="card me-3 mb-3 col profile-feature">
-        <h3>Consult with Doctor</h3>
-      </div>
+    <div class="card me-3 mb-3 col profile-feature">
+      <a class="redirection-box" href="/caredata/users/<%= user._id %>/upload">
+        <h4>Upload Data</h4>
+      </a>
     </div>
-    <div class="row">
-      <div class="card me-3 mb-3 col profile-feature">
-        <h3>Appointments</h3>
-      </div>
-      <div class="card me-3 mb-3 col profile-feature">
-        <h3>Book Appointments</h3>
-      </div>
+    <div class="card me-3 mb-3 col profile-feature">
+      <a class="redirection-box" href="">
+        <h4>Consult with Doctor</h4>
+      </a>
+    </div>
+
+    <div class="card me-3 mb-3 col profile-feature">
+      <a class="redirection-box" href="">
+        <h4>Appointments</h4>
+      </a>
+    </div>
+    <div class="card me-3 mb-3 col profile-feature">
+      <a class="redirection-box" href="">
+        <h4>Book Appointments</h4>
+      </a>
     </div>
   </div>
 </div>

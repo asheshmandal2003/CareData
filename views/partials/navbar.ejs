@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="/css/navbar.css" />
 <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
     <a class="navbar-brand text-primary fw-semibold ms-5" href="#">CareData</a>
@@ -13,32 +14,36 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto me-5">
         <li class="nav-item">
-          <a
-            class="nav-link text-info fw-medium me-3"
-            aria-current="page"
-            href="#"
+          <a class="nav-link text-info me-3 p-2" aria-current="page" href="#"
             >Home</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link text-info fw-medium me-3" href="#">Find Doctors</a>
+          <a class="nav-link text-info me-3 p-2" href="#">Find Doctors</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-info fw-medium me-3" href="#"
-            >Video Consult</a
-          >
+          <a class="nav-link text-info me-3 p-2" href="#">Video Consult</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-info fw-medium me-3" href="#">Blog</a>
+          <a class="nav-link text-info me-3 p-2" href="#">Blog</a>
+        </li>
+        <% if(!user){ %>
+        <li class="nav-item">
+          <a class="me-3 btn btn-primary btn-fill" href="/register">Sign Up</a>
         </li>
         <li class="nav-item">
-          <a class="fw-medium me-3 btn btn-primary" href="/register">Sign Up</a>
+          <a class="me-3 btn btn-primary btn-outline" href="/login">Sign In</a>
         </li>
+        <% }else{ %>
         <li class="nav-item">
-          <a class="fw-medium me-3 btn btn-primary" href="/login">Sign In</a>
+          <a href="/caredata/users/<%= user._id %>" class="nav-item">
+            <img src="<%=user.image.path ? user.image.path :
+            "/image/defaultUser.png" %>" alt="" class=" img-fluid avatar" />
+          </a>
         </li>
+        <% } %>
       </ul>
     </div>
   </div>

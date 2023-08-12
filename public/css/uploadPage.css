@@ -1,15 +1,29 @@
 .general-menu {
+  margin: 0;
+  padding: 0;
   height: 80vh;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  position: sticky;
+  top: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
 }
 .card-text {
+  width: 100%;
   display: flex;
+  padding: 12px 18px;
   justify-content: flex-start;
   cursor: pointer;
+  transition: 0.2s ease-in;
+}
+.card-text:hover {
+  background-color: gainsboro;
 }
 .recently-edited {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
+
 .recently-edited-file-details {
   display: flex;
   justify-content: space-between;
@@ -81,4 +95,19 @@ input[type="file"]::file-selector-button:hover {
 
 .drop-container.drag-active .drop-title {
   color: #222;
+}
+.links {
+  text-decoration: none;
+}
+.image {
+  width: 100%;
+  height: 170px;
+}
+.recently-edited-file {
+  padding-bottom: 25px;
+  border-radius: 10px;
+  transition: 0.2s ease-in;
+}
+.recently-edited-file:hover {
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 }

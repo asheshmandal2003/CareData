@@ -1,0 +1,44 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: #fff;
+}
+.nav-link {
+  transition: 0.3s ease-in-out;
+  border-bottom: 2px solid #fff;
+}
+.nav-link:hover {
+  border-bottom: 2px solid cyan;
+}
+
+/* .nav-link:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+  border-radius: 10px;
+} */
+.btn {
+  border-radius: 10px;
+}
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+}
+.btn-outline:hover {
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+.btn-fill:hover {
+  background-color: transparent;
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
+    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}

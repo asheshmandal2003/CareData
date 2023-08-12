@@ -1,0 +1,27 @@
+<% if(success.length){ %>
+<div
+  class="alert alert-success alert-dismissible fade show container mt-3 absolute-top"
+  role="alert"
+>
+  <strong><%= success %></strong>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+<% } %> <% if(error.length){ %>
+<div
+  class="alert alert-danger alert-dismissible fade show container static-top"
+  role="alert"
+>
+  <strong><%= error %></strong>
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
+</div>
+<% } %>

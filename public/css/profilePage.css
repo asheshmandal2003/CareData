@@ -2,12 +2,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(7.5px);
+  -webkit-backdrop-filter: blur(7.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
 }
 .profilePhoto {
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  border: 1px solid black;
 }
 .card-body {
   width: 100%;
@@ -21,14 +27,53 @@
 }
 .profile-features {
   display: grid;
-  grid-column-start: 1;
-  grid-column-end: 2;
-  column-gap: 50px;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1rem;
 }
-.profile-feature {
-  width: 50%;
+
+.profile-feature:nth-child(n) {
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 2px 3px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  transition: 0.2s all;
+}
+.profile-feature:nth-child(1) {
+  background-image: url("https://img.freepik.com/free-vector/landing-page-template-design-business-websides_52683-22971.jpg?w=740&t=st=1691834244~exp=1691834844~hmac=eafbf318a88b67b26e8687c197c83bcd3ebbd47c8f088c5fc5ec41a951e49ec6");
+}
+.profile-feature:nth-child(2) {
+  background-image: url("https://img.freepik.com/free-vector/online-doctor-flat-design_23-2148521415.jpg?w=740&t=st=1691835871~exp=1691836471~hmac=392e49a8edaf8a757ea42f77942a70522525409f38bf42af2dfcb3763843a81c");
+}
+.profile-feature:nth-child(3) {
+  background-image: url("https://img.freepik.com/free-vector/online-doctor-concept-illustration_114360-1831.jpg?w=740&t=st=1691836105~exp=1691836705~hmac=59f3e61294d3e626426896765c48dab5852dbe0b319c9af5af840d5e53510524");
+}
+.profile-feature:nth-child(4) {
+  background-image: url("https://img.freepik.com/free-vector/woman-choosing-dates-calendar-appointment-booking_23-2148552956.jpg?w=740&t=st=1691836018~exp=1691836618~hmac=e47d03c8040f465cb7f32dfcc87909752405bf588c6fc90fe5da38abb7fa562f");
+}
+.redirection-box {
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: #000;
+  background-color: #fff;
+}
+.profile-features:hover .profile-feature {
+  filter: blur(3px);
+  opacity: 0.5;
+  transform: scale(0.98);
+  box-shadow: none;
+}
+.profile-features:hover .profile-feature:hover {
+  transform: scale(1);
+  filter: blur(0px);
+  opacity: 1;
+  box-shadow: 0 8px 20px 0px rgba(0, 0, 0, 0.125);
 }
