@@ -16,25 +16,33 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto me-5">
         <li class="nav-item">
-          <a class="nav-link text-info me-3 p-2" aria-current="page" href="#"
+          <a class="nav-link me-3 p-2" aria-current="page" href="/caredata"
             >Home</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link text-info me-3 p-2" href="#">Find Doctors</a>
+          <a class="nav-link me-3 p-2" href="#">Find Doctors</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-info me-3 p-2" href="#">Video Consult</a>
+          <a
+            class="nav-link me-3 p-2"
+            href="<%= user?`/caredata/users/${user._id}/upload`:'/login' %>"
+            >Upload File</a
+          >
         </li>
         <li class="nav-item">
-          <a class="nav-link text-info me-3 p-2" href="#">Blog</a>
+          <a class="nav-link me-3 p-2" href="#">Blog</a>
         </li>
         <% if(!user){ %>
         <li class="nav-item">
-          <a class="me-3 btn btn-primary btn-fill" href="/register">Sign Up</a>
+          <a class="nav-btn me-3 btn btn-primary btn-fill" href="/register"
+            >Sign Up</a
+          >
         </li>
         <li class="nav-item">
-          <a class="me-3 btn btn-primary btn-outline" href="/login">Sign In</a>
+          <a class="nav-btn me-3 btn btn-primary btn-outline" href="/login"
+            >Sign In</a
+          >
         </li>
         <% }else{ %>
         <li class="nav-item">

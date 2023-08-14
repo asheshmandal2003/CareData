@@ -8,17 +8,13 @@
 .nav-link {
   transition: 0.3s ease-in-out;
   border-bottom: 2px solid #fff;
+  color: rgb(0, 183, 255);
 }
 .nav-link:hover {
-  border-bottom: 2px solid cyan;
+  border-bottom: 2px solid rgb(14, 79, 244);
+  color: rgb(14, 79, 244);
 }
-
-/* .nav-link:hover {
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
-    rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
-  border-radius: 10px;
-} */
-.btn {
+.nav-btn {
   border-radius: 10px;
 }
 .btn-outline {

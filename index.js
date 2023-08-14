@@ -63,6 +63,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/caredata", (req, res) => {
+  res.render("home/index");
+});
+
 app.get("/register", (req, res) => {
   res.render("login/registerPage");
 });
@@ -79,7 +83,7 @@ app.post("/register", upload.single("image"), async (req, res, next) => {
       req.logIn(registeredUser, (err) => {
         if (err) next(err);
         req.flash("success", "Welcome to CareData");
-        res.redirect(`/caredata/users/${user._id}`);
+        res.redirect(`/caredata`);
       });
     } catch (error) {
       req.flash("error", error.message);
@@ -104,7 +108,7 @@ app.post(
     try {
       const user = await User.findOne({ username: req.body.username });
       req.flash("success", "Welocome Back to CareData :)");
-      res.redirect(`caredata/users/${user._id}`);
+      res.redirect(`caredata`);
     } catch (error) {
       next(error);
     }
@@ -134,7 +138,7 @@ app.post("/logout", async (req, res) => {
   req.logOut(() => {
     try {
       req.flash("success", "You're Logged Out Now!");
-      res.redirect("/login");
+      res.redirect("/caredata");
     } catch (error) {
       next(error);
     }
