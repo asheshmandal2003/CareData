@@ -2,6 +2,8 @@
 
 CareData is a blockchain-based web application where patients can store their medical records securely and access them easily. We are also providing many other features, like booking appointments with doctors online, online video consultations with doctors, booking appointments for lab tests, and a medical blog page that will instruct patients on how to stay healthy. (**The Web3 part has not been built yet!**)
 
+Here we will use the Ethereum blockchain, and every smart contract will be written on Solidoty. For the frontend part, we are using EJS and Bootstrap,  and for the backend part, Node js and Express js are used. For the database part, we are using MongoDB, and we are using Ether js for connecting the web 2.0 part with blockchain.
+
 ## Prerequisites
 
 - Make sure that you have already installed Node js shell & MongoDB Compass.
