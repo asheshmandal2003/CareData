@@ -77,17 +77,16 @@ app.post("/register", upload.single("image"), async (req, res, next) => {
     const user = new User({ fullName, username, emailId, entryType });
     user.image.path = req.file.path;
     user.image.filename = req.file.filename;
-    console.log(req.body);
     try {
       const registeredUser = await User.register(user, password);
       req.logIn(registeredUser, (err) => {
         if (err) next(err);
         req.flash("success", "Welcome to CareData");
-        res.redirect(`/caredata`);
+        res.redirect(`/caredata/users/${user._id}`);
       });
     } catch (error) {
       req.flash("error", error.message);
-      res.redirect("/register");
+      res.redirect("/caredata");
     }
   } catch (error) {
     next(error);
