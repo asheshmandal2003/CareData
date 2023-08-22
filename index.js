@@ -13,6 +13,8 @@ const multer = require("multer");
 const { storage } = require("./clodinary");
 const Upload = require("./models/upload");
 const moment = require("moment");
+// const { ethers } = require("ethers");
+// const { abi } = require("./public/artifacts/contracts/Upload.sol/Upload.json");
 
 moment().format();
 
@@ -148,7 +150,7 @@ app.post("/logout", async (req, res) => {
   });
 });
 
-app.get("/caredata/users/:id/upload", async (req, res) => {
+app.get("/caredata/users/:id/upload", async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id).populate("files");
     res.render("patient/uploadPage", { user, moment });
@@ -172,6 +174,7 @@ app.post(
         author: user._id,
         favorite: false,
       });
+      console.log(req.file);
       user.files.unshift(newUpload._id);
       await newUpload.save();
       await user.save();

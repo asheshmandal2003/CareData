@@ -1,7 +1,6 @@
 <% layout('layout/boilerplate') %>
 <link rel="stylesheet" href="/css/icon.css" />
 <link rel="stylesheet" href="/css/uploadPage.css" />
-<script src="/js/uploadPage.js"></script>
 
 <div class="row">
   <div class="general-menu col-2">
@@ -82,9 +81,11 @@
       <% } %>
 
       <div class="upload-files">
-        <h4 class="mb-4">Upload Files</h4>
+        <h4 class="mb-4">Upload File</h4>
+        <p class="account_no"></p>
         <div class="upload-container mb-4">
           <form
+            class="upload-form"
             action="/caredata/users/<%= user._id %>/upload"
             method="post"
             enctype="multipart/form-data"
@@ -99,7 +100,7 @@
                 type="file"
                 id="images"
                 name="image"
-                class="mb-3 file-input"
+                class="mb-3 file-input uploadFile"
                 accept="image/*,application/pdf"
                 required
               />
@@ -110,6 +111,8 @@
           </form>
         </div>
       </div>
+      <ul class="img-list">
+      </ul>
       <% if(user.files.length){ %>
       <div class="user-files mb-5">
         <h4 class="mb-4">Your Files</h4>
@@ -156,3 +159,5 @@
     </div>
   </div>
 </div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/js/uploadPage.js" type="module"></script>
