@@ -69,8 +69,12 @@ app.get("/caredata", (req, res) => {
   res.render("home/index");
 });
 
-app.get("/doctors", (req, res) => {
+app.get("/doctorsProfile", (req, res) => {
   res.render("doctor/doctorProfile");
+});
+
+app.get("/doctors", (req, res) => {
+  res.render("doctor/findDoctors");
 });
 
 app.get("/register", (req, res) => {
