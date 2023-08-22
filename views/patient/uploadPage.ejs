@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/css/uploadPage.css" />
 
 <div class="row">
-  <div class="general-menu col-2">
+  <div class="general-menu col-2 me-3">
     <div class="options mt-5">
       <div class="card-text">
         <ion-icon name="document-outline" class="icon"></ion-icon
@@ -15,9 +15,14 @@
           ></span
         >
       </div>
-      <div class="card-text">
+      <div
+        class="card-text"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop"
+      >
         <ion-icon name="share-social-outline" class="icon"></ion-icon
-        ><span class="fw-medium">Shared Files</span>
+        ><span class="fw-medium">Share</span>
       </div>
       <div class="card-text">
         <ion-icon name="star-outline" class="icon"></ion-icon
@@ -34,62 +39,24 @@
     </div>
   </div>
 
-  <div class="col-10">
-    <div class="ms-4">
-      <% if(user.files.length){ %>
-      <h4 class="mb-4">Recently Added</h4>
-      <div class="recently-edited mb-4">
-        <% for(let i = 0; i<(user.files.length<3? user.files.length:3); i++){ %>
-        <div class="recently-edited-file me-5">
-          <div class="recently-edited-file-img w-100 mb-3">
-            <a
-              class="img-container"
-              href="/caredata/users/<%= user._id %>/upload/<%= user.files[i]._id %>"
-            >
-              <img
-                src="<%= user.files[i].thumbnail %>"
-                class="image img-fluid"
-                alt="img"
-              />
-            </a>
-          </div>
-          <div class="recently-edited-file-details ms-3">
-            <div class="recently-edited-file-name-time">
-              <div class="recently-edited-file-name">
-                <b
-                  ><a
-                    style="text-decoration: none"
-                    class="text-dark"
-                    href="/caredata/users/<%= user._id %>/upload/<%= user.files[i]._id %>"
-                    ><%= user.files[i].originalname %>
-                  </a></b
-                >
-              </div>
-              <div class="recently-edited-file-time">
-                <small class="text-secondary"
-                  >Added <%= moment(user.files[i].createdAt).fromNow() %></small
-                >
-              </div>
-            </div>
-            <div class="more-options me-3">
-              <h5 style="cursor: pointer">...</h5>
-            </div>
-          </div>
-        </div>
-        <% } %>
+  <div class="col-9">
+    <div class="account-details mt-3 mb-4">
+      <div class="alert alert-info alert-dismissible fade show" role="alert">
+        Account ID:
+        <strong class="account_no user-select-all"></strong>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
       </div>
-      <% } %>
-
+    </div>
+    <div class="ms-4">
       <div class="upload-files">
         <h4 class="mb-4">Upload File</h4>
-        <p class="account_no"></p>
         <div class="upload-container mb-4">
-          <form
-            class="upload-form"
-            action="/caredata/users/<%= user._id %>/upload"
-            method="post"
-            enctype="multipart/form-data"
-          >
+          <form class="upload-form" enctype="multipart/form-data">
             <label for="images" class="drop-container" id="dropcontainer">
               <span class="drop-title">Drop your files here</span>
               <small class="text-secondary" style="font-size: smaller"
@@ -105,59 +72,62 @@
                 required
               />
             </label>
-            <button class="btn btn-primary w-100 mt-3" type="submit">
-              Upload
+            <button class="btn btn-primary w-100 mt-3 upload-btn" type="submit">
+              <span class="upload-text">Upload</span>
+              <div
+                class="spinner-border spinner-border-sm text-light spinner"
+                role="status"
+              >
+                <span class="visually-hidden">Loading...</span>
+              </div>
             </button>
           </form>
         </div>
       </div>
-      <ul class="img-list">
-      </ul>
-      <% if(user.files.length){ %>
-      <div class="user-files mb-5">
-        <h4 class="mb-4">Your Files</h4>
-        <table class="table">
-          <thead class="table-secondary">
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Date</th>
-              <th scope="col">Size</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% user.files.map((file)=>{ %>
-            <tr>
-              <td class="text-secondary d-flex" style="cursor: pointer">
-                <% if(file.originalname.endsWith('pdf')){ %>
-                <ion-icon name="document-outline" class="icon"></ion-icon>
-                <% }else{ %><ion-icon
-                  name="image-outline"
-                  class="icon"
-                ></ion-icon>
-                <% } %>
-                <a
-                  class="text-secondary links"
-                  href="/caredata/users/<%= user._id %>/upload/<%= file._id %>"
-                  ><%= file.originalname %></a
-                >
-              </td>
-              <td class="text-secondary">
-                <%= String(file.createdAt).slice(3, 10) %>, <%=
-                String(file.createdAt).slice(11, 15) %>
-              </td>
-              <td class="text-secondary">
-                <%= Math.round(file.size/1024) > 1024 ?
-                (file.size/(1024*1024)).toFixed(2): Math.round(file.size/1024)%>
-                <%= Math.round(file.size/1024) > 1024 ? "MB" : "KB" %>
-              </td>
-            </tr>
-            <% }) %>
-          </tbody>
-        </table>
+    </div>
+    <div class="ms-4">
+      <h4 class="mb-4">Your Files</h4>
+      <div class="recently-edited mb-4"></div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="staticBackdrop"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
-      <% } %>
+      <div class="modal-body">...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
     </div>
   </div>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/js/uploadPage.js" type="module"></script>
+<script>
+  const myModal = document.getElementById("myModal");
+  const myInput = document.getElementById("myInput");
+
+  myModal.addEventListener("shown.bs.modal", () => {
+    myInput.focus();
+  });
+</script>

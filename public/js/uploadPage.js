@@ -1,70 +1,92 @@
 import { ethers } from "/ethers-5.6.esm.min.js";
 import { address, abi } from "/contractDetails.js";
-// import axios from "axios";
-// import multer from "multer";
-// import { storage } from "../../clodinary/index";
 
-// const upload = multer({ storage });
-
-// $(".connect").on("click", connectMetamask);
 $("document").ready(connectMetamask);
 $(".upload-form").on("submit", handleSubmission);
+
+if ($(".uploadFile").val() === "") {
+  $(".upload-btn").hide();
+}
+$(".uploadFile").on("change", () => {
+  if ($(".uploadFile").val() === "") {
+    $(".upload-btn").hide();
+  } else {
+    $(".upload-btn").show();
+  }
+});
+$(".spinner").hide();
 
 let contract;
 let account;
 async function connectMetamask() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  if (provider) {
-    window.ethereum.on("accountsChanged", () => window.location.reload());
-    window.ethereum.on("chainChanged", () => window.location.reload());
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    account = await signer.getAddress();
-    console.log(account);
-    contract = new ethers.Contract(address, abi, signer);
-    $(".account_no").text(account);
-    const dataArray = await contract.display(account);
-    if (dataArray.length !== 0) {
-      const imageLink = dataArray.toString();
-      const imageLinkArray = imageLink.split(",");
-      imageLinkArray.map((img) => {
-        return $(".img-list").prepend(
-          $("<img>", {
-            id: "theImg",
-            src: `https://gateway.pinata.cloud/ipfs/${img.substring(6)}`,
-          })
-        );
-      });
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    if (provider) {
+      window.ethereum.on("accountsChanged", () => window.location.reload());
+      window.ethereum.on("chainChanged", () => window.location.reload());
+      await provider.send("eth_requestAccounts", []);
+      console.log(provider);
+      const signer = provider.getSigner();
+      account = await signer.getAddress();
+      console.log(account);
+      console.log(signer);
+      contract = new ethers.Contract(address, abi, signer);
+      $(".account_no").text(account ? account : "No account connected!");
+      const dataArray = await contract.display(account);
+      if (dataArray.length !== 0) {
+        dataArray.map((img) => {
+          return $(".recently-edited")
+            .prepend(
+              $("<img>", {
+                id: "theImg",
+                class: "mb-3",
+                src: `${img.replace("/upload", "/upload/w_300")}`,
+              })
+            )
+            .wrap(`<a href=${img}></a>`);
+        });
+      } else {
+        console.log("No image to display!");
+      }
     } else {
-      console.log("No image to display!");
+      alert("Metamask is not installed!");
     }
-  } else {
-    alert("Metamask is not installed!");
+  } catch (error) {
+    alert("No web3 provider is installed :(");
   }
 }
 
 async function handleSubmission(e) {
   e.preventDefault();
   try {
+    $(".upload-btn").attr("disabled", "disabled");
+    $(".upload-text").hide();
+    $(".spinner").show();
     const file = document.querySelector("[type=file]").files[0];
     const formdata = new FormData();
+    const CLOUDINARY_URL =
+      "https://api.cloudinary.com/v1_1/dwstxhmqe/image/upload";
+    const CLOUDINARY_UPLOAD_PRESET = "wnyrrxwr";
     formdata.append("file", file);
-    console.log(file);
+    formdata.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
     const resFile = await axios({
       method: "post",
-      url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+      url: CLOUDINARY_URL,
       data: formdata,
-      headers: {
-        pinata_api_key: "c1ee07266e75c299f75a",
-        pinata_secret_api_key:
-          "dee217afd277445c89b860052791e41735b87b1df3e5c3566cb9ae866675d2f4",
-        "Content-Type": "multipart/form-data",
-      },
     });
-    const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-    await contract.add(account, ImgHash);
-    alert("Image Uploaded Successfully :)");
+    await contract.add(account, resFile.data.secure_url);
+    $(".uploadFile").val("");
+    $(".upload-btn").removeAttr("disabled");
+    $(".spinner").hide();
+    $(".upload-text").show();
+    $(".upload-btn").hide();
+    alert("Image Uploded!");
   } catch (error) {
+    $(".uploadFile").val("");
+    $(".upload-btn").removeAttr("disabled");
+    $(".spinner").hide();
+    $(".upload-text").show();
+    $(".upload-btn").hide();
     alert("Can't upload!");
     console.log(error);
   }

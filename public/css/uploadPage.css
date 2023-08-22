@@ -23,6 +23,12 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
+.account-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
 
 .recently-edited-file-details {
   display: flex;
