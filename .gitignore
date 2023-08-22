@@ -1,7 +1,6 @@
 node_modules
 .env
 public/ethers-5.6.esm.min.js
-public/contractDetails.js
 
 node_modules
 .env
