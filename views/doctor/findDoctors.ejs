@@ -67,9 +67,20 @@
         filterAndRenderDoctors('');
     </script>
     <section class="doctors-list">
-        <div class="doctor-card container grid grid-three-col">
-            <div>
-                <img class="doctor-img" src="/image/doctor-img.png" alt="Doctor-Image">
+        <div class="doctor-card container grid grid-two-col">
+            <div class="doctor-main">
+                <img class="find-img" src="/image/doctor-img.png" alt="Doctor-Image">
+                <p class="profile-rating">
+                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
+                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
+                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
+                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
+                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
+                </p>
+                <div class="date-icon">
+                    <i class="calen-icon fa-solid fa-calendar-days" style="color: #292d32;"></i>
+                    <p class="appointment-date">Available on: Sun, 12 Aug</p>
+                </div>
             </div>
             <div class="doctor-info">
                 <h2 class="name">Dr. Devayan Mandal</h2>
@@ -79,20 +90,10 @@
                 <p class="clinics">Oyoland Clinic +2 more</p>
                 <p class="consultation">₹6000 Consultation at clinic</p>
                 <hr class="line" id="doctor-line">
-                <p class="profile-rating">
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                </p>
-            </div>
-            <div class="booking">
-                <div class="date-icon">
-                    <i class="calen-icon fa-solid fa-calendar-days" style="color: #292d32;"></i>
-                    <p class="appointment-date">Available on: Sun, 12 Aug</p>
+                
+                <div class="booking">
+                    <a href="/doctorsProfile" class="doctor-btn">Book Appointment</a>
                 </div>
-                <a href="/doctorsProfile" class="doctor-btn">Book Appointment</a>
             </div>
         </div>
     </section>

@@ -255,8 +255,8 @@
     border-radius: 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
     padding: 20px;
-    width: 700px;
-    height: 200px;
+    width: 600px;
+    height: 180px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -279,6 +279,11 @@
     font-size: 20px;
 }
 
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .search-input {
     display: flex;
@@ -286,13 +291,18 @@
     border: 1px solid #75797E;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
     padding: 8px;
-    border-radius: 10px;
+    border-radius: 20px;
     height: 60px;
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .search-icon {
     margin-right: 8px;
     font-size: 25px;
+    padding: 10px;
 }
 
 #doctor-search {
@@ -308,10 +318,31 @@
     padding: 16px;
     margin-top: 50px;
     border-radius: 20px;
-    height: 400px;
+    height: 500px;
+    width: 600px;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+}
+
+.doctor-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.find-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;
+    position: relative;
+    left: 30px;
+}
+
+.doctor-info {
+    padding: 10px;
 }
 
 .name,
@@ -324,8 +355,9 @@
     color: #999;
     margin-bottom: 6px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .name {
@@ -333,7 +365,6 @@
     font-size: 30px;
     font-weight: 700;
     position: relative;
-    text-align: left;
 }
 
 .specialty {
@@ -371,11 +402,14 @@
     height: 2px;
     background-color: #292D32;
     margin: 15px 0;
-    width: 350px;
+    width: 300px;
 }
 
 .profile-rating {
     font-size: 20px;
+    position: relative;
+    left: 30px;
+    top: 10px;
 }
 
 .doctor-btn {
@@ -405,6 +439,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    left: 40px;
+    bottom: 10px;
 }
 
 .date-icon i {
@@ -414,13 +451,11 @@
 
 .booking {
     position: relative;
-    top: 100px;
+    top: 50px;
     right: 50px;
 }
 
 .appointment-date {
     font-size: 20px;
-    padding: 20px;
-    position: relative;
-    right: 10px;
+    padding: 10px;
 }
