@@ -41,6 +41,15 @@ const sessionConfig = {
 };
 const upload = multer({ storage });
 
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+const { ExpressPeerServer } = require('peer')
+const peerServer = ExpressPeerServer(server, {
+  debug: true,
+})
+const { v4: uuidv4 } = require('uuid')
+
+
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -64,6 +73,11 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
+
+app.use('/peerjs', peerServer)
+app.use(express.static('public'))
+app.set('view engine', 'ejs')
+
 
 app.get("/caredata", (req, res) => {
   res.render("home/index");
@@ -231,6 +245,37 @@ app.get("/caredata/users/:id/files", async (req, res, next) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+
+app.get('/:room?', (req, res) => {
+  const { room } = req.params;
+
+  if (room) {
+    res.render('videoconsult/room', { roomId: room });
+  } else {
+    const newRoomId = uuidv4();
+    res.redirect(`/${newRoomId}`);
+  }
 });
+
+io.on('connection', (socket) => {
+  socket.on('join-room', (roomId, userId) => {
+    socket.join(roomId)
+    socket.to(roomId).emit('user-connected', userId);
+
+    socket.on('message', (message) => {
+      io.to(roomId).emit('createMessage', message, userId)
+    })
+    socket.on('disconnect', () => {
+      socket.to(roomId).emit('user-disconnected', userId)
+    })
+    socket.on('end-meeting', (roomId) => {
+      io.to(roomId).emit('user-disconnected', socket.id);
+    })
+  })
+})
+
+// app.listen(PORT, () => {
+//   console.log(`Listening on port ${PORT}`);
+// });
+
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`))

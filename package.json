@@ -33,6 +33,11 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^8.0.0",
+    "peer": "^1.0.0",
+    "socket.io": "^4.7.2",
     "web3": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9.0.2"
   }
 }
