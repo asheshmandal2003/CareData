@@ -1,6 +1,7 @@
 node_modules
 .env
 public/ethers-5.6.esm.min.js
+public/cloudinaryCredentials.js
 
 node_modules
 .env
