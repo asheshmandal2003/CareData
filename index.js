@@ -13,8 +13,6 @@ const multer = require("multer");
 const { storage } = require("./clodinary");
 const Upload = require("./models/upload");
 const moment = require("moment");
-// const { ethers } = require("ethers");
-// const { abi } = require("./public/artifacts/contracts/Upload.sol/Upload.json");
 
 moment().format();
 
@@ -162,32 +160,6 @@ app.get("/caredata/users/:id/upload", async (req, res, next) => {
     next(error);
   }
 });
-
-// app.post(
-//   "/caredata/users/:id/upload",
-//   upload.single("image"),
-//   async (req, res, next) => {
-//     try {
-//       const { id } = req.params;
-//       const user = await User.findById(id);
-//       const newUpload = new Upload({
-//         path: req.file.path,
-//         filename: req.file.filename,
-//         originalname: req.file.originalname,
-//         size: req.file.size,
-//         author: user._id,
-//         favorite: false,
-//       });
-//       console.log(req.file);
-//       user.files.unshift(newUpload._id);
-//       await newUpload.save();
-//       await user.save();
-//       res.redirect(`/caredata/users/${req.params.id}/upload`);
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
 
 app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   try {
