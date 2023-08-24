@@ -9,7 +9,6 @@
         <i class="fa-solid fa-magnifying-glass" style="color: #75797e"></i>
       </div>
       <input type="text" id="doctor-search" placeholder="Search doctors" />
-      <!-- <button id="search-button">Search</button> -->
     </div>
   </section>
 </section>
@@ -79,13 +78,19 @@
     </div>
     <div class="doctor-info">
       <h2 class="name"><%= doctor.fullName %></h2>
+      <% if(doctor.doctorDetails){ %>
       <p class="specialty"><%= doctor.doctorDetails.speciality %></p>
+      <% } %> <% if(doctor.doctorDetails){ %>
       <p class="experience">
         <%= doctor.doctorDetails.experience %> years experience overall
       </p>
+      <% } %> <% if(doctor.doctorDetails){ %>
       <p class="location"><%= doctor.doctorDetails.location %></p>
+      <% } %> <% if(doctor.doctorDetails){ %>
       <p class="clinics">Orange Clinic +2 more</p>
+      <% } %> <% if(doctor.doctorDetails){ %>
       <p class="consultation">₹6000 Consultation at clinic</p>
+      <% } %>
       <hr class="line" id="doctor-line" />
       <!-- <p class="profile-rating">
                     <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
@@ -103,7 +108,9 @@
         ></i>
         <p class="appointment-date">Available on: Sun, 12 Aug</p>
       </div>
-      <a href="/doctorsProfile" class="doctor-btn">Book Appointment</a>
+      <a href="/caredata/users/<%= doctor._id %>" class="doctor-btn"
+        >Book Appointment</a
+      >
     </div>
   </div>
   <% } %> <% }) %>

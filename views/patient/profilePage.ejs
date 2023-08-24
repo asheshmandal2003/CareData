@@ -1,6 +1,6 @@
 <% layout('layout/boilerplate') %>
-<link rel="stylesheet" href="/css/icon.css" />
-<link rel="stylesheet" href="/css/doctor.css" />
+<!-- <link rel="stylesheet" href="/css/icon.css" />
+<link rel="stylesheet" href="/css/doctor.css" /> -->
 <link rel="stylesheet" href="/css/icon.css" />
 <link rel="stylesheet" href="/css/profilePage.css" />
 <% if(user.entryType === "patient"){ %>
@@ -60,17 +60,113 @@
   </div>
 </div>
 <% } else{ %>
-<section class="doctor-profile">
+<div class="row">
+  <div class="col-7 p-5 border rounded shadow me-4" style="height: 550px">
+    <div class="d-flex mb-3">
+      <div class="basic-info d-flex flex-column pe-5">
+        <img src="<%=user.image.path ? user.image.path :
+        "/image/defaultUser.png" %>" alt="avatar" class="img-fluid profilePhoto
+        mb-3" />
+        <h5 class="text-primary"><%= user.fullName %></h5>
+        <% if(user.doctorDetails){ %>
+        <small><%= user.doctorDetails.speciality %></small>
+        <% } %>
+      </div>
+      <div class="full-info">
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <i class="fa-solid fa-user-graduate icon me-3"></i>
+          <% if(user.doctorDetails){ %>
+          <p><%= user.doctorDetails.education %></p>
+          <% } %>
+        </div>
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <i class="fa-solid fa-location-dot icon me-3"></i>
+          <% if(user.doctorDetails){ %>
+          <p><%= user.doctorDetails.location %></p>
+          <% } %>
+        </div>
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <i class="fa-regular fa-id-card icon me-3"></i>
+          <% if(user.doctorDetails){ %>
+          <p><%= user.doctorDetails.regId %></p>
+          <% } %>
+        </div>
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <ion-icon name="language" class="icon me-3"></ion-icon>
+          <% if(user.doctorDetails){ %>
+          <p><%= user.doctorDetails.language %></p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% if(user.doctorDetails){ %>
+    <div class="about-doctor pb-3"><%= user.doctorDetails.aboutDoctor %></div>
+    <% } %>
+
+    <div class="profileButton d-flex gap-3">
+      <a
+        type="button"
+        href="/caredata/users/<%= user._id %>/edit"
+        class="btn btn-warning w-100"
+        >Edit
+      </a>
+      <form action="/logout" method="post" class="w-100">
+        <button class="btn btn-danger w-100">Log Out</button>
+      </form>
+      <a
+        href="/caredata/users/<%= user._id %>/adddetails"
+        type="button"
+        class="btn btn-success w-100"
+        >Add Details</a
+      >
+    </div>
+  </div>
+  <div class="col-4 border rounded shadow ms-3 p-5">
+    <div class="online-time d-flex align-items-center flex-column mb-5">
+      <h5 class="text-primary mb-3">Online</h5>
+      <p>Monday 01:00 PM - 06:00 PM</p>
+      <p>Tuesday 01:00 PM - 06:00 PM</p>
+      <p>Saturday 01:00 PM - 06:00 PM</p>
+    </div>
+    <div class="clinic-time d-flex align-items-center flex-column mb-5">
+      <h5 class="text-primary mb-3">Clinic</h5>
+      <p>Monday 10:00 AM - 12:00 PM</p>
+      <p>Wednesday 10:00 AM - 12:00 PM</p>
+      <p>Thursday 10:00 AM - 12:00 PM</p>
+    </div>
+    <div class="appointment-options w-100">
+      <div class="vstack gap-2">
+        <button type="button" class="btn btn-primary w-100">
+          Book Appointment
+        </button>
+        <button type="button" class="btn btn-outline-primary w-100" `>
+          Video Consult
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <section class="doctor-profile">
   <section class="container grid grid-two-col">
-    <section class="profile">
+    <section class="">
       <div class="container grid grid-three-col">
         <div class="profile-main">
           <img class="doctor-img" src="<%=user.image.path ? user.image.path :
           "/image/defaultUser.png"%>" alt="Doctor-Image" />
           <h2 class="doctor-name"><%= user.fullName %></h2>
+          <% if(user.doctorDetails){ %>
           <h2 class="doctor-speciality">
             <%= user.doctorDetails.speciality %>
           </h2>
+          <% } %>
         </div>
         <div>
           <ul class="profile-icons">
@@ -82,27 +178,46 @@
         </div>
         <div class="doctor-details">
           <ul class="qualification">
+            <% if(user.doctorDetails){ %>
             <li><%= user.doctorDetails.education %></li>
+            <% } %>
           </ul>
           <hr class="social-line" />
           <ul class="doctor-location">
+            <% if(user.doctorDetails){ %>
             <li><%= user.doctorDetails.location %></li>
+            <% } %>
           </ul>
           <hr class="social-line" />
           <ul class="verified">
+            <% if(user.doctorDetails){ %>
             <li><%= user.doctorDetails.regId %></li>
+            <% } %>
           </ul>
           <hr class="social-line" />
           <ul class="languages">
+            <% if(user.doctorDetails){ %>
             <li><%= user.doctorDetails.language %></li>
+            <% } %>
           </ul>
           <hr class="social-line" />
         </div>
       </div>
       <div>
+        <% if(user.doctorDetails){ %>
         <p class="doctor-about"><%= user.doctorDetails.aboutDoctor %></p>
+        <% } %>
+      </div>
+      <div class="profileButton d-flex gap-3 mb-3">
+        <a href="/caredata/users/<%= user._id %>/edit" class="w-100">
+          <button class="btn btn-warning w-100">Edit</button>
+        </a>
+        <form action="/logout" method="post" class="w-100">
+          <button class="btn btn-danger w-100">Log Out</button>
+        </form>
       </div>
     </section>
+
     <section class="appointment">
       <div class="online">
         <h2>Online</h2>
@@ -220,5 +335,5 @@
       </div>
     </div>
   </section>
-</section>
+</section> -->
 <% } %>
