@@ -1,173 +1,178 @@
-const socket = io('/')
-const videoGrid = document.getElementById('videoGrid')
-const myVideo = document.createElement('video')
-myVideo.muted = true
+const socket = io("/");
+const videoGrid = document.getElementById("video-grid");
+const myVideo = document.createElement("video");
+const showChat = document.querySelector("#showChat");
+const backBtn = document.querySelector(".header__back");
+myVideo.muted = true;
 
-var peer = new Peer()
+backBtn.addEventListener("click", () => {
+    document.querySelector(".main__left").style.display = "flex";
+    document.querySelector(".main__left").style.flex = "1";
+    document.querySelector(".main__right").style.display = "none";
+    document.querySelector(".header__back").style.display = "none";
+});
 
-const myPeer = new Peer(undefined, {
-    path: '/peerjs',
+showChat.addEventListener("click", () => {
+    document.querySelector(".main__right").style.display = "flex";
+    document.querySelector(".main__right").style.flex = "1";
+    document.querySelector(".main__left").style.display = "none";
+    document.querySelector(".header__back").style.display = "block";
+});
+
+const user = prompt("Enter your name");
+
+var peer = new Peer({
     host: '/',
-    port: '3000',
-})
+    port: 3000,
+    path: '/peerjs',
+    config: {
+        'iceServers': [
+            { url: 'stun:stun01.sipphone.com' },
+            { url: 'stun:stun.ekiga.net' },
+            { url: 'stun:stunserver.org' },
+            { url: 'stun:stun.softjoys.com' },
+            { url: 'stun:stun.voiparound.com' },
+            { url: 'stun:stun.voipbuster.com' },
+            { url: 'stun:stun.voipstunt.com' },
+            { url: 'stun:stun.voxgratia.org' },
+            { url: 'stun:stun.xten.com' },
+            {
+                url: 'turn:192.158.29.39:3478?transport=udp',
+                credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+                username: '28224511:1379330808'
+            },
+            {
+                url: 'turn:192.158.29.39:3478?transport=tcp',
+                credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+                username: '28224511:1379330808'
+            }
+        ]
+    },
 
-const peers = {}
-let myVideoStream
+    debug: 3
+});
+
+let myVideoStream;
 navigator.mediaDevices
     .getUserMedia({
-        video: true,
         audio: true,
+        video: true,
     })
     .then((stream) => {
-        myVideoStream = stream
-        addVideoStream(myVideo, stream)
+        myVideoStream = stream;
+        addVideoStream(myVideo, stream);
 
-        socket.on('user-connected', (userId) => {
-            connectToNewUser(userId, stream)
-            alert('Somebody connected', userId)
-        })
+        peer.on("call", (call) => {
+            console.log('someone call me');
+            call.answer(stream);
+            const video = document.createElement("video");
+            call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream);
+            });
+        });
 
-        peer.on('call', (call) => {
-            call.answer(stream)
-            const video = document.createElement('video')
-            call.on('stream', (userVideoStream) => {
-                addVideoStream(video, userVideoStream)
-            })
-        })
-
-        let text = $('input')
-
-        $('html').keydown(function (e) {
-            if (e.which == 13 && text.val().length !== 0) {
-                socket.emit('message', text.val())
-                text.val('')
-            }
-        })
-
-        socket.on('createMessage', (message, userId) => {
-            $('ul').append(`<li >
-								<span class="messageHeader">
-									<span>
-										From 
-										<span class="messageSender">Someone</span> 
-										to 
-										<span class="messageReceiver">Everyone:</span>
-									</span>
-
-									${new Date().toLocaleString('en-US', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true,
-            })}
-								</span>
-
-								<span class="message">${message}</span>
-							
-							</li>`)
-            scrollToBottom()
-        })
-    })
-
-socket.on('user-disconnected', (userId) => {
-    if (peers[userId]) peers[userId].close()
-})
-
-peer.on('open', (id) => {
-    socket.emit('join-room', ROOM_ID, id)
-})
+        socket.on("user-connected", (userId) => {
+            connectToNewUser(userId, stream);
+        });
+    });
 
 const connectToNewUser = (userId, stream) => {
-    const call = peer.call(userId, stream)
-    const video = document.createElement('video')
-    call.on('stream', (userVideoStream) => {
-        addVideoStream(video, userVideoStream)
-    })
-    call.on('close', () => {
-        video.remove()
-    })
+    console.log('I call someone' + userId);
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
+    });
+};
 
-    peers[userId] = call
-}
+peer.on("open", (id) => {
+    console.log('my id is' + id);
+    socket.emit("join-room", ROOM_ID, id, user);
+});
 
 const addVideoStream = (video, stream) => {
-    video.srcObject = stream
-    video.addEventListener('loadedmetadata', () => {
-        video.play()
-    })
-    videoGrid.append(video)
-}
-
-const scrollToBottom = () => {
-    var d = $('.mainChatWindow')
-    d.scrollTop(d.prop('scrollHeight'))
-}
-
-const muteUnmute = () => {
-    const enabled = myVideoStream.getAudioTracks()[0].enabled
-    if (enabled) {
-        myVideoStream.getAudioTracks()[0].enabled = false
-        setUnmuteButton()
-    } else {
-        setMuteButton()
-        myVideoStream.getAudioTracks()[0].enabled = true
-    }
-}
-
-const setMuteButton = () => {
-    const html = `
-	  <i class="fas fa-microphone"></i>
-	  <span>Mute</span>
-	`
-    document.querySelector('.mainMuteButton').innerHTML = html
-}
-
-const setUnmuteButton = () => {
-    const html = `
-	  <i class="unmute fas fa-microphone-slash"></i>
-	  <span>Unmute</span>
-	`
-    document.querySelector('.mainMuteButton').innerHTML = html
-}
-
-const playStop = () => {
-    console.log('object')
-    let enabled = myVideoStream.getVideoTracks()[0].enabled
-    if (enabled) {
-        myVideoStream.getVideoTracks()[0].enabled = false
-        setPlayVideo()
-    } else {
-        setStopVideo()
-        myVideoStream.getVideoTracks()[0].enabled = true
-    }
-}
-
-const setStopVideo = () => {
-    const html = `
-	  <i class="fas fa-video"></i>
-	  <span>Stop Video</span>
-	`
-    document.querySelector('.mainVideoButton').innerHTML = html
-}
-
-const setPlayVideo = () => {
-    const html = `
-	<i class="stop fas fa-video-slash"></i>
-	  <span>Play Video</span>
-	`
-    document.querySelector('.mainVideoButton').innerHTML = html
-}
-
-
-document.querySelector('.mainControlsButtonEndMeeting').addEventListener('click', () => {
-    socket.emit('end-meeting', ROOM_ID);
-    Object.keys(peers).forEach(userId => {
-        peers[userId].close();
+    video.srcObject = stream;
+    video.addEventListener("loadedmetadata", () => {
+        video.play();
+        videoGrid.append(video);
     });
-    if (myPeer) {
-        myPeer.destroy();
+};
+
+let text = document.querySelector("#chat_message");
+let send = document.getElementById("send");
+let messages = document.querySelector(".messages");
+
+send.addEventListener("click", (e) => {
+    if (text.value.length !== 0) {
+        socket.emit("message", text.value);
+        text.value = "";
     }
-    if (myVideoStream) {
-        myVideoStream.getTracks().forEach(track => track.stop());
-    }
-    window.location.href = '/caredata';
 });
+
+text.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && text.value.length !== 0) {
+        socket.emit("message", text.value);
+        text.value = "";
+    }
+});
+
+const inviteButton = document.querySelector("#inviteButton");
+const muteButton = document.querySelector("#muteButton");
+const stopVideo = document.querySelector("#stopVideo");
+muteButton.addEventListener("click", () => {
+    const enabled = myVideoStream.getAudioTracks()[0].enabled;
+    if (enabled) {
+        myVideoStream.getAudioTracks()[0].enabled = false;
+        html = `<span class="material-icons">
+mic_off
+</span>`;
+        muteButton.classList.toggle("background__red");
+        muteButton.innerHTML = html;
+    } else {
+        myVideoStream.getAudioTracks()[0].enabled = true;
+        html = `<span class="material-icons">
+mic
+</span>`;
+        muteButton.classList.toggle("background__red");
+        muteButton.innerHTML = html;
+    }
+});
+
+stopVideo.addEventListener("click", () => {
+    const enabled = myVideoStream.getVideoTracks()[0].enabled;
+    if (enabled) {
+        myVideoStream.getVideoTracks()[0].enabled = false;
+        html = `<span class="material-icons">
+videocam_off
+</span>`;
+        stopVideo.classList.toggle("background__red");
+        stopVideo.innerHTML = html;
+    } else {
+        myVideoStream.getVideoTracks()[0].enabled = true;
+        html = `<span class="material-icons">
+videocam
+</span>`;
+        stopVideo.classList.toggle("background__red");
+        stopVideo.innerHTML = html;
+    }
+});
+
+inviteButton.addEventListener("click", (e) => {
+    prompt(
+        "Copy this link and send it to people you want to meet with",
+        window.location.href
+    );
+});
+
+socket.on("createMessage", (message, userName) => {
+    messages.innerHTML =
+        messages.innerHTML +
+        `<div class="message">
+        <b><span class="material-icons">
+account_circle
+</span> <span> ${userName === user ? "me" : userName
+        }</span> </b>
+        <span>${message}</span>
+    </div>`;
+});
+

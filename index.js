@@ -240,36 +240,65 @@ app.get("/caredata/users/:id/files", async (req, res, next) => {
 });
 
 
-app.get('/:room?', (req, res) => {
-  const { room } = req.params;
+// app.get('/:room?', (req, res) => {
+//   const { room } = req.params;
 
-  if (room) {
-    res.render('videoconsult/room', { roomId: room });
-  } else {
-    const newRoomId = uuidv4();
-    res.redirect(`/${newRoomId}`);
-  }
-});
+//   if (room) {
+//     res.render('videoconsult/room', { roomId: room });
+//   } else {
+//     const newRoomId = uuidv4();
+//     res.redirect(`/${newRoomId}`);
+//   }
+// });
 
-io.on('connection', (socket) => {
-  socket.on('join-room', (roomId, userId) => {
-    socket.join(roomId)
-    socket.to(roomId).emit('user-connected', userId);
+// io.on('connection', (socket) => {
+//   socket.on('join-room', (roomId, userId) => {
+//     socket.join(roomId)
+//     socket.to(roomId).emit('user-connected', userId);
 
-    socket.on('message', (message) => {
-      io.to(roomId).emit('createMessage', message, userId)
-    })
-    socket.on('disconnect', () => {
-      socket.to(roomId).emit('user-disconnected', userId)
-    })
-    socket.on('end-meeting', (roomId) => {
-      io.to(roomId).emit('user-disconnected', socket.id);
-    })
-  })
-})
+//     socket.on('message', (message) => {
+//       io.to(roomId).emit('createMessage', message, userId)
+//     })
+//     socket.on('disconnect', () => {
+//       socket.to(roomId).emit('user-disconnected', userId)
+//     })
+//     socket.on('end-meeting', (roomId) => {
+//       io.to(roomId).emit('user-disconnected', socket.id);
+//     })
+//   })
+// })
 
 // app.listen(PORT, () => {
 //   console.log(`Listening on port ${PORT}`);
 // });
+
+app.set("view engine", "ejs");
+const opinions = {
+  debug: true,
+}
+
+app.use("/peerjs", ExpressPeerServer(server, opinions));
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.redirect(`/${uuidv4()}`);
+});
+
+app.get("/:room", (req, res) => {
+  res.render("videoconsult/room", { roomId: req.params.room });
+});
+
+io.on("connection", (socket) => {
+  socket.on("join-room", (roomId, userId, userName) => {
+    socket.join(roomId);
+    setTimeout(() => {
+      socket.to(roomId).broadcast.emit("user-connected", userId);
+    }, 1000)
+    socket.on("message", (message) => {
+      io.to(roomId).emit("createMessage", message, userName);
+    });
+  });
+});
+
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
