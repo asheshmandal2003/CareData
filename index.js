@@ -14,6 +14,7 @@ const { storage } = require("./clodinary");
 const moment = require("moment");
 const DoctorDetails = require("./models/doctorDetails");
 const AppError = require("./error/AppError");
+const registerValidation = require("./validation/loginValidation");
 
 moment().format();
 
@@ -81,27 +82,37 @@ app.get("/register", (req, res) => {
   res.render("login/registerPage");
 });
 
-app.post("/register", upload.single("image"), async (req, res, next) => {
-  try {
-    const { fullName, username, emailId, password, entryType } = req.body;
-    const user = new User({ fullName, username, emailId, entryType });
-    user.image.path = req.file.path;
-    user.image.filename = req.file.filename;
+app.post(
+  "/register",
+  upload.single("image"),
+  registerValidation,
+  async (req, res, next) => {
     try {
-      const registeredUser = await User.register(user, password);
-      req.logIn(registeredUser, (err) => {
-        if (err) next(err);
-        req.flash("success", "Welcome to CareData");
-        res.redirect(`/caredata/users/${user._id}`);
-      });
+      const { fullName, username, emailId, password, entryType } = req.body;
+      const user = new User({ fullName, username, emailId, entryType });
+      if (req.file) {
+        user.image.path = req.file.path;
+        user.image.filename = req.file.filename;
+      } else {
+        user.image.path = "";
+        user.image.filename = "";
+      }
+      try {
+        const registeredUser = await User.register(user, password);
+        req.logIn(registeredUser, (err) => {
+          if (err) next(err);
+          req.flash("success", "Welcome to CareData");
+          res.redirect(`/caredata/users/${user._id}`);
+        });
+      } catch (error) {
+        req.flash("error", error.message);
+        res.redirect("/register");
+      }
     } catch (error) {
-      req.flash("error", error.message);
-      res.redirect("/caredata");
+      next(error);
     }
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 app.get("/login", (req, res) => {
   res.render("login/loginPage");
