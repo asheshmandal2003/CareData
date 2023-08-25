@@ -1,0 +1,90 @@
+<% layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/login.css" />
+
+<div class="row g-0">
+  <div class="col-10 bg-info offset-1 d-flex mt-4">
+    <div class="img-container w-50">
+      <img class="img-fluid w-80" src="/image/doctor.jpg" alt="image" />
+    </div>
+    <form
+      action="/caredata/users/<%= user._id %>/adddetails"
+      method="post"
+      class="ms-auto w-50 bg-light p-5"
+    >
+      <h3 class="mb-3">Add Details</h3>
+      <div class="form-input w-100">
+        <label for="education" class="form-label">Education</label>
+        <input
+          type="text"
+          name="education"
+          id="education"
+          class="form-control mb-3"
+          placeholder="Education"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="regId" class="form-label">Registration ID</label>
+        <input
+          type="text"
+          name="regId"
+          id="regId"
+          class="form-control mb-3"
+          placeholder="Registration ID"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="speciality" class="form-label">Speciality</label>
+        <input
+          type="text"
+          name="speciality"
+          id="speciality"
+          class="form-control mb-3"
+          placeholder="Speciality"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="experience" class="form-label">Experience (In year)</label>
+        <input
+          type="text"
+          name="experience"
+          id="experience"
+          class="form-control mb-3"
+          placeholder="Experience"
+        />
+      </div>
+
+      <div class="form-input w-100">
+        <label for="location" class="form-label">Clinic Location</label>
+        <input
+          type="text"
+          name="location"
+          id="location"
+          class="form-control mb-3"
+          placeholder="Location..."
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="aboutDoctor" class="form-label">About You</label>
+        <textarea
+          name="aboutDoctor"
+          id="aboutDoctor"
+          cols="20"
+          rows="5"
+          class="form-control mb-4"
+          placeholder="Describe yourself..."
+        ></textarea>
+      </div>
+      <div class="form-input w-100">
+        <label for="language" class="form-label">Language Known</label>
+        <input
+          type="text"
+          name="language"
+          id="language"
+          class="form-control mb-3"
+          placeholder="Enter the languages you know..."
+        />
+      </div>
+      <button class="btn btn-info mb-3 text-light w-100">Add</button>
+    </form>
+  </div>
+</div>

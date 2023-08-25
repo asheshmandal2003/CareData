@@ -11,8 +11,8 @@ const passportLocal = require("passport-local");
 const methodOverride = require("method-override");
 const multer = require("multer");
 const { storage } = require("./clodinary");
-const Upload = require("./models/upload");
 const moment = require("moment");
+const DoctorDetails = require("./models/doctorDetails");
 
 moment().format();
 
@@ -85,8 +85,9 @@ app.get("/doctorsProfile", (req, res) => {
   res.render("doctor/doctorProfile");
 });
 
-app.get("/doctors", (req, res) => {
-  res.render("doctor/findDoctors");
+app.get("/caredata/doctors", async (req, res) => {
+  const doctors = await User.find({}).populate("doctorDetails");
+  res.render("doctor/findDoctors", { doctors });
 });
 
 app.get("/register", (req, res) => {
@@ -127,7 +128,7 @@ app.post(
   }),
   async (req, res, next) => {
     try {
-      const user = await User.findOne({ username: req.body.username });
+      await User.findOne({ username: req.body.username });
       req.flash("success", "Welocome Back to CareData :)");
       res.redirect(`caredata`);
     } catch (error) {
@@ -137,10 +138,12 @@ app.post(
 );
 
 app.get("/caredata/users/:id", async (req, res) => {
-  const user = await User.findById(req.params.id)
-    .then((data) => data)
-    .catch((e) => e);
-  res.render("patient/profilePage", { user });
+  try {
+    const user = await User.findById(req.params.id).populate("doctorDetails");
+    res.render("patient/profilePage", { user });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.get("/caredata/users/:id/edit", async (req, res) => {
@@ -153,6 +156,26 @@ app.get("/caredata/users/:id/edit", async (req, res) => {
 app.put("/caredata/users/:id", async (req, res, next) => {
   await User.findByIdAndUpdate(req.params.id, req.body);
   res.redirect(`/caredata/users/${req.params.id}`);
+});
+
+app.get("/caredata/users/:id/adddetails", async (req, res) => {
+  const user = await User.findById(req.params.id);
+  res.render("doctor/addDoctorDetails", { user });
+});
+
+app.post("/caredata/users/:id/adddetails", async (req, res, next) => {
+  try {
+    const doctorDetails = new DoctorDetails(req.body);
+    const user = await User.findById(req.params.id);
+    user.doctorDetails = doctorDetails;
+    await doctorDetails.save();
+    await user.save();
+    req.flash("success", "Your details has been added :)");
+    res.redirect(`/caredata/users/${req.params.id}`);
+  } catch (error) {
+    req.flash("error", "Can't add the details :(");
+    next(error);
+  }
 });
 
 app.post("/logout", async (req, res) => {
@@ -168,8 +191,8 @@ app.post("/logout", async (req, res) => {
 
 app.get("/caredata/users/:id/upload", async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).populate("files");
-    res.render("patient/uploadPage", { user, moment });
+    const user = await User.findById(req.params.id);
+    res.render("patient/uploadPage", { moment, user });
   } catch (error) {
     next(error);
   }
@@ -178,8 +201,7 @@ app.get("/caredata/users/:id/upload", async (req, res, next) => {
 app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   try {
     const { postId } = req.params;
-    const uploadFile = await Upload.findById(postId).populate("author");
-    res.render("patient/showFile", { uploadFile });
+    res.render("patient/showFile");
   } catch (error) {
     next(error);
   }

@@ -24,6 +24,15 @@
         <ion-icon name="share-social-outline" class="icon"></ion-icon
         ><span class="fw-medium">Share</span>
       </div>
+      <div
+        class="card-text"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#showSharedImgs"
+      >
+        <ion-icon name="documents-outline" class="icon"></ion-icon
+        ><span class="fw-medium">Shared Files</span>
+      </div>
       <div class="card-text">
         <ion-icon name="star-outline" class="icon"></ion-icon
         ><span class="fw-medium">Favorites</span>
@@ -103,7 +112,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+        <h5 class="offset-5">Share</h5>
         <button
           type="button"
           class="btn-close"
@@ -111,23 +120,67 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body">...</div>
+      <div class="modal-body">
+        <section class="d-flex flex-row align-items-center">
+          <span class="me-3">To:</span
+          ><input
+            type="text"
+            class="form-control share-address"
+            placeholder="Account ID..."
+          />
+        </section>
+      </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Close
+        <button type="button" class="btn btn-primary w-100 share-btn">
+          <span class="share-text">Share</span>
+          <div
+            class="spinner-border spinner-border-sm text-light sharing-spinner"
+            role="status"
+          >
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </button>
-        <button type="button" class="btn btn-primary">Understood</button>
       </div>
     </div>
   </div>
 </div>
+
+<div
+  class="modal fade"
+  id="showSharedImgs"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content p-4">
+      <div class="modal-header">
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <label for="showPatientData" class="mb-3">Account Id</label>
+        <input
+          type="text"
+          class="form-control mb-3 patientAccId"
+          id="showPatientData"
+        />
+        <button class="btn btn-primary w-100 showPatientData-btn mb-4">
+          Show
+        </button>
+        <div
+          class="patientData d-flex justify-content-center flex-column"
+        ></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/js/uploadPage.js" type="module"></script>
-<script>
-  const myModal = document.getElementById("myModal");
-  const myInput = document.getElementById("myInput");
-
-  myModal.addEventListener("shown.bs.modal", () => {
-    myInput.focus();
-  });
-</script>

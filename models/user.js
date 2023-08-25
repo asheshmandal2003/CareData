@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
-const Upload = require("./upload");
+const DoctorDetails = require("./doctorDetails");
 
 const { Schema } = mongoose;
 
@@ -12,17 +12,18 @@ const userSchema = new Schema({
     type: String,
     unique: true,
   },
-  entryType: ["patient", "doctor"],
+  entryType: {
+    type: String,
+    enum: ["patient", "doctor"],
+  },
   image: {
     path: String,
     filename: String,
   },
-  files: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Upload",
-    },
-  ],
+  doctorDetails: {
+    type: Schema.Types.ObjectId,
+    ref: "DoctorDetail",
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);
