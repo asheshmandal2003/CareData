@@ -13,6 +13,7 @@ const multer = require("multer");
 const { storage } = require("./clodinary");
 const moment = require("moment");
 const DoctorDetails = require("./models/doctorDetails");
+const AppError = require("./error/AppError");
 
 moment().format();
 
@@ -193,28 +194,6 @@ app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   }
 });
 
-app.get("/caredata/users/:id/posts/favorite", async (req, res) => {
-  const user = await User.findById(req.params.id);
-  res.render("patient/allFavoriteFiles", { user });
-});
-
-app.patch(
-  "/caredata/users/:id/posts/:postId/favorite",
-  async (req, res, next) => {
-    try {
-      const { postId } = req.params;
-      const uploadedFile = await User.findById(postId);
-      const favorite = uploadedFile.favorite;
-      console.log(favorite);
-      uploadedFile.favorite = !favorite;
-      await uploadedFile.save();
-      res.send("ok");
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
 app.get("/caredata/users/:id/files", async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -224,7 +203,17 @@ app.get("/caredata/users/:id/files", async (req, res, next) => {
     next();
   }
 });
-
+app.all("*", (req, res, next) => {
+  return next(new AppError(404, "Page Not Found!"));
+});
+app.use((err, req, res, next) => {
+  if (!err.message && !err.status) {
+    err.message = "Something Went Wrong!";
+    err.status(500);
+  }
+  res.render("error/error", { err });
+  next();
+});
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
