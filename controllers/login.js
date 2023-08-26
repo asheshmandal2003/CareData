@@ -20,7 +20,7 @@ module.exports.register = async (req, res, next) => {
       req.logIn(registeredUser, (err) => {
         if (err) next(err);
         req.flash("success", "Welcome to CareData");
-        res.redirect(`/caredata/users/${user._id}`);
+        res.redirect(`caredata`);
       });
     } catch (error) {
       req.flash("error", error.message);

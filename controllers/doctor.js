@@ -10,6 +10,15 @@ module.exports.doctors = async (req, res, next) => {
   }
 };
 
+module.exports.doctorProfile = async (req, res, next) => {
+  try {
+    const doctor = await User.findById(req.params.id).populate("doctorDetails");
+    res.render("doctor/doctorProfile", { doctor });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.addDetailsPage = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);

@@ -72,21 +72,9 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
-
-app.use("/caredata", patientRoute);
 app.use("/", loginRoute);
-app.use("/caredata", doctorRoute);
-
-// app.post("/logout", async (req, res) => {
-//   req.logOut(() => {
-//     try {
-//       req.flash("success", "You're Logged Out Now!");
-//       res.redirect("/caredata");
-//     } catch (error) {
-//       next(error);
-//     }
-//   });
-// });
+app.use("/caredata", patientRoute);
+app.use("/caredata/doctors", doctorRoute);
 
 app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   try {

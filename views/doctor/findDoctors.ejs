@@ -21,7 +21,7 @@
   <% doctors.map(doctor=>{ %> <% if(doctor.entryType === "doctor"){ %>
   <div class="col-8 offset-2 border mb-3 rounded p-5 shadow">
     <div class="header-content d-flex flex-row align-items-center mb-3">
-      <a href="/caredata/users/<%= doctor._id %>">
+      <a href="/caredata/doctors/<%= doctor._id %>">
         <img
           class="rounded-circle me-5"
           src="<%= doctor.image.path %>"
@@ -34,19 +34,20 @@
       <div class="doctor-info d-flex flex-column w-100">
         <a
           style="text-decoration: none"
-          href="/caredata/users/<%= doctor._id %>"
+          href="/caredata/doctors/<%= doctor._id %>"
           ><h5 class="text-primary"><%= doctor.fullName %></h5></a
         >
-        <% if(doctor.doctorDetails){ %>
+        <% if(doctor.doctorDetails && doctor.doctorDetails.speciality){ %>
         <small class="text-secondary"
           ><%= doctor.doctorDetails.speciality %></small
         >
-        <% } %> <% if(doctor.doctorDetails){ %>
+        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.experience){
+        %>
         <small class="text-secondary"
           ><%= doctor.doctorDetails.experience %> years experience
           overall</small
         >
-        <% } %> <% if(doctor.doctorDetails){ %>
+        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.location){ %>
         <b><%= doctor.doctorDetails.location %></b>
         <% } %> <% if(doctor.doctorDetails){ %>
         <span>Orange Dental Clinic +2 more</span>
