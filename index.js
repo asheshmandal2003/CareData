@@ -21,6 +21,8 @@ const {
 const {
   doctorDetailsValidation,
 } = require("./validation/doctorDetailsValidation");
+const cors = require("cors");
+const { isLoggedIn } = require("./middleware/isLoggedIn");
 
 moment().format();
 
@@ -59,6 +61,7 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
+app.use(cors());
 passport.use(new passportLocal(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
@@ -142,7 +145,7 @@ app.post(
   }
 );
 
-app.get("/caredata/users/:id", async (req, res) => {
+app.get("/caredata/users/:id", isLoggedIn, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).populate("doctorDetails");
     res.render("patient/profilePage", { user });
