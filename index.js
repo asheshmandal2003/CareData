@@ -22,7 +22,7 @@ const {
   doctorDetailsValidation,
 } = require("./validation/doctorDetailsValidation");
 const cors = require("cors");
-const { isLoggedIn } = require("./middleware/isLoggedIn");
+const { isLoggedIn, returnPath } = require("./middleware/isLoggedIn");
 
 moment().format();
 
@@ -130,18 +130,14 @@ app.get("/login", (req, res) => {
 app.post(
   "/login",
   loginValidation,
+  returnPath,
   passport.authenticate("local", {
     failureFlash: true,
     failureRedirect: "/login",
   }),
-  async (req, res, next) => {
-    try {
-      await User.findOne({ username: req.body.username });
-      req.flash("success", "Welocome Back to CareData :)");
-      res.redirect("/caredata");
-    } catch (error) {
-      next(error);
-    }
+  (req, res) => {
+    req.flash("success", "Welocome Back to CareData :)");
+    res.redirect(res.locals.returnTo || "/caredata");
   }
 );
 
@@ -154,25 +150,26 @@ app.get("/caredata/users/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-app.get("/caredata/users/:id/edit", async (req, res) => {
+app.get("/caredata/users/:id/edit", isLoggedIn, async (req, res) => {
   const user = await User.findById(req.params.id)
     .then((data) => data)
     .catch((e) => e);
   res.render("patient/edit", { user });
 });
 
-app.put("/caredata/users/:id", async (req, res, next) => {
+app.put("/caredata/users/:id", isLoggedIn, async (req, res, next) => {
   await User.findByIdAndUpdate(req.params.id, req.body);
   res.redirect(`/caredata/users/${req.params.id}`);
 });
 
-app.get("/caredata/users/:id/adddetails", async (req, res) => {
+app.get("/caredata/users/:id/adddetails", isLoggedIn, async (req, res) => {
   const user = await User.findById(req.params.id);
   res.render("doctor/addDoctorDetails", { user });
 });
 
 app.post(
   "/caredata/users/:id/adddetails",
+  isLoggedIn,
   doctorDetailsValidation,
   async (req, res, next) => {
     try {
@@ -201,7 +198,7 @@ app.post("/logout", async (req, res) => {
   });
 });
 
-app.get("/caredata/users/:id/upload", async (req, res, next) => {
+app.get("/caredata/users/:id/upload", isLoggedIn, async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
     res.render("patient/uploadPage", { moment, user });
