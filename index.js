@@ -18,6 +18,9 @@ const {
   registerValidation,
   loginValidation,
 } = require("./validation/loginValidation");
+const {
+  doctorDetailsValidation,
+} = require("./validation/doctorDetailsValidation");
 
 moment().format();
 
@@ -165,20 +168,24 @@ app.get("/caredata/users/:id/adddetails", async (req, res) => {
   res.render("doctor/addDoctorDetails", { user });
 });
 
-app.post("/caredata/users/:id/adddetails", async (req, res, next) => {
-  try {
-    const doctorDetails = new DoctorDetails(req.body);
-    const user = await User.findById(req.params.id);
-    user.doctorDetails = doctorDetails;
-    await doctorDetails.save();
-    await user.save();
-    req.flash("success", "Your details has been added :)");
-    res.redirect(`/caredata/users/${req.params.id}`);
-  } catch (error) {
-    req.flash("error", "Can't add the details :(");
-    next(error);
+app.post(
+  "/caredata/users/:id/adddetails",
+  doctorDetailsValidation,
+  async (req, res, next) => {
+    try {
+      const doctorDetails = new DoctorDetails(req.body);
+      const user = await User.findById(req.params.id);
+      user.doctorDetails = doctorDetails;
+      await doctorDetails.save();
+      await user.save();
+      req.flash("success", "Your details has been added :)");
+      res.redirect(`/caredata/users/${req.params.id}`);
+    } catch (error) {
+      req.flash("error", "Can't add the details :(");
+      next(error);
+    }
   }
-});
+);
 
 app.post("/logout", async (req, res) => {
   req.logOut(() => {

@@ -9,7 +9,7 @@
     <form
       action="/register"
       method="post"
-      class="ms-auto w-50 bg-light p-5"
+      class="ms-auto w-50 bg-light p-5 validate-form"
       novalidate
       enctype="multipart/form-data"
     >
@@ -22,7 +22,9 @@
           id="fullName"
           class="form-control mb-3"
           placeholder="Name"
+          required
         />
+        <div class="invalid-feedback mb-3">Name is required!</div>
       </div>
       <div class="form-input w-100">
         <label for="username" class="form-label">Username</label>
@@ -32,7 +34,9 @@
           id="username"
           class="form-control mb-3"
           placeholder="Username"
+          required
         />
+        <div class="invalid-feedback mb-3">Username is required!</div>
       </div>
       <div class="form-input w-100">
         <label for="selectType" class="form-label">I'm a</label>
@@ -41,10 +45,12 @@
           class="form-select mb-3"
           style="cursor: pointer"
           name="entryType"
+          required
         >
           <option value="patient" selected>Patient</option>
           <option value="doctor">Doctor</option>
         </select>
+        <div class="invalid-feedback mb-3">Please choose your entry type!</div>
       </div>
       <div class="form-input w-100">
         <label for="image" class="form-label">Image</label>
@@ -62,7 +68,9 @@
           id="emailId"
           class="form-control mb-3"
           placeholder="name@example.com"
+          required
         />
+        <div class="invalid-feedback mb-3">Email is required!</div>
       </div>
       <div class="form-input w-100">
         <label for="password" class="form-label">Password</label>
@@ -72,7 +80,9 @@
           id="password"
           class="form-control mb-3"
           placeholder="Password"
+          required
         />
+        <div class="invalid-feedback mb-3">Password is required!</div>
       </div>
       <div class="options mb-3">
         <div class="remember-me">
@@ -99,3 +109,4 @@
     </form>
   </div>
 </div>
+<script src="/js/formValidation.js"></script>
