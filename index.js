@@ -14,7 +14,10 @@ const { storage } = require("./clodinary");
 const moment = require("moment");
 const DoctorDetails = require("./models/doctorDetails");
 const AppError = require("./error/AppError");
-const registerValidation = require("./validation/loginValidation");
+const {
+  registerValidation,
+  loginValidation,
+} = require("./validation/loginValidation");
 
 moment().format();
 
@@ -120,6 +123,7 @@ app.get("/login", (req, res) => {
 
 app.post(
   "/login",
+  loginValidation,
   passport.authenticate("local", {
     failureFlash: true,
     failureRedirect: "/login",
@@ -128,7 +132,7 @@ app.post(
     try {
       await User.findOne({ username: req.body.username });
       req.flash("success", "Welocome Back to CareData :)");
-      res.redirect(`caredata`);
+      res.redirect("/caredata");
     } catch (error) {
       next(error);
     }

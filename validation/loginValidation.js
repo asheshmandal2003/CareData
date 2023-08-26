@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const registerValidation = (req, res, next) => {
+module.exports.registerValidation = (req, res, next) => {
   const registerSchema = Joi.object({
     fullName: Joi.string()
       .required()
@@ -30,4 +30,20 @@ const registerValidation = (req, res, next) => {
     next();
   }
 };
-module.exports = registerValidation;
+module.exports.loginValidation = (req, res, next) => {
+  const loginSchema = Joi.object({
+    username: Joi.string()
+      .required()
+      .messages({ "string.empty": "Please Enter Your Username!" }),
+    password: Joi.string()
+      .required()
+      .messages({ "string.empty": "Please Enter Your Password!" }),
+  });
+  const validate = loginSchema.validate(req.body);
+  if (validate.error) {
+    req.flash("error", validate.error.message);
+    res.redirect("/register");
+  } else {
+    next();
+  }
+};
