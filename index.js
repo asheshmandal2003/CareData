@@ -15,14 +15,13 @@ const moment = require("moment");
 const DoctorDetails = require("./models/doctorDetails");
 const AppError = require("./error/AppError");
 const {
-  registerValidation,
-  loginValidation,
-} = require("./validation/loginValidation");
-const {
   doctorDetailsValidation,
 } = require("./validation/doctorDetailsValidation");
 const cors = require("cors");
 const { isLoggedIn, returnPath } = require("./middleware/isLoggedIn");
+const patientRoute = require("./routes/patientRoutes");
+const loginRoute = require("./routes/login");
+const doctorRoute = require("./routes/doctor");
 
 moment().format();
 
@@ -74,138 +73,20 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/caredata", (req, res) => {
-  res.render("home/index");
-});
+app.use("/caredata", patientRoute);
+app.use("/", loginRoute);
+app.use("/caredata", doctorRoute);
 
-app.get("/doctorsProfile", (req, res) => {
-  res.render("doctor/doctorProfile");
-});
-
-app.get("/caredata/doctors", async (req, res) => {
-  const doctors = await User.find({}).populate("doctorDetails");
-  res.render("doctor/findDoctors", { doctors });
-});
-
-app.get("/register", (req, res) => {
-  res.render("login/registerPage");
-});
-
-app.post(
-  "/register",
-  upload.single("image"),
-  registerValidation,
-  async (req, res, next) => {
-    try {
-      const { fullName, username, emailId, password, entryType } = req.body;
-      const user = new User({ fullName, username, emailId, entryType });
-      if (req.file) {
-        user.image.path = req.file.path;
-        user.image.filename = req.file.filename;
-      } else {
-        user.image.path = "";
-        user.image.filename = "";
-      }
-      try {
-        const registeredUser = await User.register(user, password);
-        req.logIn(registeredUser, (err) => {
-          if (err) next(err);
-          req.flash("success", "Welcome to CareData");
-          res.redirect(`/caredata/users/${user._id}`);
-        });
-      } catch (error) {
-        req.flash("error", error.message);
-        res.redirect("/register");
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-app.get("/login", (req, res) => {
-  res.render("login/loginPage");
-});
-
-app.post(
-  "/login",
-  loginValidation,
-  returnPath,
-  passport.authenticate("local", {
-    failureFlash: true,
-    failureRedirect: "/login",
-  }),
-  (req, res) => {
-    req.flash("success", "Welocome Back to CareData :)");
-    res.redirect(res.locals.returnTo || "/caredata");
-  }
-);
-
-app.get("/caredata/users/:id", isLoggedIn, async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).populate("doctorDetails");
-    res.render("patient/profilePage", { user });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-app.get("/caredata/users/:id/edit", isLoggedIn, async (req, res) => {
-  const user = await User.findById(req.params.id)
-    .then((data) => data)
-    .catch((e) => e);
-  res.render("patient/edit", { user });
-});
-
-app.put("/caredata/users/:id", isLoggedIn, async (req, res, next) => {
-  await User.findByIdAndUpdate(req.params.id, req.body);
-  res.redirect(`/caredata/users/${req.params.id}`);
-});
-
-app.get("/caredata/users/:id/adddetails", isLoggedIn, async (req, res) => {
-  const user = await User.findById(req.params.id);
-  res.render("doctor/addDoctorDetails", { user });
-});
-
-app.post(
-  "/caredata/users/:id/adddetails",
-  isLoggedIn,
-  doctorDetailsValidation,
-  async (req, res, next) => {
-    try {
-      const doctorDetails = new DoctorDetails(req.body);
-      const user = await User.findById(req.params.id);
-      user.doctorDetails = doctorDetails;
-      await doctorDetails.save();
-      await user.save();
-      req.flash("success", "Your details has been added :)");
-      res.redirect(`/caredata/users/${req.params.id}`);
-    } catch (error) {
-      req.flash("error", "Can't add the details :(");
-      next(error);
-    }
-  }
-);
-
-app.post("/logout", async (req, res) => {
-  req.logOut(() => {
-    try {
-      req.flash("success", "You're Logged Out Now!");
-      res.redirect("/caredata");
-    } catch (error) {
-      next(error);
-    }
-  });
-});
-
-app.get("/caredata/users/:id/upload", isLoggedIn, async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.render("patient/uploadPage", { moment, user });
-  } catch (error) {
-    next(error);
-  }
-});
+// app.post("/logout", async (req, res) => {
+//   req.logOut(() => {
+//     try {
+//       req.flash("success", "You're Logged Out Now!");
+//       res.redirect("/caredata");
+//     } catch (error) {
+//       next(error);
+//     }
+//   });
+// });
 
 app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   try {
