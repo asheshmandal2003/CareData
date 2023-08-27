@@ -5,16 +5,11 @@
 <div class="row">
   <div class="general-menu col-2 me-5">
     <div class="options mt-5">
-      <div class="card-text">
+      <a href="#show-files" class="card-text links text-dark">
         <ion-icon name="document-outline" class="icon"></ion-icon
-        ><span class="fw-medium"
-          ><a
-            href="/caredata/users/<%= user._id %>/files"
-            class="links text-dark"
-            >My Files</a
-          ></span
-        >
-      </div>
+        ><span class="fw-medium">My Files</span></a
+      >
+
       <div
         class="card-text"
         type="button"
@@ -100,9 +95,9 @@
         </div>
       </div>
     </div>
-    <div class="ms-4">
+    <div class="ms-4" id="show-files">
       <h4 class="mb-4">Your Files</h4>
-      <div class="recently-edited mb-4"></div>
+      <div class="recently-added mb-4 w-100"></div>
     </div>
   </div>
 </div>

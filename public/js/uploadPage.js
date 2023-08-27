@@ -40,16 +40,13 @@ async function connectMetamask() {
       const dataArray = await contract.display(account);
       if (dataArray.length !== 0) {
         dataArray.map((img) => {
-          return $(".recently-edited").prepend(
-            `<a href=${img} target="_blank"><img class="w-100 h-100 shadow border rounded" src=${img.replace(
-              "/upload",
-              "/upload/w_250"
-            )} alt="image"
+          return $(".recently-added").prepend(
+            `<a href=${img} class="imageLink" target="_blank"><img class="uploaded-file" src=${img} alt="image"
             ></a>`
           );
         });
       } else {
-        $(".recently-edited").text("You haven't uploaded any image yet!");
+        $(".recently-added").text("You haven't uploaded any image yet!");
       }
       //display accesslist
       const accessList = await contract.shareAccess();
