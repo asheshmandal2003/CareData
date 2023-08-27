@@ -42,13 +42,14 @@
         <ion-icon name="list-outline" class="icon"></ion-icon
         ><span class="fw-medium">Shared List</span>
       </div>
-      <div class="card-text">
+      <div
+        class="card-text"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#removed-access"
+      >
         <ion-icon name="trash-outline" class="icon"></ion-icon
         ><span class="fw-medium">Recycle Bin</span>
-      </div>
-      <div class="card-text">
-        <ion-icon name="settings-outline" class="icon"></ion-icon
-        ><span class="fw-medium">Settings</span>
       </div>
     </div>
   </div>
@@ -214,5 +215,31 @@
   </div>
 </div>
 
+<div
+  class="modal fade shadow"
+  id="removed-access"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="offset-5">Recycle Bin</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body pb-4">
+        <ul class="removed-access-list list-group list-group-flush w-100"></ul>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/js/uploadPage.js" type="module"></script>

@@ -40,22 +40,19 @@ async function connectMetamask() {
       const dataArray = await contract.display(account);
       if (dataArray.length !== 0) {
         dataArray.map((img) => {
-          return $(".recently-edited")
-            .prepend(
-              $("<img>", {
-                id: "theImg",
-                class: "mb-3 me-3",
-                src: `${img.replace("/upload", "/upload/w_250")}`,
-              })
-            )
-            .wrap(`<a href=${img} target="_blank"></a>`);
+          return $(".recently-edited").prepend(
+            `<a href=${img} target="_blank"><img class="w-100 h-100 shadow border rounded" src=${img.replace(
+              "/upload",
+              "/upload/w_250"
+            )} alt="image"
+            ></a>`
+          );
         });
       } else {
         $(".recently-edited").text("You haven't uploaded any image yet!");
       }
       //display accesslist
       const accessList = await contract.shareAccess();
-      console.log(accessList);
       if (accessList.length) {
         accessList.map((haveAccess, idx) => {
           if (haveAccess.access) {
@@ -77,11 +74,34 @@ async function connectMetamask() {
         div.innerText = "You have not shared any file till now!";
         $(".sharedTo").append(div);
       }
+      //display removed accesses
+      const removedAccessList = await contract.shareAccess();
+      if (removedAccessList.length) {
+        accessList.map((noAccess, idx) => {
+          if (!noAccess.access) {
+            const li = document.createElement("li");
+            li.innerHTML = `<p class="no-access-${idx}" value=${noAccess.user}>${noAccess.user}</p> <i class="fa-solid fa-trash-can-arrow-up give-access-${idx} icon ms-auto"></i>`;
+            li.className = `list-group-item user-select-all d-flex w-100`;
+            $(".removed-access-list").append(li);
+            $(`.give-access-${idx}`).on("click", handleAccessRemoval);
+            async function handleAccessRemoval() {
+              await contract.allow($(`.no-access-${idx}`).attr("value"));
+              alert(
+                "Please wait for metamask conformation. After that reload this page!"
+              );
+            }
+          }
+        });
+      } else {
+        const div = document.createElement("div");
+        div.innerText = "Recycle Bin is empty!";
+        $(".removed-access-list").append(div);
+      }
     } else {
       alert("Metamask is not installed!");
     }
   } catch (error) {
-    alert("Please Install Metamask!");
+    console.log(error);
   }
 }
 
