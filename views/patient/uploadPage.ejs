@@ -33,9 +33,14 @@
         <ion-icon name="documents-outline" class="icon"></ion-icon
         ><span class="fw-medium">Shared Files</span>
       </div>
-      <div class="card-text">
-        <ion-icon name="star-outline" class="icon"></ion-icon
-        ><span class="fw-medium">Favorites</span>
+      <div
+        class="card-text"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#sharedList"
+      >
+        <ion-icon name="list-outline" class="icon"></ion-icon
+        ><span class="fw-medium">Shared List</span>
       </div>
       <div class="card-text">
         <ion-icon name="trash-outline" class="icon"></ion-icon
@@ -177,6 +182,33 @@
         <div
           class="patientData d-flex justify-content-center flex-column"
         ></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade shadow"
+  id="sharedList"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="offset-5">Shared List</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body pb-4">
+        <ul class="sharedTo list-group list-group-flush w-100"></ul>
       </div>
     </div>
   </div>

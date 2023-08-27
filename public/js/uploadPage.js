@@ -36,6 +36,7 @@ async function connectMetamask() {
       account = await signer.getAddress();
       contract = new ethers.Contract(address, abi, signer);
       $(".account_no").text(account ? account : "No account connected!");
+      //display files of owner
       const dataArray = await contract.display(account);
       if (dataArray.length !== 0) {
         dataArray.map((img) => {
@@ -50,13 +51,37 @@ async function connectMetamask() {
             .wrap(`<a href=${img} target="_blank"></a>`);
         });
       } else {
-        console.log("No image to display!");
+        $(".recently-edited").text("You haven't uploaded any image yet!");
+      }
+      //display accesslist
+      const accessList = await contract.shareAccess();
+      console.log(accessList);
+      if (accessList.length) {
+        accessList.map((haveAccess, idx) => {
+          if (haveAccess.access) {
+            const li = document.createElement("li");
+            li.innerHTML = `<p class="access-${idx}" value=${haveAccess.user}>${haveAccess.user}</p> <button type="button" class="remove-access-${idx} btn-close ms-auto" ></button>`;
+            li.className = `list-group-item user-select-all d-flex w-100`;
+            $(".sharedTo").append(li);
+            $(`.remove-access-${idx}`).on("click", handleAccessRemoval);
+            async function handleAccessRemoval() {
+              await contract.disallow($(`.access-${idx}`).attr("value"));
+              alert(
+                "Please wait for metamask conformation. After that reload this page!"
+              );
+            }
+          }
+        });
+      } else {
+        const div = document.createElement("div");
+        div.innerText = "You have not shared any file till now!";
+        $(".sharedTo").append(div);
       }
     } else {
       alert("Metamask is not installed!");
     }
   } catch (error) {
-    alert("No web3 provider is installed :(");
+    alert("Please Install Metamask!");
   }
 }
 
@@ -83,7 +108,7 @@ async function handleSubmission(e) {
     $(".spinner").hide();
     $(".upload-text").show();
     $(".upload-btn").hide();
-    alert("Image Uploded!");
+    alert("Please wait for metamask conformation.");
   } catch (error) {
     $(".uploadFile").val("");
     $(".upload-btn").removeAttr("disabled");
@@ -127,5 +152,7 @@ async function showPatientDetails() {
           .wrap(`<a href=${imgUrl} target="_blank"></a>`);
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    alert("You don't have access of it :(");
+  }
 }
