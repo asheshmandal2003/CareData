@@ -5,6 +5,7 @@ import {
   cloudinary_upload_preset,
 } from "/cloudinaryCredentials.js";
 
+$(".upload-btn").hide();
 $(".spinner").hide();
 $(".sharing-spinner").hide();
 $("document").ready(connectMetamask);
@@ -12,9 +13,6 @@ $(".upload-form").on("submit", handleSubmission);
 $(".share-btn").on("click", shareFile);
 $(".showPatientData-btn").on("click", showPatientDetails);
 
-if ($(".uploadFile").val() === "") {
-  $(".upload-btn").hide();
-}
 $(".uploadFile").on("change", () => {
   if ($(".uploadFile").val() === "") {
     $(".upload-btn").hide();
@@ -36,6 +34,7 @@ async function connectMetamask() {
       account = await signer.getAddress();
       contract = new ethers.Contract(address, abi, signer);
       $(".account_no").text(account ? account : "No account connected!");
+
       //display files of owner
       const dataArray = await contract.display(account);
       if (dataArray.length !== 0) {
@@ -48,8 +47,10 @@ async function connectMetamask() {
       } else {
         $(".recently-added").text("You haven't uploaded any image yet!");
       }
+
       //display accesslist
       const accessList = await contract.shareAccess();
+      console.log(accessList);
       if (accessList.length) {
         accessList.map((haveAccess, idx) => {
           if (haveAccess.access) {
@@ -71,6 +72,7 @@ async function connectMetamask() {
         div.innerText = "You have not shared any file till now!";
         $(".sharedTo").append(div);
       }
+
       //display removed accesses
       const removedAccessList = await contract.shareAccess();
       if (removedAccessList.length) {
@@ -105,27 +107,29 @@ async function connectMetamask() {
 async function handleSubmission(e) {
   e.preventDefault();
   try {
-    $(".upload-btn").attr("disabled", "disabled");
-    $(".upload-text").hide();
-    $(".spinner").show();
-    const file = document.querySelector("[type=file]").files[0];
-    const formdata = new FormData();
-    const CLOUDINARY_URL = cloudinary_url;
-    const CLOUDINARY_UPLOAD_PRESET = cloudinary_upload_preset;
-    formdata.append("file", file);
-    formdata.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-    const resFile = await axios({
-      method: "post",
-      url: CLOUDINARY_URL,
-      data: formdata,
-    });
-    await contract.add(account, resFile.data.secure_url);
-    $(".uploadFile").val("");
-    $(".upload-btn").removeAttr("disabled");
-    $(".spinner").hide();
-    $(".upload-text").show();
-    $(".upload-btn").hide();
-    alert("Please wait for metamask conformation.");
+    if ($(".uploadFile").val()) {
+      $(".upload-btn").attr("disabled", "disabled");
+      $(".upload-text").hide();
+      $(".spinner").show();
+      const file = document.querySelector("[type=file]").files[0];
+      const formdata = new FormData();
+      const CLOUDINARY_URL = cloudinary_url;
+      const CLOUDINARY_UPLOAD_PRESET = cloudinary_upload_preset;
+      formdata.append("file", file);
+      formdata.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+      const resFile = await axios({
+        method: "post",
+        url: CLOUDINARY_URL,
+        data: formdata,
+      });
+      await contract.add(account, resFile.data.secure_url);
+      $(".uploadFile").val("");
+      $(".upload-btn").removeAttr("disabled");
+      $(".spinner").hide();
+      $(".upload-text").show();
+      $(".upload-btn").hide();
+      alert("Please wait for metamask conformation.");
+    }
   } catch (error) {
     $(".uploadFile").val("");
     $(".upload-btn").removeAttr("disabled");
@@ -133,7 +137,6 @@ async function handleSubmission(e) {
     $(".upload-text").show();
     $(".upload-btn").hide();
     alert("Can't upload!");
-    console.log(error);
   }
 }
 
