@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.route("/").get(doctor.doctors);
 
-router.get("/:id", doctor.doctorProfile);
+router.get("/:id", isLoggedIn, doctor.doctorProfile);
 
 router
   .route("/:id/adddetails")

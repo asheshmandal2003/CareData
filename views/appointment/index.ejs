@@ -53,7 +53,7 @@
           %> <% for(let i = moment(openIso); i < moment(closeIso); i.add(30,
           'minutes')){%>
 
-          <option value="<%= i.toISOString() %>">
+          <option value="<%= i.format("hh:mm") %>">
             <%= i.format("hh:mm") %>
           </option>
 

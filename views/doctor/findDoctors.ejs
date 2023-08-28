@@ -49,9 +49,11 @@
         >
         <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.location){ %>
         <b><%= doctor.doctorDetails.location %></b>
-        <% } %> <% if(doctor.doctorDetails){ %>
-        <span>Orange Dental Clinic +2 more</span>
-        <p>₹400 Consultation at clinic</p>
+        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.clinicName){
+        %>
+        <span><%= doctor.doctorDetails.clinicName %></span>
+        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.fees){ %>
+        <p>₹<%= doctor.doctorDetails.fees %> Consultation at clinic</p>
         <% } %>
         <hr class="w-100" />
       </div>
@@ -64,7 +66,10 @@
           <p class="me-1">Available on</p>
           <p>Sunday, 27 Aug</p>
         </div>
-        <a href="" type="button" class="btn btn-info text-light rounded-pill"
+        <a
+          href="/caredata/doctors/<%= doctor._id %>/book-appointment"
+          type="button"
+          class="btn btn-info text-light rounded-pill"
           >Book Appointment</a
         >
       </div>

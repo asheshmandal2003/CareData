@@ -77,3 +77,31 @@
   opacity: 1;
   box-shadow: 0 8px 20px 0px rgba(0, 0, 0, 0.125);
 }
+.menubar {
+  margin: 0;
+  padding: 0;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+}
+.menu-option {
+  cursor: pointer;
+  transition: 0.2s ease-out;
+}
+.menu-option:hover {
+  background-color: gainsboro;
+}
+.appointments {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 20px;
+}
+.more-option {
+  border-radius: 50%;
+  transition: 0.2s ease-out;
+}
+.more-option:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  cursor: pointer;
+  border-radius: 50%;
+}
