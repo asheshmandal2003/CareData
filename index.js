@@ -48,6 +48,19 @@ const sessionConfig = {
 };
 const upload = multer({ storage });
 
+const server = require('http').Server(app)
+const io = require("socket.io")(server, {
+  cors: {
+    origin: '*'
+  }
+});
+const { ExpressPeerServer } = require('peer')
+const opinions = {
+  debug: true,
+}
+const { v4: uuidv4 } = require('uuid')
+
+
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -94,6 +107,7 @@ app.get("/caredata/users/:id/files", async (req, res, next) => {
     next();
   }
 });
+
 app.all("*", (req, res, next) => {
   return next(new AppError(404, "Page Not Found!"));
 });
@@ -105,6 +119,55 @@ app.use((err, req, res, next) => {
   res.render("error/error", { err });
   next();
 });
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    failureFlash: true,
+    failureRedirect: "/login",
+  }),
+  (req, res) => {
+    res.redirect("/caredata");
+  }
+);
+
+app.get("/patient/join-meeting", (req, res) => {
+  res.render("patientJoinMeeting");
+
+  app.post("/patient/join-meeting", (req, res) => {
+    const meetingLink = req.body.meetingLink;
+    res.render("patientMeeting", { meetingLink });
+  });
+
+  app.get("/video", isLoggedIn, (req, res) => {
+    res.render("videoconsult/doctorvideo");
+  });
+
+  app.use("/peerjs", ExpressPeerServer(server, opinions));
+  app.use(express.static("public"));
+
+  app.get("/", (req, res) => {
+    res.redirect(`/${uuidv4()}`);
+  });
+
+  app.get("/:room", (req, res) => {
+    res.render("videoconsult/room", { roomId: req.params.room });
+  });
+
+  io.on("connection", (socket) => {
+    socket.on("join-room", (roomId, userId, userName) => {
+      socket.join(roomId);
+      setTimeout(() => {
+        socket.to(roomId).emit("user-connected", userId);
+      }, 1000)
+      socket.on("message", (message) => {
+        io.to(roomId).emit("createMessage", message, userName);
+      });
+      socket.on("end-meeting", (roomId) => {
+        io.to(roomId).emit("meeting-ended");
+      });
+    });
+  });
+})
+
+  server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
