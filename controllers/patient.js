@@ -9,7 +9,9 @@ module.exports.homepage = (req, res) => {
 
 module.exports.userPage = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id).populate("doctorDetails");
+    const user = await User.findById(req.params.id)
+      .populate("doctorDetails")
+      .populate("appointments");
     res.render("patient/profilePage", { user });
   } catch (error) {
     next(error);

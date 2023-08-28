@@ -35,28 +35,101 @@
   </div>
 
   <div class="col-7 profile-features">
-    <div class="card me-3 mb-3 col profile-feature">
-      <a class="redirection-box" href="/caredata/users/<%= user._id %>/upload">
+    <a
+      class="redirection-box card me-3 mb-3 col profile-feature"
+      href="/caredata/users/<%= user._id %>/upload"
+    >
+      <div class="bg-white text-dark w-100" style="text-align: center">
         <h4>Upload Data</h4>
-      </a>
-    </div>
+      </div>
+    </a>
 
-    <div class="card me-3 mb-3 col profile-feature">
-      <a class="redirection-box" href="">
-        <h4>Consult with Doctor</h4>
-      </a>
-    </div>
+    <a class="redirection-box card me-3 mb-3 col profile-feature" href="">
+      <div class="bg-white text-dark w-100" style="text-align: center">
+        <h4>Consult With Doctor</h4>
+      </div>
+    </a>
 
-    <div class="card me-3 mb-3 col profile-feature">
-      <a class="redirection-box" href="">
+    <div
+      class="redirection-box card me-3 mb-3 col profile-feature"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasWithBothOptions"
+      aria-controls="offcanvasWithBothOptions"
+    >
+      <div class="bg-white text-dark w-100" style="text-align: center">
         <h4>Appointments</h4>
-      </a>
+      </div>
     </div>
-    <div class="card me-3 mb-3 col profile-feature">
-      <a class="redirection-box" href="">
-        <h4>Book Appointments</h4>
+
+    <a
+      class="redirection-box card me-3 mb-3 col profile-feature"
+      href="/caredata/doctors"
+    >
+      <div class="bg-white text-dark w-100" style="text-align: center">
+        <h4>Find Doctors</h4>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div
+  class="offcanvas offcanvas-start p-3"
+  data-bs-scroll="true"
+  tabindex="-1"
+  id="offcanvasWithBothOptions"
+  aria-labelledby="offcanvasWithBothOptionsLabel"
+>
+  <div class="offcanvas-header">
+    <h5
+      class="offcanvas-title text-primary offset-3"
+      id="offcanvasWithBothOptionsLabel"
+    >
+      Appointments
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body">
+    <% user.appointments.map(appointment=>{ %>
+    <div
+      class="card border rounded p-4 shadow mb-3 d-flex flex-row"
+      style="width: 100%"
+    >
+      <a class="w-30" href="/caredata/doctors/<%= appointment.doctorId %>">
+        <img
+          class="img-fluid rounded-circle"
+          src="<%= appointment.doctorAvatar %>"
+          alt="doctor-avatar"
+          width="50px"
+          height="50px"
+        />
       </a>
+      <div class="appointment-details ms-3 w-70 d-flex flex-column">
+        <span class="fw-medium d-flex mb-2"
+          ><ion-icon name="person-outline" class="icon"></ion-icon><%=
+          appointment.doctorName %></span
+        >
+        <span class="d-flex mb-2"
+          ><ion-icon name="location-outline" class="icon"></ion-icon><%=
+          appointment.location %></span
+        >
+        <span class="d-flex mb-2"
+          ><ion-icon name="calendar-clear-outline" class="icon"></ion-icon><%=
+          appointment.date %> at <%= appointment.timeslot %>AM</span
+        >
+      </div>
+      <ion-icon
+        name="trash-outline"
+        class="icon text-danger ms-auto"
+        style="cursor: pointer"
+      ></ion-icon>
     </div>
+    <% }) %>
   </div>
 </div>
 <% } %>

@@ -18,8 +18,10 @@ module.exports.bookAppointment = async (req, res, next) => {
     const newAppointment = new Appointment(req.body);
     const user = await User.findById(req.params.id);
     user.appointments.push(newAppointment);
+    req.user.appointments.push(newAppointment);
     await newAppointment.save();
     await user.save();
+    await req.user.save();
     req.flash("success", "Appointment Booked");
     res.redirect(`/caredata/doctors/${req.params.id}`);
   } catch (error) {

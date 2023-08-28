@@ -50,20 +50,14 @@
   background-image: url("https://img.freepik.com/free-vector/online-doctor-flat-design_23-2148521415.jpg?w=740&t=st=1691835871~exp=1691836471~hmac=392e49a8edaf8a757ea42f77942a70522525409f38bf42af2dfcb3763843a81c");
 }
 .profile-feature:nth-child(3) {
-  background-image: url("https://img.freepik.com/free-vector/online-doctor-concept-illustration_114360-1831.jpg?w=740&t=st=1691836105~exp=1691836705~hmac=59f3e61294d3e626426896765c48dab5852dbe0b319c9af5af840d5e53510524");
+  background-image: url("https://img.freepik.com/free-vector/appointment-booking-smartphone_23-2148559902.jpg?w=740&t=st=1693254350~exp=1693254950~hmac=49c29e469cbf68eb0115943c81ccd39e1476402eebfbca00c35226a7d74be0ae");
 }
 .profile-feature:nth-child(4) {
-  background-image: url("https://img.freepik.com/free-vector/woman-choosing-dates-calendar-appointment-booking_23-2148552956.jpg?w=740&t=st=1691836018~exp=1691836618~hmac=e47d03c8040f465cb7f32dfcc87909752405bf588c6fc90fe5da38abb7fa562f");
+  background-image: url("https://img.freepik.com/premium-vector/online-medicine-concept_118813-4997.jpg?w=900");
 }
 .redirection-box {
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
   text-decoration: none;
-  color: #000;
-  background-color: #fff;
+  cursor: pointer;
 }
 .profile-features:hover .profile-feature {
   filter: blur(3px);
