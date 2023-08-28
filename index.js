@@ -22,6 +22,7 @@ const { isLoggedIn, returnPath } = require("./middleware/isLoggedIn");
 const patientRoute = require("./routes/patientRoutes");
 const loginRoute = require("./routes/login");
 const doctorRoute = require("./routes/doctor");
+const appontmentRoute = require("./routes/appointment");
 
 moment().format();
 
@@ -88,6 +89,7 @@ app.use((req, res, next) => {
 app.use("/", loginRoute);
 app.use("/caredata", patientRoute);
 app.use("/caredata/doctors", doctorRoute);
+app.use("/caredata/doctors", appontmentRoute);
 
 app.get("/caredata/users/:id/upload/:postId", async (req, res, next) => {
   try {

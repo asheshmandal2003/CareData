@@ -36,7 +36,7 @@ module.exports.addDetails = async (req, res, next) => {
     await doctorDetails.save();
     await user.save();
     req.flash("success", "Your details has been added :)");
-    res.redirect(`/caredata/users/${req.params.id}`);
+    res.redirect(`/caredata/doctors/${req.params.id}`);
   } catch (error) {
     req.flash("error", "Can't add the details :(");
     next(error);

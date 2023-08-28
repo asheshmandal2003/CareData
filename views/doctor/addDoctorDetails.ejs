@@ -11,7 +11,7 @@
       method="post"
       class="ms-auto w-50 bg-light p-5"
     >
-      <h3 class="mb-3">Add Details</h3>
+      <h3 class="mb-3 text-primary">Add Details</h3>
       <div class="form-input w-100">
         <label for="education" class="form-label">Education</label>
         <input
@@ -20,16 +20,6 @@
           id="education"
           class="form-control mb-3"
           placeholder="Education"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="regId" class="form-label">Registration ID</label>
-        <input
-          type="text"
-          name="regId"
-          id="regId"
-          class="form-control mb-3"
-          placeholder="Registration ID"
         />
       </div>
       <div class="form-input w-100">
@@ -52,7 +42,16 @@
           placeholder="Experience"
         />
       </div>
-
+      <div class="form-input w-100">
+        <label for="clinicName" class="form-label">Clinic Name</label>
+        <input
+          type="text"
+          name="clinicName"
+          id="clinicName"
+          class="form-control mb-3"
+          placeholder="Clinic Name"
+        />
+      </div>
       <div class="form-input w-100">
         <label for="location" class="form-label">Clinic Location</label>
         <input
@@ -60,7 +59,47 @@
           name="location"
           id="location"
           class="form-control mb-3"
-          placeholder="Location..."
+          placeholder="Clinic Location"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="fees" class="form-label">Clinic Fees</label>
+        <input
+          type="text"
+          name="fees"
+          id="fees"
+          class="form-control mb-3"
+          placeholder="Clinic Fees"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="availability" class="form-label">Clinic Opens Time</label>
+        <input
+          type="time"
+          name="open"
+          id="open"
+          class="form-control mb-3"
+          placeholder="Clinic opens at"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="close" class="form-label">Clinic Closes Time</label>
+        <input
+          type="time"
+          name="close"
+          id="close"
+          class="form-control mb-3"
+          placeholder="Clinic closes at"
+        />
+      </div>
+      <div class="form-input w-100">
+        <label for="language" class="form-label">Language Known</label>
+        <input
+          type="text"
+          name="language"
+          id="language"
+          class="form-control mb-3"
+          placeholder="Enter the languages you know"
         />
       </div>
       <div class="form-input w-100">
@@ -73,16 +112,6 @@
           class="form-control mb-4"
           placeholder="Describe yourself..."
         ></textarea>
-      </div>
-      <div class="form-input w-100">
-        <label for="language" class="form-label">Language Known</label>
-        <input
-          type="text"
-          name="language"
-          id="language"
-          class="form-control mb-3"
-          placeholder="Enter the languages you know..."
-        />
       </div>
       <button class="btn btn-info mb-3 text-light w-100">Add</button>
     </form>

@@ -8,7 +8,10 @@ module.exports.doctorDetailsValidation = (req, res, next) => {
     language: Joi.string().allow(""),
     aboutDoctor: Joi.string().allow(""),
     experience: Joi.string().allow(""),
-    regId: Joi.string().allow(""),
+    clinicName: Joi.string().allow(""),
+    fees: Joi.string().allow(""),
+    open: Joi.string().allow(""),
+    close: Joi.string().allow(""),
   });
   const validate = doctorDetailsSchema.validate(req.body);
   if (validate.error) {

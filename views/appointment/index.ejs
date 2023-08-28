@@ -1,0 +1,83 @@
+<% layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/appointmentForm.css" />
+
+<div class="row">
+  <div
+    class="col-6 offset-3 border shadow p-5 rounded d-flex flex-column align-items-center"
+  >
+    <h4 class="text-primary">Book Appointment</h4>
+    <input type="text" id="doctorId" value="<%= doctor._id %>" hidden />
+    <hr />
+    <form
+      action="/caredata/doctors/<%= doctor._id %>/book-appointment"
+      method="post"
+      class="w-100"
+    >
+      <div class="mb-3 w-100">
+        <label for="name" class="form-label">Name</label>
+        <input
+          type="text"
+          value="<%= user.fullName %>"
+          class="form-control"
+          id="name"
+          name="name"
+        />
+      </div>
+      <div class="mb-3 w-100">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          value="<%= user.emailId %>"
+          class="form-control"
+          id="email"
+          name="email"
+        />
+      </div>
+      <div class="mb-3 w-100">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input type="text" class="form-control" id="phone" name="phone" />
+      </div>
+
+      <div class="mb-3 w-100">
+        <label for="datepicker" class="form-label">Select a Date</label>
+        <input type="text" name="date" id="datepicker" class="form-control" />
+      </div>
+      <div class="mb-3 w-100">
+        <!-- timeslot -->
+        <label for="timeslot" class="form-label">Select a Time Slot</label>
+        <select name="timeslot" id="timeslot" class="form-select">
+          <option value="">Choose a timeslot</option>
+          <% const openIso =
+          moment(doctor.doctorDetails.open,"hh:mm").toISOString() %> <% const
+          closeIso = moment(doctor.doctorDetails.close, "hh:mm").toISOString()
+          %> <% for(let i = moment(openIso); i < moment(closeIso); i.add(30,
+          'minutes')){%>
+
+          <option value="<%= i.toISOString() %>">
+            <%= i.format("hh:mm") %>
+          </option>
+
+          <% } %>
+        </select>
+      </div>
+      <div class="mb-3 w-100">
+        <button type="submit" class="btn btn-primary w-100">Book</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  $(function () {
+    $("#datepicker").datepicker();
+  });
+</script>
+<script>
+  const doctor = <%- JSON.stringify(doctor) %>
+  $("#datepicker").on("change", ()=>{
+    doctor.appointments.map(appointemt=>{
+      if(appointemt.date === $("#datepicker").val()){
+     $(`option[value|="${appointemt.timeslot}"]`).attr("disabled", "disabled")
+      }
+    })
+    })
+</script>

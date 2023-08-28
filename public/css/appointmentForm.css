@@ -1,0 +1,10 @@
+.ui-datepicker {
+  width: 400px;
+}
+.ui-datepicker-header {
+  background-color: rgb(13, 110, 253);
+  color: #fff;
+}
+.ui-state-highlight {
+  background-color: rgb(13, 110, 253);
+}

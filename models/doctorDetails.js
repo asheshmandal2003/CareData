@@ -8,6 +8,12 @@ const doctorDetailsSchema = new Schema({
   speciality: {
     type: String,
   },
+  clinicName: {
+    type: String,
+  },
+  fees: {
+    type: Number,
+  },
   location: {
     type: String,
   },
@@ -20,7 +26,10 @@ const doctorDetailsSchema = new Schema({
   experience: {
     type: Number,
   },
-  regId: {
+  open: {
+    type: String,
+  },
+  close: {
     type: String,
   },
 });

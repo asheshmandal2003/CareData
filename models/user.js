@@ -24,6 +24,12 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "DoctorDetail",
   },
+  appointments: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Appointment",
+    },
+  ],
 });
 
 userSchema.plugin(passportLocalMongoose);

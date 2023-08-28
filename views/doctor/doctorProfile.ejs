@@ -3,9 +3,9 @@
 <link rel="stylesheet" href="/css/profilePage.css" />
 <% if(doctor.entryType === "doctor"){ %>
 <div class="row">
-  <div class="col-7 p-5 border rounded shadow me-4" style="height: 550px">
+  <div class="col-8 p-5 border rounded shadow me-4">
     <div class="d-flex mb-3">
-      <div class="basic-info d-flex flex-column pe-5">
+      <div class="basic-info d-flex flex-column w-50">
         <img
           src="<%= doctor.image.path %>"
           alt="avatar"
@@ -16,39 +16,35 @@
         <small><%= doctor.doctorDetails.speciality %></small>
         <% } %>
       </div>
-      <div class="full-info">
-        <div
-          class="info-container d-flex align-items-center border-bottom mb-3"
-        >
-          <i class="fa-solid fa-doctor-graduate icon me-3"></i>
+      <div class="full-info w-100">
+        <div class="info-container d-inline-flex">
+          <i class="fa-solid fa-graduation-cap icon"></i>
           <% if(doctor.doctorDetails){ %>
-          <p><%= doctor.doctorDetails.education %></p>
+          <span><%= doctor.doctorDetails.education %></span>
           <% } %>
         </div>
-        <div
-          class="info-container d-flex align-items-center border-bottom mb-3"
-        >
-          <i class="fa-solid fa-location-dot icon me-3"></i>
+        <hr class="w-100" />
+        <div class="info-container d-inline-flex">
+          <i class="fa-solid fa-location-dot icon"></i>
           <% if(doctor.doctorDetails){ %>
-          <p><%= doctor.doctorDetails.location %></p>
+          <span><%= doctor.doctorDetails.location %></span>
           <% } %>
         </div>
-        <div
-          class="info-container d-flex align-items-center border-bottom mb-3"
-        >
-          <i class="fa-regular fa-id-card icon me-3"></i>
+        <hr class="w-100" />
+        <div class="info-container d-inline-flex">
+          <i class="fa-regular fa-id-card icon"></i>
           <% if(doctor.doctorDetails){ %>
-          <p><%= doctor.doctorDetails.regId %></p>
+          <span><%= doctor.doctorDetails.regId %></span>
           <% } %>
         </div>
-        <div
-          class="info-container d-flex align-items-center border-bottom mb-3"
-        >
-          <ion-icon name="language" class="icon me-3"></ion-icon>
+        <hr class="w-100" />
+        <div class="info-container d-inline-flex">
+          <ion-icon name="language" class="icon"></ion-icon>
           <% if(doctor.doctorDetails){ %>
-          <p><%= doctor.doctorDetails.language %></p>
+          <span><%= doctor.doctorDetails.language %></span>
           <% } %>
         </div>
+        <hr class="w-100" />
       </div>
     </div>
     <% if(doctor.doctorDetails){ %>
@@ -73,24 +69,22 @@
     </div>
     <% } %>
   </div>
-  <div class="col-4 border rounded shadow ms-3 p-5">
-    <div class="online-time d-flex align-items-center flex-column mb-5">
-      <h5 class="text-primary mb-3">Online</h5>
-      <p>Monday 01:00 PM - 06:00 PM</p>
-      <p>Tuesday 01:00 PM - 06:00 PM</p>
-      <p>Saturday 01:00 PM - 06:00 PM</p>
-    </div>
+  <div class="col-3 border rounded shadow ms-3 p-5">
     <div class="clinic-time d-flex align-items-center flex-column mb-5">
+      <% if(doctor.doctorDetails){ %>
       <h5 class="text-primary mb-3">Clinic</h5>
-      <p>Monday 10:00 AM - 12:00 PM</p>
-      <p>Wednesday 10:00 AM - 12:00 PM</p>
-      <p>Thursday 10:00 AM - 12:00 PM</p>
+      <p>
+        <%= doctor.doctorDetails.open %> - <%= doctor.doctorDetails.close %>
+      </p>
+      <% } %>
     </div>
     <div class="appointment-options w-100">
       <div class="vstack gap-2">
-        <button type="button" class="btn btn-primary w-100">
-          Book Appointment
-        </button>
+        <a href="/caredata/doctors/<%= doctor._id %>/book-appointment">
+          <button type="button" class="btn btn-primary w-100">
+            Book Appointment
+          </button>
+        </a>
         <button type="button" class="btn btn-outline-primary w-100" `>
           Video Consult
         </button>
