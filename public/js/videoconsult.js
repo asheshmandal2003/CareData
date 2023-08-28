@@ -208,3 +208,13 @@ function isLoggedIn(req, res, next) {
 }
 
 
+const linkInput = document.getElementById('link');
+const joinButton = document.getElementById('joinButton');
+
+joinButton.addEventListener('click', function () {
+    const linkValue = linkInput.value;
+
+    if (linkValue.trim() !== '') {
+        window.location.href = linkValue;
+    }
+});

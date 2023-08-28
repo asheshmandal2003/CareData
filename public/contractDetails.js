@@ -1,4 +1,4 @@
-export const address = "0x05286d43b3b5976e9F9b942318fD313c6CA473fD";
+export const address = "0xD059C6608Ea69B1b0168B7ebcB3EE4cdfEF31f9e";
 export const abi = [
   {
     inputs: [
@@ -78,6 +78,11 @@ export const abi = [
             internalType: "bool",
             name: "access",
             type: "bool",
+          },
+          {
+            internalType: "address",
+            name: "sender",
+            type: "address",
           },
         ],
         internalType: "struct Upload.Access[]",

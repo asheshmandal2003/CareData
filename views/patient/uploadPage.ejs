@@ -5,16 +5,11 @@
 <div class="row">
   <div class="general-menu col-2 me-5">
     <div class="options mt-5">
-      <div class="card-text">
+      <a href="#show-files" class="card-text links text-dark">
         <ion-icon name="document-outline" class="icon"></ion-icon
-        ><span class="fw-medium"
-          ><a
-            href="/caredata/users/<%= user._id %>/files"
-            class="links text-dark"
-            >My Files</a
-          ></span
-        >
-      </div>
+        ><span class="fw-medium">My Files</span></a
+      >
+
       <div
         class="card-text"
         type="button"
@@ -33,17 +28,23 @@
         <ion-icon name="documents-outline" class="icon"></ion-icon
         ><span class="fw-medium">Shared Files</span>
       </div>
-      <div class="card-text">
-        <ion-icon name="star-outline" class="icon"></ion-icon
-        ><span class="fw-medium">Favorites</span>
+      <div
+        class="card-text"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#sharedList"
+      >
+        <ion-icon name="list-outline" class="icon"></ion-icon
+        ><span class="fw-medium">Shared List</span>
       </div>
-      <div class="card-text">
+      <div
+        class="card-text"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#removed-access"
+      >
         <ion-icon name="trash-outline" class="icon"></ion-icon
         ><span class="fw-medium">Recycle Bin</span>
-      </div>
-      <div class="card-text">
-        <ion-icon name="settings-outline" class="icon"></ion-icon
-        ><span class="fw-medium">Settings</span>
       </div>
     </div>
   </div>
@@ -94,9 +95,9 @@
         </div>
       </div>
     </div>
-    <div class="ms-4">
+    <div class="ms-4" id="show-files">
       <h4 class="mb-4">Your Files</h4>
-      <div class="recently-edited mb-4"></div>
+      <div class="recently-added mb-4 w-100"></div>
     </div>
   </div>
 </div>
@@ -174,6 +175,25 @@
         <button class="btn btn-primary w-100 showPatientData-btn mb-4">
           Show
         </button>
+
+        <!-- <button
+          class="btn btn-primary"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseExample"
+          aria-expanded="false"
+          aria-controls="collapseExample"
+        >
+          Button with data-bs-target
+        </button>
+        <div class="collapse mt-3" id="collapseExample">
+          <div class="card card-body">
+            Some placeholder content for the collapse component. This panel is
+            hidden by default but revealed when the user activates the relevant
+            trigger.
+          </div>
+        </div> -->
+
         <div
           class="patientData d-flex justify-content-center flex-column"
         ></div>
@@ -182,5 +202,58 @@
   </div>
 </div>
 
+<div
+  class="modal fade shadow"
+  id="sharedList"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="offset-5">Shared List</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body pb-4">
+        <ul class="sharedTo list-group list-group-flush w-100"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade shadow"
+  id="removed-access"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="offset-5">Recycle Bin</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body pb-4">
+        <ul class="removed-access-list list-group list-group-flush w-100"></ul>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/js/uploadPage.js" type="module"></script>

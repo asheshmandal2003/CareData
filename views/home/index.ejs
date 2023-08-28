@@ -1,192 +1,221 @@
 <%- layout('layout/boilerplate') %>
-  <link rel="stylesheet" href="/css/icon.css" />
-  <link rel="stylesheet" href="/css/styles.css" />
-  <section class="hero">
-    <div class="box grid grid-two-col">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1>Genuine Treatment<br />For Your Health.</h1>
-          <p class="desc">
-            Consult top doctors online for any health concern. Book an<br />
-            appointment for in-clinic consultation.
-          </p>
-        </div>
-        <a href="#" class="home-btns">More Details </a>
+<link rel="stylesheet" href="/css/icon.css" />
+<link rel="stylesheet" href="/css/styles.css" />
+<section class="hero">
+  <div class="box grid grid-two-col">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Genuine Treatment<br />For Your Health.</h1>
+        <p class="desc">
+          Consult top doctors online for any health concern. Book an<br />
+          appointment for in-clinic consultation.
+        </p>
       </div>
+      <a href="#" class="home-btns">More Details </a>
+    </div>
 
-      <div class="hero-image ms-auto">
-        <img src="/image/img3.png" alt="hero image" class="img-fluid hero-img" />
+    <div class="hero-image ms-auto">
+      <img src="/image/img3.png" alt="hero image" class="img-fluid hero-img" />
+    </div>
+  </div>
+</section>
+
+<section class="book-appointment p-4">
+  <form id="appointment-form" class="w-100">
+    <div class="input-container mt-3 mb-3">
+      <div class="flex-container border_bottom">
+        <ion-icon name="location-outline" class="icon"></ion-icon>
+        <input
+          type="text"
+          id="location"
+          name="location"
+          placeholder="Location"
+          class="location"
+        />
+      </div>
+      <div class="flex-container border_bottom">
+        <ion-icon name="sparkles-outline" class="icon"></ion-icon>
+        <input
+          type="text"
+          id="specialty"
+          name="specialty"
+          placeholder="Specialty"
+          class="speciality"
+        />
       </div>
     </div>
-  </section>
+    <div class="btn-container">
+      <button type="submit" class="form-btn btn btn-primary">
+        <div class="flex-container">
+          Book Appointment Now<ion-icon
+            name="add-circle-outline"
+            class="add-icon"
+          ></ion-icon>
+        </div>
+      </button>
+    </div>
+  </form>
+</section>
 
-  <section class="book-appointment p-4">
-    <form id="appointment-form" class="w-100">
-      <div class="input-container mt-3 mb-3">
-        <div class="flex-container border_bottom">
-          <ion-icon name="location-outline" class="icon"></ion-icon>
-          <input type="text" id="location" name="location" placeholder="Location" class="location" />
-        </div>
-        <div class="flex-container border_bottom">
-          <ion-icon name="sparkles-outline" class="icon"></ion-icon>
-          <input type="text" id="specialty" name="specialty" placeholder="Specialty" class="speciality" />
-        </div>
+<section class="body">
+  <div class="box grid grid-two-col">
+    <div class="body-image">
+      <img
+        src="https://img.freepik.com/free-vector/upload-concept-illustration_114360-1317.jpg?w=740&t=st=1691957121~exp=1691957721~hmac=58f3d20d41726ef4de25cd43d6879334b2c77901f656aad79f6cdaa1c012ece6"
+        alt="body image"
+        class="img-fluid body-img"
+      />
+    </div>
+
+    <div class="body-content mt-5">
+      <div class="body-text">
+        <h2>
+          Securely manage your <br />
+          medical records.
+        </h2>
+        <p class="text-secondary">
+          Safeguard your valuable medical records with our state-of-the-art
+          secure storage platform
+        </p>
       </div>
-      <div class="btn-container">
-        <button type="submit" class="form-btn btn btn-primary">
+
+      <a
+        href="<%= user? `/caredata/users/${user._id}/upload`: '/login' %>"
+        id="home-btns-1"
+        ><button class="btn btn-primary upload-btn w-100 p-3">
           <div class="flex-container">
-            Book Appointment Now<ion-icon name="add-circle-outline" class="add-icon"></ion-icon>
-          </div>
-        </button>
-      </div>
-    </form>
-  </section>
-
-  <section class="body">
-    <div class="box grid grid-two-col">
-      <div class="body-image">
-        <img
-          src="https://img.freepik.com/free-vector/upload-concept-illustration_114360-1317.jpg?w=740&t=st=1691957121~exp=1691957721~hmac=58f3d20d41726ef4de25cd43d6879334b2c77901f656aad79f6cdaa1c012ece6"
-          alt="body image" class="img-fluid body-img" />
-      </div>
-
-      <div class="body-content mt-5">
-        <div class="body-text">
-          <h2>
-            Securely manage your <br />
-            medical records.
-          </h2>
-          <p class="text-secondary">
-            Safeguard your valuable medical records with our state-of-the-art
-            secure storage platform
-          </p>
-        </div>
-
-        <a href="<%= user? `/caredata/users/${user._id}/upload`: '/login' %>" id="home-btns-1"><button
-            class="btn btn-primary upload-btn w-100 p-3">
-            <div class="flex-container">
-              Store you medical records here
-              <ion-icon name="add-circle-outline" class="add-icon"></ion-icon>
-            </div>
-          </button></a>
-      </div>
+            Store you medical records here
+            <ion-icon name="add-circle-outline" class="add-icon"></ion-icon>
+          </div></button
+      ></a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section id="specialities" class="specialities">
-    <h2 class="mb-5">Experienced in multiple medical practices</h2>
-    <ul class="grid grid-three-col sp-container mb-5" id="sp">
-      <li class="sp">
-        <img class="sp-img img-fluid"
-          src="https://img.freepik.com/free-vector/cute-baby-sleeping-cloud-pillow-cartoon-icon-illustration_138676-2812.jpg?w=740&t=st=1691998598~exp=1691999198~hmac=d13afe19639f6927a65109046fc4d89fe965fcc3d3156fa2818730c2ff618efd" />
-        <h3 class="sp-tl">Pediatric</h3>
-        <p class="sp-cont">
-          Pediatricians diagnose and treat childhood illnesses, developmental
-          issues, and behavioral disorders.
-        </p>
-        <a class="lm" href="">Learn more</a>
-      </li>
-      <li class="sp">
-        <img class="sp-img img-fluid"
-          src="https://img.freepik.com/free-vector/high-blood-pressure-abstract-concept-illustration_335657-4603.jpg?w=740&t=st=1691998042~exp=1691998642~hmac=c29949911c7c9135fe86ad3c9429b5dbc020f15f41c49ad904f0aeefd41e90b9"
-          alt="speciality-image" />
-        <h3 class="sp-tl">Cardiology</h3>
-        <p class="sp-cont">
-          Cardiology deals with heart diseases, from congenital defects to
-          acquired conditions like coronary artery disease.
-        </p>
-        <a class="lm" href="">Learn more</a>
-      </li>
-      <li class="sp">
-        <img class="sp-img img-fluid"
-          src="https://img.freepik.com/free-vector/orthopedist-isometric-background-with-doctor-inviting-patient-crutches-into-cabinet-examination-vector-illustration_1284-67248.jpg?w=740&t=st=1691998503~exp=1691999103~hmac=ed1a9896c6fadc8a396ee30c2094861ff3c28a418531ca86a53ed8cc514f0d96"
-          alt="speciality-image" />
-        <h3 class="sp-tl">Orthopedic</h3>
-        <p class="sp-cont">
-          Preserves and restores function of skeletal system, including bones,
-          joints, muscles, and associated structures.
-        </p>
-        <a class="lm" href="">Learn more</a>
-      </li>
-    </ul>
-    <div>
-      <a href="" class="btn mb-5" id="sp-home-btns">
-        <div class="flex-container">
-          Browse all specialities
-          <ion-icon name="add-circle-outline" class="sp-watch-icon ms-1"></ion-icon>
-        </div>
-      </a>
-    </div>
-  </section>
+<section id="specialities" class="specialities">
+  <h2 class="mb-5">Experienced in multiple medical practices</h2>
+  <ul class="grid grid-three-col sp-container mb-5" id="sp">
+    <li class="sp">
+      <img
+        class="sp-img img-fluid"
+        src="https://img.freepik.com/free-vector/cute-baby-sleeping-cloud-pillow-cartoon-icon-illustration_138676-2812.jpg?w=740&t=st=1691998598~exp=1691999198~hmac=d13afe19639f6927a65109046fc4d89fe965fcc3d3156fa2818730c2ff618efd"
+      />
+      <h3 class="sp-tl">Pediatric</h3>
+      <p class="sp-cont">
+        Pediatricians diagnose and treat childhood illnesses, developmental
+        issues, and behavioral disorders.
+      </p>
+      <a class="lm" href="">Learn more</a>
+    </li>
+    <li class="sp">
+      <img
+        class="sp-img img-fluid"
+        src="https://img.freepik.com/free-vector/high-blood-pressure-abstract-concept-illustration_335657-4603.jpg?w=740&t=st=1691998042~exp=1691998642~hmac=c29949911c7c9135fe86ad3c9429b5dbc020f15f41c49ad904f0aeefd41e90b9"
+        alt="speciality-image"
+      />
+      <h3 class="sp-tl">Cardiology</h3>
+      <p class="sp-cont">
+        Cardiology deals with heart diseases, from congenital defects to
+        acquired conditions like coronary artery disease.
+      </p>
+      <a class="lm" href="">Learn more</a>
+    </li>
+    <li class="sp">
+      <img
+        class="sp-img img-fluid"
+        src="https://img.freepik.com/free-vector/orthopedist-isometric-background-with-doctor-inviting-patient-crutches-into-cabinet-examination-vector-illustration_1284-67248.jpg?w=740&t=st=1691998503~exp=1691999103~hmac=ed1a9896c6fadc8a396ee30c2094861ff3c28a418531ca86a53ed8cc514f0d96"
+        alt="speciality-image"
+      />
+      <h3 class="sp-tl">Orthopedic</h3>
+      <p class="sp-cont">
+        Preserves and restores function of skeletal system, including bones,
+        joints, muscles, and associated structures.
+      </p>
+      <a class="lm" href="">Learn more</a>
+    </li>
+  </ul>
+  <div>
+    <a href="" class="btn mb-5" id="sp-home-btns">
+      <div class="flex-container">
+        Browse all specialities
+        <ion-icon
+          name="add-circle-outline"
+          class="sp-watch-icon ms-1"
+        ></ion-icon>
+      </div>
+    </a>
+  </div>
+</section>
 
-  <section class="blog">
-    <h2 class="mb-5" style="color: #3c59a5">
-      Explore Our Newest Healthcare & Wellness Articles For Valuable Insights And
-      Tips To Stay Healthy.
-    </h2>
-    <div class="grid grid-three-col mb-5">
-      <article class="blog-post">
-        <img class="news-img img-fluid" src="image/img1.jpg" alt="news-img" />
-        <div class="blog-details-container">
-          <div class="blog-header">
-            <p class="sign">News</p>
-            <small class="date text-secondary">DD/MM/YYYY</small>
-          </div>
-          <h3>Post Title 1</h3>
-          <p class="blog-cont">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
-            corrupti velit rerum quas maiores ipsa?
-          </p>
+<section class="blog">
+  <h2 class="mb-5" style="color: #3c59a5">
+    Explore Our Newest Healthcare & Wellness Articles For Valuable Insights And
+    Tips To Stay Healthy.
+  </h2>
+  <div class="grid grid-three-col mb-5">
+    <article class="blog-post">
+      <img class="news-img img-fluid" src="image/img1.jpg" alt="news-img" />
+      <div class="blog-details-container">
+        <div class="blog-header">
+          <p class="sign">News</p>
+          <small class="date text-secondary">DD/MM/YYYY</small>
         </div>
-        <span class="line"></span>
-        <div class="blog-footer">
-          <span class="circle"></span>
-          <a class="rm" href="blog/post1.html">Read More</a>
+        <h3>Post Title 1</h3>
+        <p class="blog-cont">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
+          corrupti velit rerum quas maiores ipsa?
+        </p>
+      </div>
+      <span class="line"></span>
+      <div class="blog-footer">
+        <span class="circle"></span>
+        <a class="rm" href="blog/post1.html">Read More</a>
+      </div>
+    </article>
+    <article class="blog-post">
+      <img class="news-img img-fluid" src="/image/img6.jpg" alt="news-img" />
+      <div class="blog-details-container">
+        <div class="blog-header">
+          <p class="sign">News</p>
+          <small class="date text-secondary">DD/MM/YYYY</small>
         </div>
-      </article>
-      <article class="blog-post">
-        <img class="news-img img-fluid" src="/image/img6.jpg" alt="news-img" />
-        <div class="blog-details-container">
-          <div class="blog-header">
-            <p class="sign">News</p>
-            <small class="date text-secondary">DD/MM/YYYY</small>
-          </div>
-          <h3>Post Title 2</h3>
-          <p class="blog-cont">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
-            corrupti velit rerum quas maiores ipsa?
-          </p>
+        <h3>Post Title 2</h3>
+        <p class="blog-cont">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
+          corrupti velit rerum quas maiores ipsa?
+        </p>
+      </div>
+      <span class="line"></span>
+      <div class="blog-footer">
+        <span class="circle"></span>
+        <a class="rm" href="blog/post2.html">Read More</a>
+      </div>
+    </article>
+    <article class="blog-post">
+      <img class="news-img img-fluid" src="/image/img5.jpg" alt="news-img" />
+      <div class="blog-details-container">
+        <div class="blog-header">
+          <p class="sign">News</p>
+          <small class="date text-secondary">DD/MM/YYYY</small>
         </div>
-        <span class="line"></span>
-        <div class="blog-footer">
-          <span class="circle"></span>
-          <a class="rm" href="blog/post2.html">Read More</a>
-        </div>
-      </article>
-      <article class="blog-post">
-        <img class="news-img img-fluid" src="/image/img5.jpg" alt="news-img" />
-        <div class="blog-details-container">
-          <div class="blog-header">
-            <p class="sign">News</p>
-            <small class="date text-secondary">DD/MM/YYYY</small>
-          </div>
-          <h3>Post Title 3</h3>
-          <p class="blog-cont">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
-            corrupti velit rerum quas maiores ipsa?
-          </p>
-        </div>
-        <span class="line"></span>
-        <div class="blog-footer">
-          <span class="circle"></span>
-          <a class="rm" href="blog/post3.html">Read More</a>
-        </div>
-      </article>
-    </div>
-    <a href="" class="blog-btn" id="blog-btn"><button class="btn btn-primary p-3">
-        <div class="flex-container">
-          Browse all blogs
-          <ion-icon name="add-circle-outline" class="add-icon"></ion-icon>
-        </div>
-      </button></a>
-  </section>
+        <h3>Post Title 3</h3>
+        <p class="blog-cont">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
+          corrupti velit rerum quas maiores ipsa?
+        </p>
+      </div>
+      <span class="line"></span>
+      <div class="blog-footer">
+        <span class="circle"></span>
+        <a class="rm" href="blog/post3.html">Read More</a>
+      </div>
+    </article>
+  </div>
+  <a href="" class="blog-btn" id="blog-btn"
+    ><button class="btn btn-primary p-3">
+      <div class="flex-container">
+        Browse all blogs
+        <ion-icon name="add-circle-outline" class="add-icon"></ion-icon>
+      </div></button
+  ></a>
+</section>

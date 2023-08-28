@@ -54,10 +54,14 @@
         </li>
         <% }else{ %>
         <li class="nav-item">
-          <a href="/caredata/users/<%= user._id %>" class="nav-item">
-            <img src="<%=user.image.path ? user.image.path :
-            "/image/defaultUser.png" %>" alt="avatar" class=" img-fluid avatar"
-            />
+          <a href="/caredata/<%= (user.entryType==="patient"? "users":"doctors")
+          %>/<%= user._id %>" class="nav-item"> <% if(user._id){ %>
+          <img
+            src="<%= user.image.path %>"
+            alt="avatar"
+            class="img-fluid avatar"
+          />
+          <% } %>
           </a>
         </li>
         <% } %>

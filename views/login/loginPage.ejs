@@ -9,7 +9,7 @@
     <form
       action="/login"
       method="post"
-      class="ms-auto w-50 bg-light p-5"
+      class="ms-auto w-50 bg-light p-5 validate-form"
       novalidate
     >
       <div class="form-input w-100">
@@ -21,7 +21,9 @@
           id="username"
           class="form-control mb-3"
           placeholder="Username"
+          required
         />
+        <div class="invalid-feedback mb-3">Username is required!</div>
       </div>
       <div class="form-input w-100">
         <label for="password" class="form-label">Password</label>
@@ -31,7 +33,10 @@
           id="password"
           class="form-control mb-3"
           placeholder="Password"
+          autocomplete="off"
+          required
         />
+        <div class="invalid-feedback mb-3">Password is required!</div>
       </div>
       <div class="options mb-3 d-flex">
         <small class="text-danger ms-auto" style="cursor: pointer"
@@ -50,3 +55,4 @@
     </form>
   </div>
 </div>
+<script src="/js/formValidation.js"></script>

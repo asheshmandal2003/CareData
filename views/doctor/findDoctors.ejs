@@ -1,117 +1,74 @@
 <%- layout('layout/boilerplate') %>
+
 <link rel="stylesheet" href="/css/icon.css" />
-<link rel="stylesheet" href="/css/doctor.css" />
 
-<section class="find-doctors-container">
-  <section class="search-bar">
-    <div class="search-input">
-      <div class="search-icon">
-        <i class="fa-solid fa-magnifying-glass" style="color: #75797e"></i>
-      </div>
-      <input type="text" id="doctor-search" placeholder="Search doctors" />
+<div class="row">
+  <div class="col-8">
+    <div class="input-group mb-4 offset-3">
+      <span class="input-group-text p-3 shadow"
+        ><ion-icon name="search-outline" class="icon"></ion-icon
+      ></span>
+      <input
+        type="text"
+        class="form-control p-3 shadow"
+        placeholder="Search a doctor..."
+        aria-label="Username"
+        aria-describedby="basic-addon1"
+      />
     </div>
-  </section>
-</section>
-<script>
-  const searchInput = document.getElementById("doctor-search");
-  const doctorsList = document.querySelector(".doctors-list");
+  </div>
 
-  searchInput.addEventListener("input", () => {
-    const searchTerm = searchInput.value.toLowerCase();
-    filterAndRenderDoctors(searchTerm);
-  });
-
-  searchInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const searchTerm = searchInput.value.toLowerCase();
-      filterAndRenderDoctors(searchTerm);
-    }
-  });
-
-  async function fetchDoctorData() {
-    try {
-      const response = await fetch("");
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching doctor data:", error);
-      return [];
-    }
-  }
-  async function filterAndRenderDoctors(searchTerm) {
-    doctorsList.innerHTML = "";
-    const doctorData = await fetchDoctorData();
-    const filteredDoctors = doctorData.filter(
-      (doctor) =>
-        doctor.name.toLowerCase().includes(searchTerm) ||
-        doctor.specialty.toLowerCase().includes(searchTerm)
-    );
-    filteredDoctors.forEach((doctor) => {
-      const doctorCard = document.createElement("div");
-      doctorCard.className = "doctor-card";
-      doctorCard.innerHTML = `
-            <h3 class="doctor-name">${doctor.name}</h3>
-            <p class="doctor-specialty">${doctor.specialty}</p>
-            <p class="doctor-experience">${
-              doctor.experience
-            } experience overall</p>
-            <p class="doctor-location">${doctor.location}</p>
-            <p class="doctor-clinics">${doctor.clinics.join(", ")}</p>
-            <p class="doctor-consultation">₹${
-              doctor.consultation
-            } Consultation at clinic</p>
-            <div class="doctor-date">
-                <p class="appointment-date">${doctor.appointmentDate}</p>
-            </div>
-        `;
-      doctorsList.appendChild(doctorCard);
-    });
-  }
-  filterAndRenderDoctors("");
-</script>
-<section class="doctors-list">
   <% doctors.map(doctor=>{ %> <% if(doctor.entryType === "doctor"){ %>
-  <div class="doctor-card container grid grid-three-col">
-    <div>
-      <img class="doctor-img" src="/image/doctor-img.png" alt="Doctor-Image" />
-    </div>
-    <div class="doctor-info">
-      <h2 class="name"><%= doctor.fullName %></h2>
-      <% if(doctor.doctorDetails){ %>
-      <p class="specialty"><%= doctor.doctorDetails.speciality %></p>
-      <% } %> <% if(doctor.doctorDetails){ %>
-      <p class="experience">
-        <%= doctor.doctorDetails.experience %> years experience overall
-      </p>
-      <% } %> <% if(doctor.doctorDetails){ %>
-      <p class="location"><%= doctor.doctorDetails.location %></p>
-      <% } %> <% if(doctor.doctorDetails){ %>
-      <p class="clinics">Orange Clinic +2 more</p>
-      <% } %> <% if(doctor.doctorDetails){ %>
-      <p class="consultation">₹6000 Consultation at clinic</p>
-      <% } %>
-      <hr class="line" id="doctor-line" />
-      <!-- <p class="profile-rating">
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                    <span class="stars fa-solid fa-star" style="color: #ffc700;"></span>
-                </p> -->
-    </div>
-    <div class="booking">
-      <div class="date-icon">
-        <i
-          class="calen-icon fa-solid fa-calendar-days"
-          style="color: #292d32"
-        ></i>
-        <p class="appointment-date">Available on: Sun, 12 Aug</p>
+  <div class="col-8 offset-2 border mb-3 rounded p-5 shadow">
+    <div class="header-content d-flex flex-row align-items-center mb-3">
+      <a href="/caredata/doctors/<%= doctor._id %>">
+        <img
+          class="rounded-circle me-5"
+          src="<%= doctor.image.path %>"
+          alt="avatar"
+          height="100px"
+          width="100px"
+        />
+      </a>
+
+      <div class="doctor-info d-flex flex-column w-100">
+        <a
+          style="text-decoration: none"
+          href="/caredata/doctors/<%= doctor._id %>"
+          ><h5 class="text-primary"><%= doctor.fullName %></h5></a
+        >
+        <% if(doctor.doctorDetails && doctor.doctorDetails.speciality){ %>
+        <small class="text-secondary"
+          ><%= doctor.doctorDetails.speciality %></small
+        >
+        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.experience){
+        %>
+        <small class="text-secondary"
+          ><%= doctor.doctorDetails.experience %> years experience
+          overall</small
+        >
+        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.location){ %>
+        <b><%= doctor.doctorDetails.location %></b>
+        <% } %> <% if(doctor.doctorDetails){ %>
+        <span>Orange Dental Clinic +2 more</span>
+        <p>₹400 Consultation at clinic</p>
+        <% } %>
+        <hr class="w-100" />
       </div>
-      <a href="/caredata/users/<%= doctor._id %>" class="doctor-btn"
-        >Book Appointment</a
-      >
+    </div>
+    <div class="footer-content d-flex justify-content-between">
+      <div class="star-review"></div>
+      <div class="d-flex flex-column">
+        <div class="d-flex">
+          <ion-icon name="calendar-number-outline" class="icon"></ion-icon>
+          <p class="me-1">Available on</p>
+          <p>Sunday, 27 Aug</p>
+        </div>
+        <a href="" type="button" class="btn btn-info text-light rounded-pill"
+          >Book Appointment</a
+        >
+      </div>
     </div>
   </div>
   <% } %> <% }) %>
-</section>
+</div>

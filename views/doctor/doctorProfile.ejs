@@ -1,0 +1,102 @@
+<% layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/icon.css" />
+<link rel="stylesheet" href="/css/profilePage.css" />
+<% if(doctor.entryType === "doctor"){ %>
+<div class="row">
+  <div class="col-7 p-5 border rounded shadow me-4" style="height: 550px">
+    <div class="d-flex mb-3">
+      <div class="basic-info d-flex flex-column pe-5">
+        <img
+          src="<%= doctor.image.path %>"
+          alt="avatar"
+          class="img-fluid profilePhoto mb-3"
+        />
+        <h5 class="text-primary"><%= doctor.fullName %></h5>
+        <% if(doctor.doctorDetails){ %>
+        <small><%= doctor.doctorDetails.speciality %></small>
+        <% } %>
+      </div>
+      <div class="full-info">
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <i class="fa-solid fa-doctor-graduate icon me-3"></i>
+          <% if(doctor.doctorDetails){ %>
+          <p><%= doctor.doctorDetails.education %></p>
+          <% } %>
+        </div>
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <i class="fa-solid fa-location-dot icon me-3"></i>
+          <% if(doctor.doctorDetails){ %>
+          <p><%= doctor.doctorDetails.location %></p>
+          <% } %>
+        </div>
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <i class="fa-regular fa-id-card icon me-3"></i>
+          <% if(doctor.doctorDetails){ %>
+          <p><%= doctor.doctorDetails.regId %></p>
+          <% } %>
+        </div>
+        <div
+          class="info-container d-flex align-items-center border-bottom mb-3"
+        >
+          <ion-icon name="language" class="icon me-3"></ion-icon>
+          <% if(doctor.doctorDetails){ %>
+          <p><%= doctor.doctorDetails.language %></p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% if(doctor.doctorDetails){ %>
+    <div class="about-doctor pb-3"><%= doctor.doctorDetails.aboutDoctor %></div>
+    <% } %> <% if(user !== undefined && user.username === doctor.username ){ %>
+    <div class="profileButton d-flex gap-3">
+      <a
+        type="button"
+        href="/caredata/users/<%= doctor._id %>/edit"
+        class="btn btn-warning w-100"
+        >Edit
+      </a>
+      <form action="/logout" method="post" class="w-100">
+        <button class="btn btn-danger w-100">Log Out</button>
+      </form>
+      <a
+        href="/caredata/doctors/<%= doctor._id %>/adddetails"
+        type="button"
+        class="btn btn-success w-100"
+        >Add Details</a
+      >
+    </div>
+    <% } %>
+  </div>
+  <div class="col-4 border rounded shadow ms-3 p-5">
+    <div class="online-time d-flex align-items-center flex-column mb-5">
+      <h5 class="text-primary mb-3">Online</h5>
+      <p>Monday 01:00 PM - 06:00 PM</p>
+      <p>Tuesday 01:00 PM - 06:00 PM</p>
+      <p>Saturday 01:00 PM - 06:00 PM</p>
+    </div>
+    <div class="clinic-time d-flex align-items-center flex-column mb-5">
+      <h5 class="text-primary mb-3">Clinic</h5>
+      <p>Monday 10:00 AM - 12:00 PM</p>
+      <p>Wednesday 10:00 AM - 12:00 PM</p>
+      <p>Thursday 10:00 AM - 12:00 PM</p>
+    </div>
+    <div class="appointment-options w-100">
+      <div class="vstack gap-2">
+        <button type="button" class="btn btn-primary w-100">
+          Book Appointment
+        </button>
+        <button type="button" class="btn btn-outline-primary w-100" `>
+          Video Consult
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% } %>
