@@ -1,0 +1,12 @@
+<%- layout('layout/boilerplate') %>
+
+    <link rel="stylesheet" href="/css/videoconsult.css">
+    <div class="dashboard-container">
+        <h1>Welcome to the Video Chat Dashboard</h1>
+        <form id="nameForm" action="/:room" method="GET">
+            <label for="username">Enter your name:</label>
+            <input type="text" id="username" name="username" required> 
+            <button type="submit">Start Video Chat</button>
+        </form>
+    </div>
+    <script src="js/videoconsult.js"></script>

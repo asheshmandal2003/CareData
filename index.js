@@ -40,11 +40,15 @@ const sessionConfig = {
 const upload = multer({ storage });
 
 const server = require('http').Server(app)
-const io = require('socket.io')(server)
+const io = require("socket.io")(server, {
+  cors: {
+    origin: '*'
+  }
+});
 const { ExpressPeerServer } = require('peer')
-const peerServer = ExpressPeerServer(server, {
+const opinions = {
   debug: true,
-})
+}
 const { v4: uuidv4 } = require('uuid')
 
 
@@ -71,10 +75,6 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
-
-app.use('/peerjs', peerServer)
-app.use(express.static('public'))
-app.set('view engine', 'ejs')
 
 
 app.get("/caredata", (req, res) => {
@@ -239,43 +239,39 @@ app.get("/caredata/users/:id/files", async (req, res, next) => {
   }
 });
 
-
-// app.get('/:room?', (req, res) => {
-//   const { room } = req.params;
-
-//   if (room) {
-//     res.render('videoconsult/room', { roomId: room });
-//   } else {
-//     const newRoomId = uuidv4();
-//     res.redirect(`/${newRoomId}`);
-//   }
-// });
-
-// io.on('connection', (socket) => {
-//   socket.on('join-room', (roomId, userId) => {
-//     socket.join(roomId)
-//     socket.to(roomId).emit('user-connected', userId);
-
-//     socket.on('message', (message) => {
-//       io.to(roomId).emit('createMessage', message, userId)
-//     })
-//     socket.on('disconnect', () => {
-//       socket.to(roomId).emit('user-disconnected', userId)
-//     })
-//     socket.on('end-meeting', (roomId) => {
-//       io.to(roomId).emit('user-disconnected', socket.id);
-//     })
-//   })
-// })
-
-// app.listen(PORT, () => {
-//   console.log(`Listening on port ${PORT}`);
-// });
-
-app.set("view engine", "ejs");
-const opinions = {
-  debug: true,
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login"); // Redirect to login page if not authenticated
 }
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    failureFlash: true,
+    failureRedirect: "/login",
+  }),
+  (req, res) => {
+    res.redirect("/caredata"); // Redirect to a protected page after successful login
+  }
+);
+
+
+app.get("/patient/join-meeting", (req, res) => {
+  // Render the patient's join-meeting form
+  res.render("patientJoinMeeting");
+});
+
+app.post("/patient/join-meeting", (req, res) => {
+  const meetingLink = req.body.meetingLink;
+  // Render the patient's meeting page with embedded iframe
+  res.render("patientMeeting", { meetingLink });
+});
+
+app.get("/video", isLoggedIn, (req, res) => {
+  res.render("videoconsult/doctorvideo");
+});
 
 app.use("/peerjs", ExpressPeerServer(server, opinions));
 app.use(express.static("public"));
@@ -292,10 +288,13 @@ io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName) => {
     socket.join(roomId);
     setTimeout(() => {
-      socket.to(roomId).broadcast.emit("user-connected", userId);
+      socket.to(roomId).emit("user-connected", userId);
     }, 1000)
     socket.on("message", (message) => {
       io.to(roomId).emit("createMessage", message, userName);
+    });
+    socket.on("end-meeting", (roomId) => {
+      io.to(roomId).emit("meeting-ended");
     });
   });
 });

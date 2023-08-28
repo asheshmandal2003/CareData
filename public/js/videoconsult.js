@@ -19,7 +19,7 @@ showChat.addEventListener("click", () => {
     document.querySelector(".header__back").style.display = "block";
 });
 
-const user = prompt("Enter your name");
+// const user = prompt("Enter your name");
 
 var peer = new Peer({
     host: '/',
@@ -175,4 +175,36 @@ account_circle
         <span>${message}</span>
     </div>`;
 });
+
+const endMeetingButton = document.getElementById("endMeeting");
+
+endMeetingButton.addEventListener("click", () => {
+    socket.emit("end-meeting", ROOM_ID);
+    window.location.href = "/caredata";
+});
+
+
+socket.on("meeting-ended", () => {
+    alert("Meeting has ended. Thank you for Joining!");
+    window.location.href = "/caredata";
+});
+
+
+const nameForm = document.getElementById("nameForm");
+
+nameForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const username = document.getElementById("username").value;
+    if (username.trim() !== "") {
+        window.location.href = `/video-chat?username=${encodeURIComponent(username)}`;
+    }
+});
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
+
 
