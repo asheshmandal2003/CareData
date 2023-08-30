@@ -31,5 +31,5 @@ For getting those Web 3.0 features Metamask should be installed in your browser.
 
 ## Credits
 
-[Ashesh Mandal](https://github.com/asheshmandal2003)
-[Devayan Mandal](https://github.com/devayanm)
+- [Ashesh Mandal](https://github.com/asheshmandal2003)
+- [Devayan Mandal](https://github.com/devayanm)
