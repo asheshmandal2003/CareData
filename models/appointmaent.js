@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const appointmaentSchema = new Schema(
   {
+    doctorId: String,
     doctorName: String,
     doctorAvatar: String,
     location: String,

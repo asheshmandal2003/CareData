@@ -12,6 +12,7 @@ module.exports.doctorDetailsValidation = (req, res, next) => {
     fees: Joi.string().allow(""),
     open: Joi.string().allow(""),
     close: Joi.string().allow(""),
+    regId: Joi.string().allow(""),
   });
   const validate = doctorDetailsSchema.validate(req.body);
   if (validate.error) {

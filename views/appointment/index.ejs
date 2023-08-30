@@ -13,6 +13,7 @@
       method="post"
       class="w-100"
     >
+    <input type="text" name="doctorId" value="<%= doctor._id %>" readonly hidden>
     <input type="text" name="doctorName" value="<%= doctor.fullName %>" readonly hidden>
     <input type="text" name="doctorAvatar" value="<%= doctor.image.path %>" readonly hidden>
     <input type="text" name="location" value="<%= doctor.doctorDetails.location %>" readonly hidden>

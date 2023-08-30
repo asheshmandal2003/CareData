@@ -32,6 +32,9 @@ const doctorDetailsSchema = new Schema({
   close: {
     type: String,
   },
+  regId: {
+    type: String
+  }
 });
 
 const DoctorDetails = mongoose.model("DoctorDetail", doctorDetailsSchema);
