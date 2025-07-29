@@ -1,28 +1,89 @@
 <%- layout('layout/boilerplate') %>
 
+<!-- Bootstrap 5 (should already be in your main layout) -->
 <link rel="stylesheet" href="/css/videoconsult.css" />
 
-<div class="dashboard-container">
-  <h1 class="welcome-h1">Welcome to the Video Chat Dashboard</h1>
+<div class="container py-2">
+  <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-12 col-md-8 col-lg-6">
+      <div
+        class="card shadow-lg border-0 rounded-4 videoconsult-dashboard-card py-4 px-3 px-md-5"
+      >
+        <div class="text-center mb-4">
+          <i class="fa-solid fa-video fa-2x text-primary mb-3"></i>
+          <h1 class="welcome-h1 h3 mb-2">Video Chat Dashboard</h1>
+          <p class="text-secondary mb-0">
+            Create or join a secure video meeting
+          </p>
+        </div>
 
-  <!-- Form POSTs username to server route that creates room -->
-  <form id="nameForm" action="/create-room" method="POST" novalidate>
-    <label for="username">Enter your name:</label>
-    <input type="text" id="username" name="username" required />
-    <button type="submit">Start Video Chat</button>
-  </form>
+        <!-- Start Meeting Form -->
+        <form
+          id="nameForm"
+          action="/create-room"
+          method="POST"
+          class="mb-4"
+          novalidate
+          autocomplete="off"
+        >
+          <label for="username" class="form-label fw-semibold"
+            >Create a new meeting</label
+          >
+          <div class="input-group mb-3">
+            <span class="input-group-text bg-light"
+              ><i class="fa-solid fa-user"></i
+            ></span>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-control"
+              required
+              placeholder="Your name"
+            />
+            <button type="submit" class="btn btn-primary px-4">
+              Start Meeting
+            </button>
+          </div>
+        </form>
 
-  <hr />
+        <div class="divider my-3 d-flex align-items-center">
+          <hr class="flex-grow-1" />
+          <span class="mx-3 text-muted">OR</span>
+          <hr class="flex-grow-1" />
+        </div>
 
-  <label for="link">Enter the link to join:</label>
-  <input
-    type="text"
-    id="link"
-    name="link"
-    placeholder="Paste full room URL here"
-  />
-  <button type="button" id="joinButton">Join</button>
+        <!-- Join Meeting -->
+        <div>
+          <label for="link" class="form-label fw-semibold"
+            >Join an existing meeting</label
+          >
+          <div class="input-group">
+            <span class="input-group-text bg-light"
+              ><i class="fa-solid fa-link"></i
+            ></span>
+            <input
+              type="text"
+              id="link"
+              name="link"
+              class="form-control"
+              placeholder="Paste meeting link here..."
+            />
+            <button type="button" id="joinButton" class="btn btn-success px-4">
+              Join
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Font Awesome CDN if not already included in layout: -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
 
 <script>
   const joinButton = document.getElementById("joinButton");
@@ -32,14 +93,14 @@
     const linkValue = linkInput.value.trim();
 
     if (!linkValue) {
-      alert("Please enter a room link to join.");
+      showAlert("Please enter a room link to join.", "danger");
       return;
     }
 
     let username = prompt("Please enter your name to join the meeting:");
 
     if (!username || username.trim() === "") {
-      alert("Username is required to join the meeting.");
+      showAlert("Username is required to join the meeting.", "danger");
       return;
     }
 
@@ -47,7 +108,7 @@
     try {
       url = new URL(linkValue);
     } catch {
-      alert("Please enter a valid URL.");
+      showAlert("Please enter a valid URL.", "danger");
       return;
     }
 
@@ -57,4 +118,20 @@
 
     window.location.href = url.toString();
   });
+
+  // Simple bootstrap alert helper (shows alert at top of card)
+  function showAlert(message, type = "danger") {
+    // Remove old
+    document
+      .querySelectorAll(".videoconsult-alert")
+      .forEach((el) => el.remove());
+    const alert = document.createElement("div");
+    alert.className = `alert alert-${type} videoconsult-alert mb-3`;
+    alert.role = "alert";
+    alert.innerText = message;
+    document.querySelector(".videoconsult-dashboard-card").prepend(alert);
+    setTimeout(() => {
+      alert.remove();
+    }, 3500);
+  }
 </script>

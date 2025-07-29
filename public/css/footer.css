@@ -1,32 +1,94 @@
+:root {
+  --footer-bg: #002244;
+  --footer-icon-color: #1890ff;
+  --footer-icon-hover: #6cb2eb;
+  --footer-link-color: #cfd8dc;
+  --footer-link-hover: #ffffff;
+}
+
 .footer {
-  width: 100%;
-  margin-top: 100px;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-evenly;
-  background-color: #002244;
+  background-color: var(--footer-bg);
+  color: #ced4da;
+  font-family: "Open Sans", Arial, sans-serif;
 }
-.icon {
-  color: blue;
+
+.footer h5 {
+  font-family: "Baloo Bhaijaan 2", cursive;
+  font-weight: 600;
+  color: #fff;
 }
-.icon:nth-child(3) {
-  color: crimson;
+
+.social-icon ion-icon {
+  font-size: 1.7rem;
+  color: var(--footer-icon-color);
+  transition: color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
 }
-.blog-img {
-  height: 100px;
-  width: 100px;
-  border-radius: 2px;
+
+.social-icon ion-icon:hover,
+.social-icon:focus ion-icon {
+  color: var(--footer-icon-hover);
+  transform: scale(1.2);
 }
-.news {
-  display: flex;
-  justify-content: space-between;
-}
-.contact {
-  display: flex;
-}
-.icon-container:hover {
-  width: 100px;
-  height: 100px;
+
+.social-icon:focus {
+  outline: 2px solid var(--footer-icon-hover);
+  outline-offset: 3px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+}
+
+.blog-img {
+  height: 80px;
+  width: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.15);
+}
+
+.news {
+  gap: 10px;
+}
+
+.news span {
+  display: inline-block;
+  color: #e0e0e0;
+}
+
+.contact-container p,
+.news span {
+  font-size: 0.9rem;
+  color: #d2d7dd;
+}
+
+.contact ion-icon {
+  font-size: 1.4rem;
+  color: var(--footer-icon-color);
+}
+
+.footer-link {
+  color: var(--footer-link-color);
+  transition: color 0.15s ease;
+}
+
+.footer-link:hover,
+.footer-link:focus {
+  color: var(--footer-link-hover);
+  text-decoration: underline;
+  outline: none;
+}
+
+footer small {
+  color: #aeb6bf;
+}
+
+/* Responsive tweaks */
+@media (max-width: 767.98px) {
+  .footer {
+    text-align: center;
+  }
+
+  .social {
+    justify-content: center !important;
+    margin-top: 1rem;
+  }
 }

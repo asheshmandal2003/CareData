@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
-const DoctorDetails = require("./doctorDetails");
+const DoctorDetail = require("./doctorDetails");
 
 const { Schema } = mongoose;
 

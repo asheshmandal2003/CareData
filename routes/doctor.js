@@ -8,10 +8,13 @@ const doctor = require("../controllers/doctor");
 
 const router = express.Router();
 
-router.route("/").get(doctor.doctors);
+// Route: GET /doctors - list all doctors
+router.get("/", doctor.doctors);
 
+// Route: GET /doctors/:id - show doctor profile (require login)
 router.get("/:id", isLoggedIn, doctor.doctorProfile);
 
+// Routes for adding/updating doctor details (only authorized doctors):
 router
   .route("/:id/adddetails")
   .get(isLoggedIn, authorizedRoute, doctor.addDetailsPage)
@@ -19,7 +22,7 @@ router
     isLoggedIn,
     authorizedRoute,
     doctorDetailsValidation,
-    doctor.addDetails
+    doctor.addOrUpdateDetails // updated function name here
   );
 
 module.exports = router;

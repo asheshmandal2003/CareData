@@ -1,0 +1,134 @@
+<%- layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/labtests.css" />
+
+<div class="labtest-container">
+  <h1 class="page-title">Available Lab Tests</h1>
+
+  <!-- Search input -->
+  <div class="search-wrapper">
+    <input
+      id="labTestSearch"
+      type="search"
+      placeholder="Search lab tests by name, category, or description..."
+      aria-label="Search lab tests"
+      autocomplete="off"
+      spellcheck="false"
+    />
+  </div>
+
+  <!-- Lab Tests grid -->
+  <div id="labTestsContainer" class="cards-grid">
+    <% labTests.forEach(test => { %>
+    <article
+      class="card labtest-card"
+      tabindex="0"
+      role="region"
+      aria-label="Lab test: <%= test.name %>"
+      data-name="<%= (test.name || '').toLowerCase() %>"
+      data-category="<%= (test.category || '').toLowerCase() %>"
+      data-description="<%= (test.description || '').toLowerCase() %>"
+    >
+      <header class="card-header">
+        <h2 class="card-title">
+          <a href="/labtests/<%= test._id %>" class="card-link"
+            ><%= test.name %></a
+          >
+        </h2>
+      </header>
+      <section class="card-body">
+        <p class="description">
+          <%= test.description ? (test.description.length > 120 ?
+          test.description.substring(0, 120).trim() + "..." : test.description)
+          : "No description provided." %>
+        </p>
+        <ul class="details-list">
+          <li><strong>Category:</strong> <%= test.category || "General" %></li>
+          <li><strong>Duration:</strong> <%= test.duration || "Varies" %></li>
+          <li>
+            <strong>Preparation:</strong>
+            <% if(test.preparation && test.preparation.trim().length > 0) { %>
+            <%= test.preparation %> <% } else { %> None <% } %>
+          </li>
+          <li>
+            <strong>Fasting Required:</strong> <%= test.fastingRequired ? "Yes"
+            : "No" %>
+          </li>
+          <li>
+            <strong>Availability:</strong>
+            <% if(test.availability && test.availability.weekdays.length > 0){
+            %> <%= test.availability.weekdays.join(", ") %> (<%=
+            test.availability.timing || "Timing varies" %>) <% } else { %>
+            Weekdays (Timing varies) <% } %>
+          </li>
+        </ul>
+      </section>
+      <footer class="card-footer">
+        <div class="price-badge" aria-label="Price">
+          ₹ <%= test.price.toFixed(2) %>
+        </div>
+        <a
+          href="/labtests/<%= test._id %>"
+          class="details-button"
+          aria-label="View details of <%= test.name %>"
+          >Details</a
+        >
+      </footer>
+    </article>
+    <% }) %>
+  </div>
+
+  <p id="noResultsMessage" class="no-results" aria-live="polite" hidden>
+    No lab tests found.
+  </p>
+
+  <!-- Pagination stub -->
+  <nav aria-label="Lab tests pagination" class="pagination-nav">
+    <button class="page-btn disabled" disabled>Previous</button>
+    <button class="page-btn active" aria-current="page">1</button>
+    <button class="page-btn">2</button>
+    <button class="page-btn">3</button>
+    <button class="page-btn">Next</button>
+  </nav>
+</div>
+
+<script>
+  (function () {
+    const searchInput = document.getElementById("labTestSearch");
+    const labTestsContainer = document.getElementById("labTestsContainer");
+    const noResultsMessage = document.getElementById("noResultsMessage");
+    const labTestCards = Array.from(
+      labTestsContainer.querySelectorAll(".labtest-card")
+    );
+
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    function filterLabTests() {
+      const query = searchInput.value.toLowerCase().trim();
+      let visibleCount = 0;
+      labTestCards.forEach((card) => {
+        const name = card.getAttribute("data-name");
+        const category = card.getAttribute("data-category");
+        const description = card.getAttribute("data-description");
+        if (
+          name.includes(query) ||
+          category.includes(query) ||
+          description.includes(query)
+        ) {
+          card.style.display = "";
+          visibleCount++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+      noResultsMessage.hidden = visibleCount !== 0;
+    }
+
+    searchInput.addEventListener("input", debounce(filterLabTests, 300));
+  })();
+</script>
