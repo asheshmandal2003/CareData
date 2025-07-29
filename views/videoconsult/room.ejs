@@ -1,81 +1,60 @@
 <%- layout('layout/boilerplate') %>
 
-<!-- <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>videoChatApp</title> -->
 <link rel="stylesheet" href="/css/videoconsult.css" />
-<!-- <script src="/socket.io/socket.io.js"></script> -->
-<link
-  href="https://fonts.googleapis.com/icon?family=Material+Icons"
-  rel="stylesheet"
-/>
-<!-- <script src="https://kit.fontawesome.com/c939d0e917.js"></script> -->
+
+<div class="dashboard-container">
+  <h1 class="welcome-h1">Welcome to the Video Chat Dashboard</h1>
+
+  <!-- Form POSTs username to server route that creates room -->
+  <form id="nameForm" action="/create-room" method="POST" novalidate>
+    <label for="username">Enter your name:</label>
+    <input type="text" id="username" name="username" required />
+    <button type="submit">Start Video Chat</button>
+  </form>
+
+  <hr />
+
+  <label for="link">Enter the link to join:</label>
+  <input
+    type="text"
+    id="link"
+    name="link"
+    placeholder="Paste full room URL here"
+  />
+  <button type="button" id="joinButton">Join</button>
+</div>
 
 <script>
-  const ROOM_ID = "<%= roomId %>";
+  const joinButton = document.getElementById("joinButton");
+  const linkInput = document.getElementById("link");
+
+  joinButton.addEventListener("click", () => {
+    const linkValue = linkInput.value.trim();
+
+    if (!linkValue) {
+      alert("Please enter a room link to join.");
+      return;
+    }
+
+    let username = prompt("Please enter your name to join the meeting:");
+
+    if (!username || username.trim() === "") {
+      alert("Username is required to join the meeting.");
+      return;
+    }
+
+    let url;
+    try {
+      url = new URL(linkValue);
+    } catch {
+      alert("Please enter a valid URL.");
+      return;
+    }
+
+    if (!url.searchParams.has("username")) {
+      url.searchParams.append("username", username.trim());
+    }
+
+    window.location.href = url.toString();
+  });
 </script>
-<!-- </head> -->
-
-<!-- <body> -->
-<div class="header">
-  <div class="logo">
-    <div class="header__back">
-      <i class="fas fa-angle-left"></i>
-    </div>
-    <h3>Video Chat</h3>
-  </div>
-</div>
-<div class="main">
-  <div class="main__left">
-    <div class="videos__group">
-      <div id="video-grid"></div>
-    </div>
-    <div class="options">
-      <div class="options__left">
-        <div id="stopVideo" class="options__button">
-          <span class="material-icons"> videocam </span>
-        </div>
-        <div id="muteButton" class="options__button">
-          <span class="material-icons"> mic </span>
-        </div>
-        <div id="showChat" class="options__button">
-          <span class="material-icons"> comment </span>
-        </div>
-      </div>
-      <div class="options__middle">
-        <div id="endMeeting" class="options__button">
-          <span class="material-icons"> call_end </span>
-        </div>
-      </div>
-      <div class="options__right">
-        <div id="inviteButton" class="options__button">
-          <span class="material-icons"> person_add </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="main__right">
-    <div class="main__chat_window">
-      <div class="messages"></div>
-    </div>
-    <div class="main__message_container">
-      <input
-        id="chat_message"
-        type="text"
-        autocomplete="off"
-        placeholder="Type message here..."
-      />
-      <div id="send" class="options__button">
-        <i class="fa fa-plus" aria-hidden="true"></i>
-      </div>
-    </div>
-  </div>
-</div>
-<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/videoconsult.js"></script>
-
-<!-- </body>
-    </html> -->
-<!-- </body> -->

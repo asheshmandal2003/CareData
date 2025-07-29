@@ -30,3 +30,28 @@ module.exports.bookAppointment = async (req, res, next) => {
     res.redirect(`/caredata/doctors/${req.params.id}/book-appointment`);
   }
 };
+
+module.exports.showDoctorAppointments = async (req, res, next) => {
+  try {
+    const doctorId = req.params.id;
+    // Find doctor user
+    const doctor = await User.findById(doctorId).populate("doctorDetails");
+    if (!doctor) {
+      req.flash("error", "Doctor not found");
+      return res.redirect("/caredata/doctors");
+    }
+    // Find appointments by doctorId
+    const appointments = await Appointment.find({ doctorId }).sort({
+      date: 1,
+      timeslot: 1,
+    });
+
+    res.render("appointment/doctorAppointments", {
+      doctor,
+      appointments,
+      moment,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

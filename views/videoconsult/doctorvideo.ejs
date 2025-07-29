@@ -1,15 +1,375 @@
 <%- layout('layout/boilerplate') %>
 
-    <link rel="stylesheet" href="/css/videoconsult.css">
-    <div class="dashboard-container">
-        <h1 class="welcome-h1">Welcome to the Video Chat Dashboard</h1>
-        <form id="nameForm" action="/:room" method="GET">
-            <label for="username">Enter your name:</label>
-            <input type="text" id="username" name="username" required> 
-            <button type="submit">Start Video Chat</button>
-            <label for="link">Enter the link to join:</label>
-            <input type="text" id="link" name="link">
-            <button type="button" id="joinButton">Join</button>
-        </form>
+<!-- Bootstrap 5 -->
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<!-- Font Awesome for modern icons -->
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<!-- Google Material Icons (for backward compat) -->
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+
+<style>
+  :root {
+    --primary: #2563eb;
+    --primary-dark: #13388f;
+    --background-dark: #161d29;
+    --background-deep: #222e3e;
+    --background-chat: #233042;
+    --danger: #df1c41;
+    --icon-active: #fff;
+    --icon-muted: #757575;
+    --text-light: #eceef1;
+    --border-radius: 16px;
+    --chat-bubble-bg: #e7effc;
+    --chat-bubble-txt: #34495e;
+  }
+  body,
+  html {
+    background: var(--background-dark);
+    color: var(--text-light);
+    font-family: "Poppins", "Roboto", "Segoe UI", "Arial", sans-serif;
+    height: 100%;
+  }
+  .header {
+    background: var(--primary);
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.03);
+    z-index: 2;
+  }
+  .header .fa-arrow-left {
+    position: absolute;
+    left: 25px;
+    top: 18px;
+    font-size: 26px;
+    color: #fff;
+    cursor: pointer;
+    display: none;
+  }
+  .header .fa-arrow-left.show {
+    display: block;
+  }
+  .header h3 {
+    color: #fff;
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .main {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  .main__left {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    background: var(--background-dark);
+  }
+  #video-grid {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    gap: 1.25rem;
+    overflow-y: auto;
+  }
+  video {
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 340px;
+    height: 220px;
+    object-fit: cover;
+    box-shadow: 0 3px 16px 0 rgba(25, 38, 55, 0.23);
+    background: #222;
+  }
+  .options {
+    padding: 1rem 1.5rem;
+    background: var(--background-deep);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .options__button,
+  #inviteButton,
+  #endMeeting {
+    border: none;
+    outline: none;
+    background: var(--primary);
+    color: var(--icon-active);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px #00000011;
+    transition: background 0.15s;
+  }
+  .options__button:hover,
+  #inviteButton:hover {
+    background: var(--primary-dark);
+    color: #fff;
+  }
+  .options__button.background__red,
+  #endMeeting {
+    background: var(--danger) !important;
+    color: #fff;
+  }
+  #inviteButton {
+    background: #48bb78;
+    color: #fff;
+  }
+  #inviteButton:hover {
+    background: #339b5a;
+  }
+  .options__middle {
+    margin-left: auto;
+  }
+  #endMeeting {
+    border-radius: 25px;
+    width: fit-content;
+    height: 48px;
+    font-size: 1.14rem;
+    padding: 0 22px;
+  }
+  /* Chat panel */
+  .main__right {
+    flex: 3;
+    background: var(--background-chat);
+    display: flex;
+    flex-direction: column;
+    border-left: 1.5px solid #222e3e;
+    min-width: 270px;
+  }
+  .main__chat_window {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.35rem 1rem 1rem 1.1rem;
+  }
+  .chat-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .message {
+    margin-bottom: 1.1rem;
+  }
+  .message .username {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  .message .bubble {
+    background: var(--chat-bubble-bg);
+    color: var(--chat-bubble-txt);
+    padding: 0.7rem 1rem;
+    border-radius: var(--border-radius) var(--border-radius)
+      var(--border-radius) 6px;
+    display: inline-block;
+    margin-top: 3px;
+    word-break: break-word;
+  }
+  .message.me .username {
+    color: #222;
+  }
+  .message.me .bubble {
+    background: var(--primary);
+    color: #fff;
+    border-radius: var(--border-radius) 8px var(--border-radius)
+      var(--border-radius);
+  }
+  .main__message_container {
+    display: flex;
+    padding: 0.9rem;
+    background: var(--background-deep);
+  }
+  .main__message_container input {
+    flex: 1;
+    border-radius: 20px;
+    border: none;
+    padding: 0.6rem 1.1rem;
+    margin-right: 8px;
+    font-size: 1.02rem;
+    background: #e7effc;
+  }
+  #send {
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #send:hover {
+    background: var(--primary-dark);
+  }
+  .options__mobile {
+    display: none;
+  }
+  @media (max-width: 991px) {
+    .main {
+      flex-direction: column;
+    }
+    .main__left,
+    .main__right {
+      flex: none;
+      width: 100%;
+    }
+    #video-grid {
+      flex-wrap: nowrap;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .main__right {
+      min-width: 0;
+    }
+  }
+  @media (max-width: 700px) {
+    .main__right {
+      display: none !important;
+    }
+    #showChat {
+      display: flex !important;
+    }
+    .header .fa-arrow-left {
+      display: block !important;
+    }
+  }
+</style>
+
+<script>
+  const ROOM_ID = "<%= roomId %>";
+  const user = "<%= user %>";
+</script>
+
+<!-- Header -->
+<header class="header">
+  <i
+    class="fa-solid fa-arrow-left"
+    id="headerBack"
+    tabindex="0"
+    aria-label="Back to meeting panel"
+  ></i>
+  <h3 class="text-uppercase m-0 ms-2">Video Chat</h3>
+</header>
+
+<main class="main" role="main">
+  <!-- Video feeds and controls -->
+  <section class="main__left" aria-label="Video Feeds">
+    <div
+      id="video-grid"
+      aria-live="polite"
+      aria-atomic="false"
+      tabindex="0"
+    ></div>
+    <div class="options" role="toolbar" aria-label="Meeting Controls">
+      <button id="stopVideo" class="options__button" aria-label="Toggle video">
+        <i class="fa-solid fa-video"></i>
+      </button>
+      <button
+        id="muteButton"
+        class="options__button"
+        aria-label="Toggle microphone"
+      >
+        <i class="fa-solid fa-microphone"></i>
+      </button>
+      <button
+        id="showChat"
+        class="options__button options__mobile"
+        aria-label="Show chat"
+      >
+        <i class="fa-regular fa-comments"></i>
+      </button>
+      <div class="options__middle">
+        <button
+          id="endMeeting"
+          class="btn btn-danger fw-bold px-3 ms-2"
+          aria-label="End meeting"
+        >
+          <i class="fa-solid fa-circle-xmark me-1"></i> End
+        </button>
+      </div>
+      <div class="options__right ms-2">
+        <button
+          id="inviteButton"
+          class="options__button"
+          aria-label="Invite others"
+        >
+          <i class="fa-solid fa-user-plus"></i>
+        </button>
+      </div>
     </div>
-    <script src="js/videoconsult.js"></script>
+  </section>
+  <!-- Chat panel -->
+  <section class="main__right" aria-label="Live Chat">
+    <div
+      class="main__chat_window"
+      id="chatWindow"
+      tabindex="0"
+      aria-live="polite"
+      aria-relevant="additions"
+    >
+      <ul class="chat-list messages"></ul>
+    </div>
+    <form
+      class="main__message_container"
+      id="chatForm"
+      autocomplete="off"
+      aria-label="Send a chat message"
+    >
+      <input
+        type="text"
+        id="chat_message"
+        placeholder="Type message here..."
+        aria-label="Chat message"
+      />
+      <button type="submit" id="send" aria-label="Send message">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </form>
+  </section>
+</main>
+
+<!-- Scripts: Bootstrap, FontAwesome, PeerJS, socket.io, jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/js/videoconsult.js"></script>
+
+<script>
+  // Responsive: Chat show/hide for mobile
+  $("#showChat").on("click", function () {
+    $(".main__right").show();
+    $(".main__left").hide();
+    $("#headerBack").addClass("show");
+  });
+  $("#headerBack").on("click", function () {
+    $(".main__right").hide();
+    $(".main__left").show();
+    $(this).removeClass("show");
+  });
+  // On desktop, always show both panels
+  if (window.innerWidth > 700) {
+    $(".main__right").show();
+    $(".main__left").show();
+    $("#headerBack").removeClass("show");
+  }
+</script>
