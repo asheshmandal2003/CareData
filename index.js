@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./models/user");
+const LabTest = require("./models/labTest");
 const ejsMate = require("ejs-mate");
 const path = require("path");
 const session = require("express-session");
@@ -19,6 +20,9 @@ const patientRoute = require("./routes/patientRoutes");
 const loginRoute = require("./routes/login");
 const doctorRoute = require("./routes/doctor");
 const appointmentRoute = require("./routes/appointment");
+// GET THIS:
+const { isLoggedIn } = require("./middleware/isLoggedIn");
+
 const { ExpressPeerServer } = require("peer");
 const { v4: uuidv4 } = require("uuid");
 
@@ -73,14 +77,17 @@ app.use(methodOverride("_method"));
 app.use(cors());
 
 passport.use(new passportLocal(User.authenticate()));
-
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Middleware to expose user and flash messages and page variable to all views
 app.use((req, res, next) => {
   res.locals.user = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
+  if (typeof res.locals.page === "undefined") {
+    res.locals.page = "";
+  }
   next();
 });
 
@@ -89,26 +96,80 @@ app.use("/caredata", patientRoute);
 app.use("/caredata/doctors", doctorRoute);
 app.use("/caredata/doctors", appointmentRoute);
 
-// Serve the dashboard page where user can create or join a room
-app.get("/room", (req, res) => {
-  res.render("videoconsult/room"); // Your dashboard view (room.ejs)
+/* ======== ROUTE PROTECTION SECTION ======= */
+
+// Home page (public)
+app.get("/caredata", (req, res) => {
+  res.locals.page = "home";
+  res.render("home/index");
 });
 
-// Backend route to create a new room (generate UUID) and redirect with username
+// Doctors list (public - but you can add isLoggedIn if you want to protect it)
+app.get("/caredata/doctors", async (req, res, next) => {
+  try {
+    const doctors = await User.find({}).populate("doctorDetails");
+    res.render("doctor/findDoctors", { doctors, page: "doctors" });
+  } catch (e) {
+    next(e);
+  }
+});
+
+/* --- PROTECT ALL LABTEST ROUTES BELOW THIS LINE --- */
+
+// List LabTests
+app.get("/labtests", isLoggedIn, async (req, res, next) => {
+  try {
+    const labTests = await LabTest.find({}).sort({ name: 1 });
+    res.render("labtests/labtests", { labTests, page: "labtests" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// LabTest Details
+app.get("/labtests/:id", isLoggedIn, async (req, res, next) => {
+  try {
+    const labTest = await LabTest.findById(req.params.id);
+    if (!labTest) {
+      return next(new AppError(404, "Lab Test Not Found"));
+    }
+    res.render("labtests/show", { labTest, page: "labtests" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/* === END LABTEST PROTECTION === */
+
+// Video consultation dashboard route
+app.get("/video", (req, res) => {
+  res.render("videoconsult/room", { page: "video" });
+});
+
+// Video room creation and joining routes
+app.get("/room", (req, res) => {
+  res.render("videoconsult/room", { page: "video" });
+});
+
 app.post("/create-room", (req, res) => {
   const { username } = req.body;
-
   if (!username || username.trim() === "") {
     req.flash("error", "Username is required to create a room.");
     return res.redirect("/room");
   }
-
   const roomId = uuidv4();
   return res.redirect(
     `/${roomId}?username=${encodeURIComponent(username.trim())}`
   );
 });
 
+app.get("/:room", (req, res) => {
+  const roomId = req.params.room;
+  const user = req.query.username || "Anonymous";
+  res.render("videoconsult/doctorvideo", { roomId, user, page: "video" });
+});
+
+// Patient meeting join routes
 app.get("/patient/join-meeting", (req, res) => {
   res.render("patientJoinMeeting");
 });
@@ -118,45 +179,31 @@ app.post("/patient/join-meeting", (req, res) => {
   res.render("patientMeeting", { meetingLink });
 });
 
-app.get("/video", (req, res) => {
-  // Add isLoggedIn middleware if needed here
-  res.render("videoconsult/room");
-});
-
+// PeerJS server for WebRTC signaling
 app.use("/peerjs", ExpressPeerServer(server, opinions));
 
-// Root route redirects to your dashboard
+// Root redirect
 app.get("/", (req, res) => {
   res.redirect("/caredata");
 });
 
-// Dynamic room route, renders the video consultation room; this MUST come after other routes
-app.get("/:room", (req, res) => {
-  const roomId = req.params.room;
-  const user = req.query.username || "Anonymous";
-  res.render("videoconsult/doctorvideo", { roomId, user });
-});
-
-// Socket.io connection handling
+// Socket.io connections and handlers
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName) => {
     socket.join(roomId);
-
     setTimeout(() => {
       socket.to(roomId).emit("user-connected", userId);
     }, 1000);
-
     socket.on("message", (message) => {
       io.to(roomId).emit("createMessage", message, userName);
     });
-
     socket.on("end-meeting", (roomId) => {
       io.to(roomId).emit("meeting-ended");
     });
   });
 });
 
-// Catch-all for 404
+// 404 handler
 app.all("*", (req, res, next) => {
   return next(new AppError(404, "Page Not Found!"));
 });

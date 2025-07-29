@@ -1,27 +1,79 @@
 <% if(success.length){ %>
 <div
-  class="alert alert-success alert-dismissible fade show container mt-3 absolute-top"
-  role="alert"
+  aria-live="polite"
+  aria-atomic="true"
+  class="position-fixed top-0 end-0 p-3"
+  style="z-index: 1080; right: 1rem; top: 1rem"
+  id="successToast"
 >
-  <strong><%= success %></strong>
-  <button
-    type="button"
-    class="btn-close"
-    data-bs-dismiss="alert"
-    aria-label="Close"
-  ></button>
+  <div
+    class="toast align-items-center text-bg-success border-0 show shadow"
+    role="alert"
+  >
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="fas fa-check-circle me-2"></i>
+        <%= success %>
+      </div>
+      <button
+        type="button"
+        class="btn-close btn-close-white me-2 m-auto"
+        aria-label="Close"
+        id="successToastClose"
+      ></button>
+    </div>
+  </div>
 </div>
 <% } %> <% if(error.length){ %>
 <div
-  class="alert alert-danger alert-dismissible fade show container static-top"
-  role="alert"
+  aria-live="polite"
+  aria-atomic="true"
+  class="position-fixed top-0 end-0 p-3"
+  style="z-index: 1080; right: 1rem; top: 1rem"
+  id="errorToast"
 >
-  <strong><%= error %></strong>
-  <button
-    type="button"
-    class="btn-close"
-    data-bs-dismiss="alert"
-    aria-label="Close"
-  ></button>
+  <div
+    class="toast align-items-center text-bg-danger border-0 show shadow"
+    role="alert"
+  >
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="fas fa-times-circle me-2"></i>
+        <%= error %>
+      </div>
+      <button
+        type="button"
+        class="btn-close btn-close-white me-2 m-auto"
+        aria-label="Close"
+        id="errorToastClose"
+      ></button>
+    </div>
+  </div>
 </div>
 <% } %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Util to auto-hide and fade out any toast by id
+    function autoHideToast(toastId, closeBtnId, timeout) {
+      var toast = document.getElementById(toastId);
+      var closeBtn = document.getElementById(closeBtnId);
+      if (!toast) return;
+      let fadeAndRemove = () => {
+        toast.style.transition = "opacity 0.4s";
+        toast.style.opacity = 0;
+        setTimeout(() => {
+          toast.remove();
+        }, 400);
+      };
+      // Auto-hide after timeout
+      setTimeout(() => {
+        fadeAndRemove();
+      }, timeout);
+      // Manual close
+      if (closeBtn) closeBtn.onclick = fadeAndRemove;
+    }
+    autoHideToast("successToast", "successToastClose", 4000);
+    autoHideToast("errorToast", "errorToastClose", 6000);
+  });
+</script>

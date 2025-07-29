@@ -1,71 +1,124 @@
 <link rel="stylesheet" href="/css/icon.css" />
 <link rel="stylesheet" href="/css/footer.css" />
-<div class="row g-0 pt-5 footer text-light">
-  <div class="col-2 w-30 mb-4">
-    <div class="caredata">
-      <h5 class="mb-4">CareData</h5>
-      <p>
+<link rel="stylesheet" href="/css/bootstrap.min.css" />
+<script type="module" src="/js/icon.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+
+<div class="container-fluid footer text-light py-5 px-4">
+  <div class="row gy-4 gx-5 justify-content-between flex-wrap">
+    <!-- About -->
+    <div class="col-12 col-md-6 col-lg-3">
+      <h5 class="mb-4 text-uppercase fw-bold">CareData</h5>
+      <p class="small fw-light">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit libero
         eligendi iure quaerat placeat officia?
       </p>
-    </div>
-    <div class="social">
-      <ion-icon name="logo-linkedin" class="icon"></ion-icon>
-      <ion-icon name="logo-facebook" class="icon"></ion-icon>
-      <ion-icon name="logo-instagram" class="icon"></ion-icon>
-    </div>
-  </div>
-  <div class="col-2 w-30">
-    <div class="latest-news">
-      <h5 class="mb-4">Latest News</h5>
-      <div class="news mb-3">
-        <img src="/image/img1.jpg" class="blog-img me-3" alt="image" />
-        <span>Lorem ipsum dolor sit amet, consectetur </span>
+      <div
+        class="social d-flex gap-3 mt-3"
+        role="list"
+        aria-label="Social media links"
+      >
+        <a
+          href="#"
+          role="listitem"
+          class="social-icon"
+          aria-label="LinkedIn"
+          tabindex="0"
+        >
+          <ion-icon name="logo-linkedin"></ion-icon>
+        </a>
+        <a
+          href="#"
+          role="listitem"
+          class="social-icon"
+          aria-label="Facebook"
+          tabindex="0"
+        >
+          <ion-icon name="logo-facebook"></ion-icon>
+        </a>
+        <a
+          href="#"
+          role="listitem"
+          class="social-icon"
+          aria-label="Instagram"
+          tabindex="0"
+        >
+          <ion-icon name="logo-instagram"></ion-icon>
+        </a>
       </div>
-      <div class="news mb-3">
+    </div>
+
+    <!-- Latest News -->
+    <div class="col-12 col-md-6 col-lg-3">
+      <h5 class="mb-4 text-uppercase fw-bold">Latest News</h5>
+      <div class="news d-flex align-items-center mb-3">
+        <img
+          src="/image/img1.jpg"
+          class="blog-img me-3 rounded-2"
+          alt="News image 1"
+        />
+        <span class="small text-light"
+          >Lorem ipsum dolor sit amet, consectetur</span
+        >
+      </div>
+      <div class="news d-flex align-items-center mb-3">
         <img
           src="https://img.freepik.com/free-photo/overhead-view-laptop-stethoscope-medical-uniform-green-backdrop_23-2148129641.jpg?w=900&t=st=1691861552~exp=1691862152~hmac=a0591d49efb3bc6c80c832917ada3b28a5b509d645636bb20f88897485690dce"
-          alt="image"
-          class="blog-img me-3"
-          style="width: 100px"
+          alt="News image 2"
+          class="blog-img me-3 rounded-2"
         />
-        <span>Lorem ipsum dolor sit amet.</span>
+        <span class="small text-light">Lorem ipsum dolor sit amet.</span>
       </div>
     </div>
-  </div>
-  <div class="col-2 w-30 mb-5">
-    <h5 class="mb-4">Quick Links</h5>
-    <p>Home</p>
-    <p>About</p>
-    <p>Services</p>
-    <p>Work</p>
-    <p>Blog</p>
-    <p>Contact</p>
-  </div>
-  <div class="col-2 w-25 mb-4">
-    <h5 class="mb-4">Have a Question</h5>
-    <div class="contact-container">
-      <div class="contact mb-2">
-        <div>
-          <ion-icon name="location-outline" class="icon"></ion-icon>
+
+    <!-- Quick Links -->
+    <div class="col-12 col-md-6 col-lg-2">
+      <h5 class="mb-4 text-uppercase fw-bold">Quick Links</h5>
+      <nav aria-label="Quick links navigation" class="d-flex flex-column gap-2">
+        <a href="#" class="footer-link small">Home</a>
+        <a href="#" class="footer-link small">About</a>
+        <a href="#" class="footer-link small">Services</a>
+        <a href="#" class="footer-link small">Work</a>
+        <a href="#" class="footer-link small">Blog</a>
+        <a href="#" class="footer-link small">Contact</a>
+      </nav>
+    </div>
+
+    <!-- Contact -->
+    <div class="col-12 col-md-6 col-lg-3">
+      <h5 class="mb-4 text-uppercase fw-bold">Have a Question</h5>
+      <address
+        class="contact-container d-flex flex-column gap-3 fw-light small"
+      >
+        <div class="contact d-flex align-items-center gap-3">
+          <ion-icon
+            name="location-outline"
+            class="icon"
+            aria-hidden="true"
+          ></ion-icon>
+          <p class="m-0">A-11, Kalyani, West Bengal, India</p>
         </div>
-        <p>A-11, Kalyani, West Bengal, India</p>
-      </div>
-      <div class="contact mb-2">
-        <div>
-          <ion-icon name="call-outline" class="icon"></ion-icon>
+        <div class="contact d-flex align-items-center gap-3">
+          <ion-icon
+            name="call-outline"
+            class="icon"
+            aria-hidden="true"
+          ></ion-icon>
+          <p class="m-0">+91 3648928368</p>
         </div>
-        <p>+91 3648928368</p>
-      </div>
-      <div class="contact mb-5">
-        <div>
-          <ion-icon name="mail-outline" class="icon"></ion-icon>
+        <div class="contact d-flex align-items-center gap-3">
+          <ion-icon
+            name="mail-outline"
+            class="icon"
+            aria-hidden="true"
+          ></ion-icon>
+          <p class="m-0">feedback.caredata1236@gmail.com</p>
         </div>
-        <p>feedback.caredata1236@gmail.com</p>
-      </div>
+      </address>
     </div>
   </div>
-  <div class="col-12 d-flex justify-content-center mb-3">
-    <p>Copyright &copy;CareData 2023 All Rights Reserved</p>
-  </div>
+
+  <footer class="text-center mt-5 border-top border-secondary pt-3">
+    <small class="fw-light">&#169; CareData 2023. All Rights Reserved.</small>
+  </footer>
 </div>

@@ -1,0 +1,202 @@
+/* Reset some basics if needed */
+.labtest-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.page-title {
+    color: #2c3a76;
+    /* dark blue */
+    font-weight: 700;
+    font-size: 2.75rem;
+    margin-bottom: 2rem;
+    user-select: none;
+}
+
+.search-wrapper {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+#labTestSearch {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1.5px solid #7096f3;
+    /* light blue border */
+    border-radius: 0.5rem;
+    transition: box-shadow 0.25s, border-color 0.25s;
+}
+
+#labTestSearch:focus {
+    outline: none;
+    border-color: #3c59a5;
+    /* darker blue */
+    box-shadow: 0 0 8px rgba(60, 89, 165, 0.5);
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.8rem 1.5rem;
+}
+
+.labtest-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 22px rgba(44, 62, 80, 0.2);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    user-select: none;
+    outline-offset: 3px;
+}
+
+.labtest-card:focus-visible,
+.labtest-card:hover {
+    outline: none;
+    box-shadow: 0 12px 45px rgba(44, 62, 80, 0.45);
+    transform: translateY(-6px);
+    cursor: pointer;
+}
+
+.card-header {
+    padding: 1.4rem 1.8rem 0 1.8rem;
+}
+
+.card-title {
+    font-size: 1.4rem;
+    color: #3c59a5;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.card-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.card-link:hover,
+.card-link:focus {
+    text-decoration: underline;
+    color: #1e3f7a;
+    outline: none;
+}
+
+.card-body {
+    padding: 0.5rem 1.8rem 1.8rem 1.8rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.description {
+    font-size: 0.875rem;
+    color: #6c7a8d;
+    min-height: 72px;
+    margin-bottom: 1.2rem;
+}
+
+.details-list {
+    list-style: none;
+    padding-left: 0;
+    color: #5d6eab;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    margin: 0 0 1.5rem;
+}
+
+.details-list li strong {
+    color: #3c59a5;
+    user-select: text;
+}
+
+.card-footer {
+    padding: 1rem 1.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #d6ddeb;
+}
+
+.price-badge {
+    background-color: #4db173;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    user-select: none;
+}
+
+.details-button {
+    background: none;
+    border: 2px solid #3c59a5;
+    color: #3c59a5;
+    padding: 0.325rem 1rem;
+    border-radius: 1.25rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
+}
+
+.details-button:hover,
+.details-button:focus {
+    background-color: #3c59a5;
+    color: #fff;
+    outline: none;
+    cursor: pointer;
+}
+
+.no-results {
+    color: #687dba;
+    font-size: 1.25rem;
+    user-select: none;
+    margin-top: 3rem;
+    text-align: center;
+}
+
+/* Pagination */
+.pagination-nav {
+    margin-top: 3rem;
+    text-align: center;
+}
+
+.page-btn {
+    border: none;
+    background-color: #7096f3;
+    color: white;
+    padding: 0.55rem 0.9rem;
+    margin: 0 0.24rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    user-select: none;
+}
+
+.page-btn:hover:not(.disabled):not(.active),
+.page-btn:focus:not(.disabled):not(.active) {
+    background-color: #3c59a5;
+    outline: none;
+}
+
+.page-btn.disabled,
+.page-btn[disabled] {
+    background-color: #c5c9de;
+    cursor: not-allowed;
+    color: #6f6f6f;
+}
+
+.page-btn.active {
+    background-color: #1e3f7a;
+    cursor: default;
+    color: #fff;
+}

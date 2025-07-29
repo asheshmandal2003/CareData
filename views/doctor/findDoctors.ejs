@@ -1,79 +1,520 @@
 <%- layout('layout/boilerplate') %>
-
 <link rel="stylesheet" href="/css/icon.css" />
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
 
-<div class="row">
-  <div class="col-8">
-    <div class="input-group mb-4 offset-3">
-      <span class="input-group-text p-3 shadow"
-        ><ion-icon name="search-outline" class="icon"></ion-icon
-      ></span>
-      <input
-        type="text"
-        class="form-control p-3 shadow"
-        placeholder="Search a doctor..."
-        aria-label="Username"
-        aria-describedby="basic-addon1"
-      />
+<div class="bg-light py-4 mb-4 border-bottom">
+  <div class="container text-center">
+    <h1 class="fw-bold mb-1 text-primary">
+      <i class="fas fa-user-md me-2"></i>Find A Doctor
+    </h1>
+    <div class="lead text-muted mb-0">
+      Book appointments instantly with qualified specialists
     </div>
   </div>
-
-  <% doctors.map(doctor=>{ %> <% if(doctor.entryType === "doctor"){ %>
-  <div class="col-8 offset-2 border mb-3 rounded p-5 shadow">
-    <div class="header-content d-flex flex-row align-items-center mb-3">
-      <a href="/caredata/doctors/<%= doctor._id %>">
-        <img
-          class="rounded-circle me-5"
-          src="<%= doctor.image.path %>"
-          alt="avatar"
-          height="100px"
-          width="100px"
-        />
-      </a>
-
-      <div class="doctor-info d-flex flex-column w-100">
-        <a
-          style="text-decoration: none"
-          href="/caredata/doctors/<%= doctor._id %>"
-          ><h5 class="text-primary"><%= doctor.fullName %></h5></a
-        >
-        <% if(doctor.doctorDetails && doctor.doctorDetails.speciality){ %>
-        <small class="text-secondary"
-          ><%= doctor.doctorDetails.speciality %></small
-        >
-        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.experience){
-        %>
-        <small class="text-secondary"
-          ><%= doctor.doctorDetails.experience %> years experience
-          overall</small
-        >
-        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.location){ %>
-        <b><%= doctor.doctorDetails.location %></b>
-        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.clinicName){
-        %>
-        <span><%= doctor.doctorDetails.clinicName %></span>
-        <% } %> <% if(doctor.doctorDetails && doctor.doctorDetails.fees){ %>
-        <p>₹<%= doctor.doctorDetails.fees %> Consultation at clinic</p>
-        <% } %>
-        <hr class="w-100" />
-      </div>
-    </div>
-    <div class="footer-content d-flex justify-content-between">
-      <div class="star-review"></div>
-      <div class="d-flex flex-column">
-        <div class="d-flex">
-          <ion-icon name="calendar-number-outline" class="icon"></ion-icon>
-          <p class="me-1">Available on</p>
-          <p>Sunday, 27 Aug</p>
-        </div>
-        <a
-          href="/caredata/doctors/<%= doctor._id %>/book-appointment"
-          type="button"
-          class="btn btn-info text-light rounded-pill"
-          >Book Appointment</a
-        >
-      </div>
-    </div>
-  </div>
-  <% } %> <% }) %>
 </div>
+
+<div class="container">
+  <!-- SEARCH/FILTER/SUGGESTIONS -->
+  <div class="row mb-4">
+    <div class="col-12 col-lg-9 mx-auto">
+      <div class="input-group shadow-sm rounded mb-2">
+        <span class="input-group-text bg-white border-0 text-secondary"
+          ><i class="fas fa-search"></i
+        ></span>
+        <input
+          id="doctorSearch"
+          class="form-control border-0"
+          type="text"
+          list="suggestions"
+          autocomplete="off"
+          placeholder="Search by name, speciality or location"
+        />
+        <datalist id="suggestions">
+          <% doctors?.forEach(d => { %> <% if(d?.fullName){ %>
+          <option value="<%= d?.fullName %>">
+            <% } %> <% if(d?.doctorDetails?.speciality){ %>
+          </option>
+
+          <option value="<%= d?.doctorDetails?.speciality %>">
+            <% } %> <% if(d?.doctorDetails?.location){ %>
+          </option>
+
+          <option value="<%= d?.doctorDetails?.location %>">
+            <% } %> <% }) %>
+          </option>
+        </datalist>
+
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#filterCollapse"
+        >
+          <i class="fas fa-sliders-h"></i>
+        </button>
+      </div>
+
+      <div class="collapse" id="filterCollapse">
+        <div class="p-3 border rounded bg-white shadow-sm">
+          <form id="doctorFilterForm" class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Speciality</label>
+              <select class="form-select" name="speciality">
+                <option value="">All</option>
+                <% // Get unique specialities from loaded doctors %> <% const
+                specSet = new Set(); doctors?.forEach(d =>
+                d?.doctorDetails?.speciality &&
+                specSet.add(d.doctorDetails.speciality)); %> <%
+                Array.from(specSet).sort().forEach(spec => { %>
+                <option value="<%= spec %>"><%= spec %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Experience</label>
+              <select class="form-select" name="experience">
+                <option value="">Any</option>
+                <option value="0">0-5 years</option>
+                <option value="5">5-10 years</option>
+                <option value="10">10+ years</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Fee</label>
+              <select class="form-select" name="fee">
+                <option value="">Any</option>
+                <option value="500">&lt; ₹500</option>
+                <option value="1000">&lt; ₹1000</option>
+                <option value="1001">₹1000+</option>
+              </select>
+            </div>
+            <div class="col-12 text-end">
+              <button type="reset" class="btn btn-link">Clear</button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="applyFiltersBtn"
+              >
+                Apply
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Quick chips for top specialties (interactive pills, click to search) -->
+      <div class="my-3">
+        <div class="d-flex flex-wrap gap-2">
+          <% Array.from(specSet).slice(0,4).forEach(spec => { %>
+          <span
+            class="badge bg-primary bg-opacity-10 text-primary rounded-pill quick-spec-pill"
+            style="cursor: pointer"
+          >
+            <i class="fas fa-tag me-1"></i><%= spec %>
+          </span>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SORT & COUNT -->
+  <div class="row mb-3">
+    <div
+      class="col-12 col-lg-9 mx-auto d-flex align-items-center justify-content-between"
+    >
+      <div>
+        <span class="fw-semibold text-secondary">
+          <span id="doctorCount"
+            ><%= doctors?.filter(d => d?.entryType === 'doctor').length %></span
+          >
+          doctor<%= doctors?.filter(d => d?.entryType === 'doctor').length !== 1
+          ? 's' : '' %> found
+        </span>
+      </div>
+      <div class="dropdown">
+        <button
+          class="btn btn-sm btn-outline-secondary dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+        >
+          <i class="fas fa-sort me-1"></i>
+          <span id="sortLabel">Sort</span>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item sort-option" data-sort="experience" href="#"
+              >Experience</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item sort-option" data-sort="fee" href="#"
+              >Fees</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item sort-option" data-sort="name" href="#"
+              >Name</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCTOR CARDS -->
+  <div class="row" id="doctorCardsContainer">
+    <% doctors?.forEach(function(doctor, idx) { %> <% if(doctor?.entryType ===
+    'doctor') { %>
+    <div
+      class="col-12 col-md-6 col-lg-4 mb-4 doctor-card"
+      data-index="<%= idx %>"
+    >
+      <div class="card h-100 shadow-sm border-0 position-relative">
+        <div class="position-absolute end-0 top-0 m-2">
+          <% if(idx < 3){ %>
+          <span class="badge bg-warning-subtle text-warning px-2 py-1">
+            <i class="fas fa-fire me-1"></i> Top Rated
+          </span>
+          <% } %> <% if(doctor?.doctorDetails?.fees === 0){ %>
+          <span class="badge bg-success text-white px-2 py-1">Free</span>
+          <% } %>
+        </div>
+        <div class="card-body d-flex">
+          <% const fullNameSafe = (doctor?.fullName || '').trim(); const
+          cleanName = fullNameSafe.replace(/^Dr\.\s*/i, '').trim(); const
+          initials = cleanName.split(' ').filter(Boolean).map(word =>
+          word[0]).join('').toUpperCase().slice(0,2) || 'DR'; const colors =
+          ['primary','success','danger','warning','info','secondary','dark'];
+          const colorIndex = cleanName ? cleanName.charCodeAt(0) % colors.length
+          : 0; const avatarBgClass = "bg-" + colors[colorIndex]; %> <%
+          if(doctor?.image?.path) { %>
+          <img
+            src="<%= doctor?.image?.path %>"
+            alt=""
+            class="rounded-circle border border-2 me-3 flex-shrink-0"
+            width="64"
+            height="64"
+            style="object-fit: cover"
+            onerror="this.style.display='none'; this.nextElementSibling.classList.remove('d-none');"
+          />
+          <div
+            class="d-none align-items-center justify-content-center rounded-circle text-white fw-bold fs-4 <%= avatarBgClass %> me-3"
+            style="width: 64px; height: 64px"
+          >
+            <%= initials %>
+          </div>
+          <% } else { %>
+          <div
+            class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold fs-4 <%= avatarBgClass %> me-3"
+            style="width: 64px; height: 64px"
+          >
+            <%= initials %>
+          </div>
+          <% } %>
+          <div class="flex-grow-1">
+            <a
+              href="/caredata/doctors/<%= doctor?._id %>"
+              class="text-decoration-none"
+            >
+              <div class="fw-bold text-primary small mb-0">
+                <%= fullNameSafe.startsWith('Dr.') ? fullNameSafe : 'Dr. ' +
+                fullNameSafe %>
+              </div>
+            </a>
+            <div class="mb-0">
+              <% if(doctor?.doctorDetails?.speciality){ %>
+              <span
+                class="badge bg-primary bg-opacity-10 text-primary fw-normal me-1"
+              >
+                <%= doctor?.doctorDetails?.speciality %>
+              </span>
+              <% } %> <% if(doctor?.doctorDetails?.experience){ %>
+              <span
+                class="badge bg-success bg-opacity-10 text-success fw-normal"
+              >
+                <%= doctor?.doctorDetails?.experience %> yr exp
+              </span>
+              <% } %>
+            </div>
+            <% if(doctor?.doctorDetails?.location) { %>
+            <div class="text-secondary small mb-1">
+              <i class="fas fa-map-marker-alt me-1"></i>
+              <%= doctor?.doctorDetails?.location %>
+            </div>
+            <% } %> <% if(doctor?.doctorDetails?.fees !== undefined) { %>
+            <div class="text-dark fw-bold mb-1" style="font-size: 0.98em">
+              <% if(doctor?.doctorDetails?.fees > 0) { %> ₹<%=
+              doctor?.doctorDetails?.fees %>
+              <span class="text-muted fw-normal">consultation</span>
+              <% } else { %>
+              <span class="text-success">Free consultation</span>
+              <% } %>
+            </div>
+            <% } %> <% if(doctor?.doctorDetails?.subSpecialities?.length > 0){
+            %>
+            <div class="small text-muted mb-1">
+              <i class="fas fa-star-of-life me-1"></i>
+              <%= doctor?.doctorDetails?.subSpecialities?.slice(0,2).join(", ")
+              %> <% if(doctor?.doctorDetails?.subSpecialities?.length > 2){ %>
+              +<%= doctor?.doctorDetails?.subSpecialities.length - 2 %> more <%
+              } %>
+            </div>
+            <% } %>
+            <div>
+              <button
+                class="btn btn-sm btn-info rounded-pill mt-1 text-white quick-view-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#doctorModal_<%= idx %>"
+              >
+                <i class="fas fa-eye me-1"></i>Quick View
+              </button>
+              <a
+                href="/caredata/doctors/<%= doctor?._id %>/book-appointment"
+                class="btn btn-sm btn-outline-primary rounded-pill mt-1 ms-2"
+                >Book</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal / Offcanvas for Quick View -->
+      <div
+        class="modal fade"
+        id="doctorModal_<%= idx %>"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="doctorModalLabel<%= idx %>"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-md"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+              <h5 class="modal-title" id="doctorModalLabel<%= idx %>">
+                <i class="fas fa-user-md me-2"></i>Dr. <%= cleanName %>
+              </h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="d-flex align-items-center mb-2">
+                <% if(doctor?.image?.path) { %>
+                <img
+                  src="<%= doctor?.image?.path %>"
+                  alt=""
+                  class="rounded-circle border border-2 me-3 flex-shrink-0"
+                  width="64"
+                  height="64"
+                  style="object-fit: cover"
+                />
+                <% } else { %>
+                <div
+                  class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold fs-4 <%= avatarBgClass %> me-3"
+                  style="width: 64px; height: 64px"
+                >
+                  <%= initials %>
+                </div>
+                <% } %>
+                <div>
+                  <div class="fw-bold text-primary mb-0">
+                    <%= fullNameSafe.startsWith('Dr.') ? fullNameSafe : 'Dr. ' +
+                    fullNameSafe %>
+                  </div>
+                  <% if(doctor?.doctorDetails?.speciality){ %>
+                  <span
+                    class="badge bg-primary bg-opacity-10 text-primary fw-normal me-1"
+                  >
+                    <%= doctor?.doctorDetails?.speciality %>
+                  </span>
+                  <% } %>
+                </div>
+              </div>
+              <% if(doctor?.doctorDetails?.aboutDoctor) { %>
+              <div class="mb-2">
+                <span class="text-muted">About:</span> <%=
+                doctor?.doctorDetails?.aboutDoctor %>
+              </div>
+              <% } %>
+              <ul class="mb-0 small">
+                <% if(doctor?.doctorDetails?.experience){ %>
+                <li>
+                  Experience:
+                  <b><%= doctor.doctorDetails.experience %> years</b>
+                </li>
+                <% } %> <% if(doctor?.doctorDetails?.clinicName){ %>
+                <li>Clinic: <%= doctor.doctorDetails.clinicName %></li>
+                <% } %> <% if(doctor?.doctorDetails?.location){ %>
+                <li>Location: <%= doctor.doctorDetails.location %></li>
+                <% } %> <% if(doctor?.doctorDetails?.education){ %>
+                <li>Education: <%= doctor.doctorDetails.education %></li>
+                <% } %> <% if(doctor?.doctorDetails?.awards?.length > 0){ %>
+                <li>Awards: <%= doctor.doctorDetails.awards.join(", ") %></li>
+                <% } %> <% if(doctor?.doctorDetails?.contactNumber){ %>
+                <li>
+                  Contact:
+                  <a href="tel:<%= doctor.doctorDetails.contactNumber %>"
+                    ><%= doctor.doctorDetails.contactNumber %></a
+                  >
+                </li>
+                <% } %> <% if(doctor?.doctorDetails?.email){ %>
+                <li>
+                  Email:
+                  <a href="mailto:<%= doctor.doctorDetails.email %>"
+                    ><%= doctor.doctorDetails.email %></a
+                  >
+                </li>
+                <% } %>
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <a
+                href="/caredata/doctors/<%= doctor?._id %>/book-appointment"
+                class="btn btn-primary rounded-pill"
+                >Book Appointment</a
+              >
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %> <% }); %>
+  </div>
+
+  <% if(doctors?.filter(d => d?.entryType === 'doctor').length === 0){ %>
+  <div class="row">
+    <div class="col-12 text-center py-5">
+      <div class="mb-4">
+        <i class="fas fa-user-md fa-3x text-muted"></i>
+      </div>
+      <h4 class="text-muted">No doctors found</h4>
+      <p class="text-muted small">Try adjusting your search criteria.</p>
+    </div>
+  </div>
+  <% } %>
+</div>
+
+<script>
+  // Helper for counting visible cards
+  function updateDoctorCount() {
+    const visible = document.querySelectorAll(
+      ".doctor-card:not(.d-none)"
+    ).length;
+    document.getElementById("doctorCount").textContent = visible;
+  }
+
+  // Live search with count
+  document
+    .getElementById("doctorSearch")
+    .addEventListener("input", function () {
+      const searchTerm = this.value.toLowerCase();
+      document.querySelectorAll(".doctor-card").forEach((card) => {
+        const text = card.textContent.toLowerCase();
+        card.classList.toggle("d-none", !text.includes(searchTerm));
+      });
+      updateDoctorCount();
+    });
+
+  // Filter logic
+  document.getElementById("applyFiltersBtn").onclick = function () {
+    const form = document.getElementById("doctorFilterForm");
+    const speciality = form.speciality.value.trim();
+    const exp = form.experience.value;
+    const fee = form.fee.value;
+    document.querySelectorAll(".doctor-card").forEach((card) => {
+      let show = true;
+      const text = card.textContent;
+      // Speciality filter
+      if (speciality && !text.includes(speciality)) show = false;
+      // Experience filter
+      if (exp) {
+        const years = parseInt((text.match(/([0-9]+) yr/i) || [])[1] || 0, 10);
+        if (exp === "0" && (years < 0 || years > 5)) show = false;
+        if (exp === "5" && (years <= 5 || years > 10)) show = false;
+        if (exp === "10" && years < 10) show = false;
+      }
+      // Fee filter
+      if (fee) {
+        const price = parseInt((text.match(/₹([0-9]+)/) || [])[1] || 0, 10);
+        if (fee == "500" && !(price < 500)) show = false;
+        if (fee == "1000" && !(price >= 500 && price <= 1000)) show = false;
+        if (fee == "1001" && !(price > 1000)) show = false;
+      }
+      card.classList.toggle("d-none", !show);
+    });
+    updateDoctorCount();
+  };
+
+  // Quick specialty pill
+  document.querySelectorAll(".quick-spec-pill").forEach((pill) => {
+    pill.onclick = function () {
+      document.getElementById("doctorSearch").value = pill.textContent.trim();
+      document.getElementById("doctorSearch").dispatchEvent(new Event("input"));
+    };
+  });
+
+  // Sorting
+  document.querySelectorAll(".sort-option").forEach((opt) => {
+    opt.onclick = function (e) {
+      e.preventDefault();
+      const type = this.getAttribute("data-sort");
+      const cards = Array.from(document.querySelectorAll(".doctor-card"));
+      const container = document.getElementById("doctorCardsContainer");
+      cards.sort((a, b) => {
+        const textA = a.textContent.toLowerCase();
+        const textB = b.textContent.toLowerCase();
+        if (type === "experience") {
+          const expA = parseInt((textA.match(/([0-9]+) yr/i) || ["0"])[1]);
+          const expB = parseInt((textB.match(/([0-9]+) yr/i) || ["0"])[1]);
+          return (expB || 0) - (expA || 0); // desc
+        }
+        if (type === "fee") {
+          const feeA = parseInt((textA.match(/₹([0-9]+)/) || ["0"])[1]);
+          const feeB = parseInt((textB.match(/₹([0-9]+)/) || ["0"])[1]);
+          return (feeA || 0) - (feeB || 0); // asc
+        }
+        if (type === "name") {
+          return textA.localeCompare(textB);
+        }
+        return 0;
+      });
+      cards.forEach((card) => container.appendChild(card));
+      document.getElementById("sortLabel").textContent =
+        type.charAt(0).toUpperCase() + type.slice(1);
+      updateDoctorCount(); // keep count updated in case some are hidden
+    };
+  });
+
+  // Enter key in search triggers first visible quick view modal
+  document
+    .getElementById("doctorSearch")
+    .addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const card = document.querySelector(
+          ".doctor-card:not(.d-none) .quick-view-btn"
+        );
+        if (card) {
+          card.click();
+        }
+      }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

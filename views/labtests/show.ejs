@@ -1,0 +1,167 @@
+<%- layout('layout/boilerplate') %>
+<link rel="stylesheet" href="/css/labtests.css" />
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+
+<div class="labtest-container">
+  <!-- Consistent header style -->
+  <div class="mb-4">
+    <a href="/labtests" class="details-button" style="float: right"
+      ><i class="fas fa-arrow-left"></i> Back to list</a
+    >
+    <h1 class="page-title mb-1"><%= labTest?.name %></h1>
+    <span
+      class="badge bg-primary bg-opacity-10 text-primary fw-normal mb-2 me-2"
+      style="font-size: 1rem"
+      ><%= labTest?.category || "General" %></span
+    >
+    <% if(labTest?.tags?.length) { %> <% labTest.tags.slice(0,3).forEach(tag =>
+    { %>
+    <span class="badge bg-secondary-subtle text-dark me-1"><%= tag %></span>
+    <% }) %> <% } %>
+  </div>
+
+  <!-- Main Detail Card, styled like home cards -->
+  <div class="cards-grid">
+    <article
+      class="card labtest-card"
+      tabindex="0"
+      role="region"
+      aria-label="Lab test details: <%= labTest?.name %>"
+    >
+      <header class="card-header" style="padding-bottom: 0">
+        <h2 class="card-title mb-0" style="font-size: 1.5rem">
+          <%= labTest?.name %>
+        </h2>
+      </header>
+      <section class="card-body">
+        <p class="description" style="font-size: 1.05rem">
+          <%= labTest?.description || "No description available." %>
+        </p>
+        <ul class="details-list mb-4">
+          <li>
+            <strong>Category:</strong> <%= labTest?.category || "General" %>
+          </li>
+          <li>
+            <strong>Duration:</strong> <%= labTest?.duration || "Varies" %>
+          </li>
+          <li>
+            <strong>Preparation:</strong>
+            <% if(labTest?.preparation && labTest.preparation.trim().length > 0)
+            { %> <%= labTest.preparation %> <% } else { %> None <% } %>
+          </li>
+          <li>
+            <strong>Fasting Required:</strong>
+            <span
+              class="<%= labTest?.fastingRequired ? 'text-warning' : 'text-success' %> fw-bold"
+            >
+              <%= labTest?.fastingRequired ? "Yes" : "No" %>
+            </span>
+          </li>
+          <li>
+            <strong>Availability:</strong>
+            <% if(labTest?.availability && labTest.availability.weekdays.length
+            > 0){ %> <%= labTest.availability.weekdays.join(", ") %> (<%=
+            labTest.availability.timing || "Timing varies" %>) <% } else { %>
+            Weekdays (Timing varies) <% } %>
+          </li>
+          <% if(labTest?.sampleType) { %>
+          <li><strong>Sample Type:</strong> <%= labTest.sampleType %></li>
+          <% } %> <% if(labTest?.reportTime) { %>
+          <li><strong>Report Time:</strong> <%= labTest.reportTime %></li>
+          <% } %> <% if(labTest?.notes) { %>
+          <li>
+            <strong>Notes:</strong>
+            <span class="text-muted"><%= labTest.notes %></span>
+          </li>
+          <% } %>
+        </ul>
+
+        <% if(labTest?.instructions || labTest?.patientInfo) { %>
+        <div class="mb-3">
+          <h5 class="fw-semibold mb-2" style="color: #2c3a76">
+            <i class="fas fa-info-circle me-1"></i>Patient Info &amp;
+            Instructions
+          </h5>
+          <% if(labTest.instructions){ %>
+          <p><%= labTest.instructions %></p>
+          <% } %> <% if(labTest.patientInfo) { %>
+          <p class="mb-0"><%= labTest.patientInfo %></p>
+          <% } %>
+        </div>
+        <% } %>
+      </section>
+      <footer
+        class="card-footer d-flex align-items-center justify-content-between"
+      >
+        <div class="price-badge" aria-label="Price">
+          ₹ <%= labTest?.price?.toFixed(2) %>
+        </div>
+        <a
+          href="/book-labtest/<%= labTest?._id %>"
+          class="details-button"
+          aria-label="Book <%= labTest?.name %>"
+        >
+          <i class="fas fa-flask-vial me-1"></i>Book This Test
+        </a>
+      </footer>
+    </article>
+  </div>
+
+  <!-- Related and facts sidebar below (mobile first order) -->
+  <div class="cards-grid" style="margin-top: 2rem">
+    <article class="card labtest-card" style="max-width: 380px; margin: 0 auto">
+      <header class="card-header py-2">
+        <span class="fw-semibold" style="font-size: 1.1rem"
+          ><i class="fas fa-info-circle me-1"></i>Quick Facts</span
+        >
+      </header>
+      <section class="card-body" style="font-size: 0.97rem">
+        <ul class="mb-2" style="padding-left: 1em">
+          <li>
+            <i class="fas fa-mobile-alt me-1 text-info"></i>Report Delivery:
+            E-mail & App
+          </li>
+          <li>
+            <i class="fas fa-user-check me-1 text-success"></i>Sample: At center
+            <span class="text-success">/ Home</span>
+          </li>
+          <li>
+            <i class="fas fa-shield-alt me-1 text-primary"></i>Fully Accredited
+            Labs
+          </li>
+        </ul>
+      </section>
+    </article>
+
+    <% if(labTest?.relatedTests?.length > 0) { %>
+    <article
+      class="card labtest-card mt-3"
+      style="max-width: 380px; margin: 0 auto"
+    >
+      <header class="card-header py-2">
+        <span class="fw-semibold" style="font-size: 1.1rem"
+          ><i class="fas fa-link me-1"></i>Related Tests</span
+        >
+      </header>
+      <section class="card-body">
+        <ul style="list-style: none; padding-left: 0; margin-bottom: 0">
+          <% labTest.relatedTests.forEach(rt => { %>
+          <li>
+            <a
+              href="/labtests/<%= rt._id %>"
+              class="details-button"
+              style="margin-bottom: 0.3rem; display: inline-block"
+            >
+              <%= rt.name %>
+            </a>
+          </li>
+          <% }) %>
+        </ul>
+      </section>
+    </article>
+    <% } %>
+  </div>
+</div>
