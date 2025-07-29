@@ -14,15 +14,14 @@ const { storage } = require("./clodinary");
 const moment = require("moment");
 const DoctorDetails = require("./models/doctorDetails");
 const AppError = require("./error/AppError");
-const {
-  doctorDetailsValidation,
-} = require("./validation/doctorDetailsValidation");
 const cors = require("cors");
-const { isLoggedIn, returnPath } = require("./middleware/isLoggedIn");
 const patientRoute = require("./routes/patientRoutes");
 const loginRoute = require("./routes/login");
 const doctorRoute = require("./routes/doctor");
-const appontmentRoute = require("./routes/appointment");
+const appointmentRoute = require("./routes/appointment");
+const { ExpressPeerServer } = require("peer");
+const { v4: uuidv4 } = require("uuid");
+
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server, {
@@ -30,20 +29,19 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-const { ExpressPeerServer } = require("peer");
-const opinions = {
-  debug: true,
-};
-const { v4: uuidv4 } = require("uuid");
+
+const opinions = { debug: true };
 
 moment().format();
 
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/caredata";
+
 mongoose
-  .connect("mongodb://127.0.0.1:27017/caredata", {
+  .connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("Connected!"))
+  .then(() => console.log("Connected to MongoDB!"))
   .catch((e) => console.log(e));
 
 const PORT = process.env.PORT || 8080;
@@ -54,8 +52,8 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   },
 };
 const upload = multer({ storage });
@@ -73,6 +71,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
 app.use(cors());
+
 passport.use(new passportLocal(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
@@ -84,10 +83,31 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   next();
 });
+
 app.use("/", loginRoute);
 app.use("/caredata", patientRoute);
 app.use("/caredata/doctors", doctorRoute);
-app.use("/caredata/doctors", appontmentRoute);
+app.use("/caredata/doctors", appointmentRoute);
+
+// Serve the dashboard page where user can create or join a room
+app.get("/room", (req, res) => {
+  res.render("videoconsult/room"); // Your dashboard view (room.ejs)
+});
+
+// Backend route to create a new room (generate UUID) and redirect with username
+app.post("/create-room", (req, res) => {
+  const { username } = req.body;
+
+  if (!username || username.trim() === "") {
+    req.flash("error", "Username is required to create a room.");
+    return res.redirect("/room");
+  }
+
+  const roomId = uuidv4();
+  return res.redirect(
+    `/${roomId}?username=${encodeURIComponent(username.trim())}`
+  );
+});
 
 app.get("/patient/join-meeting", (req, res) => {
   res.render("patientJoinMeeting");
@@ -97,46 +117,59 @@ app.post("/patient/join-meeting", (req, res) => {
   const meetingLink = req.body.meetingLink;
   res.render("patientMeeting", { meetingLink });
 });
-app.get("/video", isLoggedIn, (req, res) => {
-  res.render("videoconsult/doctorvideo");
+
+app.get("/video", (req, res) => {
+  // Add isLoggedIn middleware if needed here
+  res.render("videoconsult/room");
 });
 
 app.use("/peerjs", ExpressPeerServer(server, opinions));
 
+// Root route redirects to your dashboard
 app.get("/", (req, res) => {
-  res.redirect(`/${uuidv4()}`);
+  res.redirect("/caredata");
 });
 
+// Dynamic room route, renders the video consultation room; this MUST come after other routes
 app.get("/:room", (req, res) => {
-  res.render("videoconsult/room", { roomId: req.params.room });
+  const roomId = req.params.room;
+  const user = req.query.username || "Anonymous";
+  res.render("videoconsult/doctorvideo", { roomId, user });
 });
 
+// Socket.io connection handling
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName) => {
     socket.join(roomId);
+
     setTimeout(() => {
       socket.to(roomId).emit("user-connected", userId);
     }, 1000);
+
     socket.on("message", (message) => {
       io.to(roomId).emit("createMessage", message, userName);
     });
+
     socket.on("end-meeting", (roomId) => {
       io.to(roomId).emit("meeting-ended");
     });
   });
 });
 
+// Catch-all for 404
 app.all("*", (req, res, next) => {
   return next(new AppError(404, "Page Not Found!"));
 });
 
+// Global error handler
 app.use((err, req, res, next) => {
-  if (!err.message && !err.status) {
+  if (!err.message || !err.status) {
     err.message = "Something Went Wrong!";
-    err.status(500);
+    err.status = 500;
   }
-  res.render("error/error", { err });
-  next();
+  res.status(err.status).render("error/error", { err });
 });
 
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+server.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});

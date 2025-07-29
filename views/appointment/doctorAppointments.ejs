@@ -1,0 +1,34 @@
+<%- layout('layout/boilerplate') %>
+
+<link rel="stylesheet" href="/css/appointmentForm.css" />
+
+<div class="container mt-5">
+  <h2 class="mb-4">Appointments for Dr. <%= doctor.fullName %></h2>
+
+  <% if (appointments.length === 0) { %>
+  <p>No appointments scheduled yet.</p>
+  <% } else { %>
+  <table class="table table-striped table-bordered">
+    <thead class="table-primary">
+      <tr>
+        <th scope="col">Patient Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Date</th>
+        <th scope="col">Time Slot</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% appointments.forEach(appointment => { %>
+      <tr>
+        <td><%= appointment.name %></td>
+        <td><%= appointment.email %></td>
+        <td><%= appointment.phone || "-" %></td>
+        <td><%= moment(appointment.date).format("MMM Do YYYY") %></td>
+        <td><%= appointment.timeslot %></td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <% } %>
+</div>

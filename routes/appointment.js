@@ -10,4 +10,8 @@ router
   .get(isLoggedIn, appointmaent.appointmentForm)
   .post(isLoggedIn, appointmaent.bookAppointment);
 
+router
+  .route("/:id/appointments")
+  .get(isLoggedIn, appointmaent.showDoctorAppointments);
+
 module.exports = router;

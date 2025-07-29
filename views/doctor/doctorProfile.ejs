@@ -3,9 +3,14 @@
 <link rel="stylesheet" href="/css/profilePage.css" />
 
 <div class="row">
-  <% if(user !== undefined && user.username === doctor.username){ %>
-  <div class="col-2 d-flex flex-column me-5 pt-5 menubar">
-    <div class="d-inline-flex menu-option p-2 mb-2 show-profile">
+  <% if(user && user.username === doctor.username){ %>
+  <div class="col-lg-2 d-flex flex-column me-5 pt-5 menubar">
+    <div
+      class="d-inline-flex menu-option p-2 mb-2 show-profile"
+      role="button"
+      tabindex="0"
+      aria-label="Show profile"
+    >
       <ion-icon name="person-circle-outline" class="icon ms-3"></ion-icon>
       <span class="fw-medium">Profile</span>
     </div>
@@ -13,7 +18,12 @@
       <ion-icon name="documents-outline" class="icon ms-3"></ion-icon>
       <span class="fw-medium">Shared Files</span>
     </div>
-    <div class="d-inline-flex menu-option check-appointment p-2 mb-2">
+    <div
+      class="d-inline-flex menu-option check-appointment p-2 mb-2"
+      role="button"
+      tabindex="0"
+      aria-label="Show appointments"
+    >
       <ion-icon name="calendar-outline" class="icon ms-3"></ion-icon>
       <span class="fw-medium">Appointments</span>
     </div>
@@ -26,11 +36,12 @@
       <span class="fw-medium">Settings</span>
     </div>
   </div>
-  <% } %> <% if(user !== undefined && user.username === doctor.username){ %>
-  <div class="col-9 p-5 border rounded shadow me-4 doctorProfile">
-    <% }else{ %>
-    <div class="col-8 p-5 border rounded shadow me-4">
+  <% } %> <% if(user && user.username === doctor.username){ %>
+  <div class="col-lg-9 p-5 border rounded shadow me-4 doctorProfile">
+    <% } else { %>
+    <div class="col-lg-8 p-5 border rounded shadow me-4">
       <% } %>
+
       <div class="d-flex mb-3">
         <div class="basic-info d-flex flex-column w-50">
           <img
@@ -43,56 +54,48 @@
           <small><%= doctor.doctorDetails.speciality %></small>
           <% } %>
         </div>
+
         <div class="full-info w-100">
-          <div class="info-container d-inline-flex">
+          <% if(doctor.doctorDetails){ %>
+          <div class="info-container d-inline-flex mb-2">
             <i class="fa-solid fa-graduation-cap icon"></i>
-            <% if(doctor.doctorDetails){ %>
             <span><%= doctor.doctorDetails.education %></span>
-            <% } %>
           </div>
-          <hr class="w-100" />
-          <div class="info-container d-inline-flex">
+          <hr />
+          <div class="info-container d-inline-flex mb-2">
             <i class="fa-solid fa-location-dot icon"></i>
-            <% if(doctor.doctorDetails){ %>
             <span><%= doctor.doctorDetails.location %></span>
-            <% } %>
           </div>
-          <hr class="w-100" />
-          <div class="info-container d-inline-flex">
+          <hr />
+          <div class="info-container d-inline-flex mb-2">
             <i class="fa-regular fa-id-card icon"></i>
-            <% if(doctor.doctorDetails){ %>
             <span><%= doctor.doctorDetails.regId %></span>
-            <% } %>
           </div>
-          <hr class="w-100" />
-          <div class="info-container d-inline-flex">
+          <hr />
+          <div class="info-container d-inline-flex mb-2">
             <ion-icon name="language" class="icon"></ion-icon>
-            <% if(doctor.doctorDetails){ %>
             <span><%= doctor.doctorDetails.language %></span>
-            <% } %>
           </div>
-          <hr class="w-100" />
+          <hr />
+          <div class="about-doctor pb-3">
+            <%= doctor.doctorDetails.aboutDoctor %>
+          </div>
+          <% } %>
         </div>
       </div>
-      <% if(doctor.doctorDetails){ %>
-      <div class="about-doctor pb-3">
-        <%= doctor.doctorDetails.aboutDoctor %>
-      </div>
-      <% } %> <% if(user !== undefined && user.username === doctor.username ){
-      %>
+
+      <% if(user && user.username === doctor.username){ %>
       <div class="profileButton d-flex gap-3">
         <a
-          type="button"
           href="/caredata/users/<%= doctor._id %>/edit"
           class="btn btn-warning w-100"
-          >Edit
-        </a>
+          >Edit</a
+        >
         <form action="/logout" method="post" class="w-100">
           <button class="btn btn-danger w-100">Log Out</button>
         </form>
         <a
           href="/caredata/doctors/<%= doctor._id %>/adddetails"
-          type="button"
           class="btn btn-success w-100"
           >Add Details</a
         >
@@ -100,60 +103,60 @@
       <% } %>
     </div>
 
-    <!-- //Appointments -->
-    <% if(user !== undefined && user.username === doctor.username){ %>
-    <div class="col-9 p-5 appointments" hidden>
-      <% doctor.appointments.map((appointment, idx)=>{ %>
-
+    <% if(user && user.username === doctor.username){ %>
+    <div class="col-lg-9 p-5 appointments" hidden>
+      <% doctor.appointments.forEach((appointment, idx) => { %>
       <div class="card w-100 mb-3 shadow">
         <div class="card-body">
           <div
-            class="card-title text-primary fw-medium d-flex align-items-center"
+            class="card-title d-flex align-items-center text-primary fw-medium"
           >
-            Appointment <%= idx+1 %>
+            Appointment <%= idx + 1 %>
             <ion-icon
               name="ellipsis-vertical-outline"
               class="icon ms-auto more-option p-2 dropdown-toggle"
               data-bs-toggle="dropdown"
               aria-expanded="false"
+              role="button"
+              tabindex="0"
+              aria-label="Appointment options"
             ></ion-icon>
             <ul class="dropdown-menu">
-              <li class="d-flex justify-content-center align-items-center">
-                <a class="dropdown-item text-success" href="#"> Accept</a>
+              <li>
+                <a class="dropdown-item text-success" href="#">Accept</a>
               </li>
               <li>
-                <a class="dropdown-item text-danger" href="#">Delience</a>
+                <a class="dropdown-item text-danger" href="#">Decline</a>
               </li>
             </ul>
           </div>
           <hr />
           <div class="card-text d-flex flex-column">
-            <div class="mb-3 d-inline-flex">
+            <div class="mb-3 d-inline-flex align-items-center gap-2">
               <ion-icon name="person-outline" class="icon"></ion-icon>
               <span><%= appointment.name %></span>
             </div>
-            <div class="mb-3 d-inline-flex">
+            <div class="mb-3 d-inline-flex align-items-center gap-2">
               <ion-icon name="call-outline" class="icon"></ion-icon>
               <span class="user-select-all"><%= appointment.phone %></span>
             </div>
-            <div class="mb-3 d-inline-flex">
+            <div class="mb-3 d-inline-flex align-items-center gap-2">
               <ion-icon name="mail-outline" class="icon"></ion-icon>
               <span class="user-select-all"><%= appointment.email %></span>
             </div>
-            <div class="mb-3 d-inline-flex">
+            <div class="mb-3 d-inline-flex align-items-center gap-2">
               <ion-icon name="calendar-clear-outline" class="icon"></ion-icon>
               <span
-                ><%= appointment.date %> at <%= appointment.timeslot %>AM</span
+                ><%= appointment.date %> at <%= appointment.timeslot %> AM</span
               >
             </div>
           </div>
         </div>
       </div>
-
       <% }) %>
     </div>
-    <% } %> <% if(user.entryType !== "doctor"){ %>
-    <div class="col-3 border rounded shadow ms-3 p-5">
+    <% } %> <% if(user && user.entryType !== "doctor"){ %>
+    <div class="col-lg-3 border rounded shadow ms-3 p-5">
       <div class="clinic-time d-flex align-items-center flex-column mb-5">
         <% if(doctor.doctorDetails){ %>
         <h5 class="text-primary mb-3">Clinic</h5>
@@ -164,12 +167,12 @@
       </div>
       <div class="appointment-options w-100">
         <div class="vstack gap-2">
-          <a href="/caredata/doctors/<%= doctor._id %>/book-appointment">
-            <button type="button" class="btn btn-primary w-100">
-              Book Appointment
-            </button>
-          </a>
-          <button type="button" class="btn btn-outline-primary w-100" `>
+          <a
+            href="/caredata/doctors/<%= doctor._id %>/book-appointment"
+            class="btn btn-primary w-100"
+            >Book Appointment</a
+          >
+          <button type="button" class="btn btn-outline-primary w-100">
             Video Consult
           </button>
         </div>
@@ -177,5 +180,6 @@
     </div>
     <% } %>
   </div>
+
+  <script src="/js/doctorProfile.js"></script>
 </div>
-<script src="/js/doctorProfile.js"></script>

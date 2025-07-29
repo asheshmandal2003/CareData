@@ -1,12 +1,22 @@
-$(".check-appointment").on("click", showAppointments);
-$(".show-profile").on("click", showProfile);
+document.addEventListener("DOMContentLoaded", () => {
+  const profileBtn = document.querySelector(".show-profile");
+  const appointmentsBtn = document.querySelector(".check-appointment");
+  const profileSection = document.querySelector(".doctorProfile");
+  const appointmentsSection = document.querySelector(".appointments");
 
-function showProfile() {
-  $(".doctorProfile").removeAttr("hidden");
-  $(".appointments").attr("hidden", true);
-}
+  if (profileBtn && appointmentsBtn && profileSection && appointmentsSection) {
+    profileBtn.addEventListener("click", () => {
+      profileSection.removeAttribute("hidden");
+      appointmentsSection.setAttribute("hidden", true);
+      profileBtn.classList.add("active-menu");
+      appointmentsBtn.classList.remove("active-menu");
+    });
 
-function showAppointments() {
-  $(".doctorProfile").attr("hidden", true);
-  $(".appointments").removeAttr("hidden");
-}
+    appointmentsBtn.addEventListener("click", () => {
+      appointmentsSection.removeAttribute("hidden");
+      profileSection.setAttribute("hidden", true);
+      appointmentsBtn.classList.add("active-menu");
+      profileBtn.classList.remove("active-menu");
+    });
+  }
+});
