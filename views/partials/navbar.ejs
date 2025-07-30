@@ -75,7 +75,7 @@
           >
         </li>
 
-        <% if(!user){ %>
+        <% if(typeof user === 'undefined' || !user){ %>
         <li class="nav-item d-none d-lg-block">
           <a
             class="btn nav-btn nav-btn-fill px-4"
