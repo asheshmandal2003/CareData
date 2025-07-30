@@ -1,129 +1,391 @@
 <% layout('layout/boilerplate') %>
-<link rel="stylesheet" href="/css/login.css" />
 
-<div class="row g-0">
-  <div class="col-10 bg-info offset-1 d-flex mt-4">
-    <div class="img-container w-50">
-      <img class="img-fluid w-80" src="/image/doctor.jpg" alt="image" />
+<%
+  const det = user.doctorDetails || {};
+
+  function joinArr(arr) {
+    return Array.isArray(arr) ? arr.join(", ") : "";
+  }
+
+  function safe(val, def = "") {
+    if (typeof val === "string") return val.trim();
+    if (val === null || val === undefined) return def;
+    return val;
+  }
+
+  // Converts "09:00 AM", "02:00 PM" to "09:00", "14:00"
+  function to24Hour(timeStr) {
+    if (!timeStr) return "";
+    // If already in 24h format, return as is
+    if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
+    // Otherwise, try parsing 12h format
+    let matches = timeStr.match(/^(\d{1,2}):(\d{2})\s*([AP]M)$/i);
+    if (!matches) return "";
+    let hour = parseInt(matches[1], 10);
+    let minute = matches[2];
+    let mod = matches[3].toUpperCase();
+    if (mod === "PM" && hour !== 12) hour += 12;
+    if (mod === "AM" && hour === 12) hour = 0;
+    return `${hour.toString().padStart(2, "0")}:${minute}`;
+  }
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const timings = det.clinicTimings || [];
+  function findTiming(day) {
+    return timings.find(t => t.day === day) || {};
+  }
+%>
+
+<!-- <p Debug>
+  <strong>Debug Info:</strong><br />
+  <strong>User ID:</strong> <%= user._id %><br />
+  <strong>Doctor Details:</strong>
+  <pre><%= JSON.stringify(det, null, 2) %></pre>
+</p> -->
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-9">
+      <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white border-0 rounded-top-4 pb-0">
+          <div class="d-flex align-items-center">
+            <% if (safe(det.profilePhotoUrl)) { %>
+              <img src="<%= safe(det.profilePhotoUrl) %>" class="rounded-circle border me-3" alt="Doctor Photo" width="72" height="72" style="object-fit:cover;">
+            <% } else { %>
+              <div class="rounded-circle bg-secondary bg-opacity-10 border d-flex align-items-center justify-content-center me-3" style="width:72px;height:72px;">
+                <i class="bi bi-person text-secondary fs-1"></i>
+              </div>
+            <% } %>
+            <div>
+              <h1 class="h4 mb-0 fw-bold text-primary"><%= safe(user.fullName) %></h1>
+              <small class="text-muted"><%= safe(det.speciality) || 'Speciality not set' %></small>
+            </div>
+          </div>
+        </div>
+        <form
+          action="/caredata/doctors/<%= user._id %>/adddetails"
+          method="post"
+          enctype="multipart/form-data"
+          autocomplete="off"
+          novalidate
+        >
+          <div class="card-body">
+            <!-- 1. Personal Section -->
+            <div class="mb-4 pb-3 border-bottom">
+              <h5 class="mb-3 text-primary">
+                <i class="bi bi-person-circle me-2"></i>Personal Information
+              </h5>
+              <div class="row g-3">
+                <div class="col-sm-6">
+                  <label class="form-label">Full Name</label>
+                  <input class="form-control" value="<%= safe(user.fullName) %>" disabled />
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label">Profile Photo URL</label>
+                  <input
+                    name="profilePhotoUrl"
+                    type="url"
+                    class="form-control"
+                    placeholder="Direct image URL"
+                    value="<%= safe(det.profilePhotoUrl) %>"
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Or Upload Profile Photo</label>
+                  <input
+                    type="file"
+                    name="profilePhoto"
+                    class="form-control"
+                    accept="image/*"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Education</label>
+                  <input
+                    name="education"
+                    type="text"
+                    class="form-control"
+                    placeholder="Education"
+                    value="<%= safe(det.education) %>"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Registration No</label>
+                  <input
+                    name="regId"
+                    type="text"
+                    class="form-control"
+                    placeholder="Registration Number"
+                    value="<%= safe(det.regId) %>"
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">About Doctor</label>
+                  <textarea
+                    name="aboutDoctor"
+                    class="form-control"
+                    rows="2"
+                    maxlength="400"
+                    placeholder="Describe yourself..."
+                  ><%= safe(det.aboutDoctor) %></textarea>
+                </div>
+              </div>
+            </div>
+            <!-- 2. Clinic Section -->
+            <div class="mb-4 pb-3 border-bottom">
+              <h5 class="mb-3 text-success">
+                <i class="bi bi-building me-2"></i>Clinic Details
+              </h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Clinic Name</label>
+                  <input
+                    name="clinicName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Clinic Name"
+                    value="<%= safe(det.clinicName) %>"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Clinic Address</label>
+                  <input
+                    name="clinicAddress"
+                    type="text"
+                    class="form-control"
+                    placeholder="Address"
+                    value="<%= safe(det.clinicAddress) %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Fees (INR)</label>
+                  <input
+                    name="fees"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    class="form-control"
+                    placeholder="Fees"
+                    value="<%= det.fees || '' %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Location</label>
+                  <input
+                    name="location"
+                    type="text"
+                    class="form-control"
+                    placeholder="Bangalore"
+                    value="<%= safe(det.location) %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Contact Number</label>
+                  <input
+                    name="contactNumber"
+                    type="tel"
+                    class="form-control"
+                    placeholder="+91 9886001234"
+                    value="<%= safe(det.contactNumber) %>"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- 3. Professional Section -->
+            <div class="mb-4 pb-3 border-bottom">
+              <h5 class="mb-3 text-info">
+                <i class="bi bi-award me-2"></i>Professional Information
+              </h5>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Speciality</label>
+                  <input
+                    name="speciality"
+                    type="text"
+                    class="form-control"
+                    placeholder="Speciality"
+                    value="<%= safe(det.speciality) %>"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">
+                    Sub-Specialities <small class="text-muted">(comma separated)</small>
+                  </label>
+                  <input
+                    name="subSpecialities"
+                    type="text"
+                    class="form-control"
+                    placeholder="Brain Tumor Surgery, Spine Surgery"
+                    value="<%= joinArr(det.subSpecialities) %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Experience (years)</label>
+                  <input
+                    name="experience"
+                    type="number"
+                    min="0"
+                    class="form-control"
+                    placeholder="Experience"
+                    value="<%= det.experience || '' %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">
+                    Language(s) <small class="text-muted">(comma separated)</small>
+                  </label>
+                  <input
+                    name="language"
+                    type="text"
+                    class="form-control"
+                    placeholder="English, Hindi, Bengali"
+                    value="<%= joinArr(det.language) %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Official Email</label>
+                  <input
+                    name="email"
+                    type="email"
+                    class="form-control"
+                    placeholder="Email"
+                    value="<%= safe(det.email) %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">
+                    Awards <small class="text-muted">(comma separated)</small>
+                  </label>
+                  <input
+                    name="awards"
+                    type="text"
+                    class="form-control"
+                    placeholder="Best Neurosurgeon 2022, ..."
+                    value="<%= joinArr(det.awards) %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">
+                    Certifications <small class="text-muted">(comma separated)</small>
+                  </label>
+                  <input
+                    name="certifications"
+                    type="text"
+                    class="form-control"
+                    placeholder="Advanced Spine Surgery ..."
+                    value="<%= joinArr(det.certifications) %>"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">
+                    Services <small class="text-muted">(comma separated)</small>
+                  </label>
+                  <input
+                    name="services"
+                    type="text"
+                    class="form-control"
+                    placeholder="Brain Tumor Removal, ..."
+                    value="<%= joinArr(det.services) %>"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- 4. Consultation type -->
+            <div class="mb-4 pb-3 border-bottom">
+              <label class="form-label fw-semibold fs-6 mb-2">
+                <i class="bi bi-people me-2"></i>Consultation Types
+              </label>
+              <div>
+                <% const consultTypes = ["In-Person", "Online", "Home Visit"];
+                  consultTypes.forEach((type, idx) => { const checked =
+                  (det.consultationTypes || []).includes(type); %>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="checkbox"
+                    name="consultationTypes" id="consultationTypes_<%= idx %>"
+                    value="<%= type %>" <%= checked ? "checked" : "" %> />
+                  <label
+                    class="form-check-label"
+                    for="consultationTypes_<%= idx %>"
+                    ><%= type %></label>
+                </div>
+                <% }); %>
+              </div>
+            </div>
+            <!-- 5. Timings -->
+            <div class="mb-4 pb-3 border-bottom">
+              <label class="form-label fw-semibold fs-6 mb-2">
+                <i class="bi bi-clock-history me-2"></i>Clinic Timings
+              </label>
+              <div class="row g-3">
+                <% days.forEach((day, i) => { const t = findTiming(day); const
+                open = to24Hour(t.open); const close = to24Hour(t.close); %>
+                <div class="col-12 col-md-6 d-flex align-items-center gap-2 mb-1">
+                  <span class="badge bg-light text-dark border me-2 w-25"><%= day %></span>
+                  <input
+                    type="hidden"
+                    name="clinicTimings[<%= i %>][day]"
+                    value="<%= day %>"
+                  />
+                  <div class="flex-fill">
+                    <label class="form-label small mb-0">Opens</label>
+                    <input
+                      type="time"
+                      name="clinicTimings[<%= i %>][open]"
+                      class="form-control border-primary"
+                      value="<%= open %>"
+                    />
+                  </div>
+                  <div class="flex-fill">
+                    <label class="form-label small mb-0">Closes</label>
+                    <input
+                      type="time"
+                      name="clinicTimings[<%= i %>][close]"
+                      class="form-control border-primary"
+                      value="<%= close %>"
+                    />
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+            <!-- 6. Social Links -->
+            <div class="mb-4">
+              <label class="form-label fw-semibold fs-6 mb-2">
+                <i class="bi bi-globe me-1"></i>Social Links
+              </label>
+              <div class="row g-2">
+                <% const socialNames = ["website", "linkedin", "facebook",
+                "twitter", "instagram"]; const social = det.socialLinks || {}; %>
+                <% socialNames.forEach((name) => { %>
+                <div class="col-6 col-lg-2">
+                  <div class="input-group">
+                    <span class="input-group-text">
+                      <i class="bi bi-<%= name === 'website' ? 'globe' : name %>"></i>
+                    </span>
+                    <input
+                      type="url"
+                      name="socialLinks[<%= name %>]"
+                      class="form-control"
+                      placeholder="<%= name.charAt(0).toUpperCase() + name.slice(1) %>"
+                      value="<%= safe(social[name]) %>"
+                    />
+                  </div>
+                </div>
+                <% }); %>
+              </div>
+            </div>
+            <!-- Submit Button -->
+            <div class="d-grid mt-4">
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg fw-bold"
+              >
+                <i class="bi bi-save me-2"></i>Save Details
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-    <form
-      action="/caredata/doctors/<%= user._id %>/adddetails"
-      method="post"
-      class="ms-auto w-50 bg-light p-5"
-    >
-      <h3 class="mb-3 text-primary">Add Details</h3>
-      <div class="form-input w-100">
-        <label for="education" class="form-label">Education</label>
-        <input
-          type="text"
-          name="education"
-          id="education"
-          class="form-control mb-3"
-          placeholder="Education"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="regId" class="form-label">Registration No</label>
-        <input
-          type="text"
-          name="regId"
-          id="regId"
-          class="form-control mb-3"
-          placeholder="Registration No"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="speciality" class="form-label">Speciality</label>
-        <input
-          type="text"
-          name="speciality"
-          id="speciality"
-          class="form-control mb-3"
-          placeholder="Speciality"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="experience" class="form-label">Experience (In year)</label>
-        <input
-          type="text"
-          name="experience"
-          id="experience"
-          class="form-control mb-3"
-          placeholder="Experience"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="clinicName" class="form-label">Clinic Name</label>
-        <input
-          type="text"
-          name="clinicName"
-          id="clinicName"
-          class="form-control mb-3"
-          placeholder="Clinic Name"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="location" class="form-label">Clinic Location</label>
-        <input
-          type="text"
-          name="location"
-          id="location"
-          class="form-control mb-3"
-          placeholder="Clinic Location"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="fees" class="form-label">Clinic Fees</label>
-        <input
-          type="text"
-          name="fees"
-          id="fees"
-          class="form-control mb-3"
-          placeholder="Clinic Fees"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="availability" class="form-label">Clinic Opens Time</label>
-        <input
-          type="time"
-          name="open"
-          id="open"
-          class="form-control mb-3"
-          placeholder="Clinic opens at"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="close" class="form-label">Clinic Closes Time</label>
-        <input
-          type="time"
-          name="close"
-          id="close"
-          class="form-control mb-3"
-          placeholder="Clinic closes at"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="language" class="form-label">Language Known</label>
-        <input
-          type="text"
-          name="language"
-          id="language"
-          class="form-control mb-3"
-          placeholder="Enter the languages you know"
-        />
-      </div>
-      <div class="form-input w-100">
-        <label for="aboutDoctor" class="form-label">About You</label>
-        <textarea
-          name="aboutDoctor"
-          id="aboutDoctor"
-          cols="20"
-          rows="5"
-          class="form-control mb-4"
-          placeholder="Describe yourself..."
-        ></textarea>
-      </div>
-      <button class="btn btn-info mb-3 text-light w-100">Add</button>
-    </form>
   </div>
 </div>
+

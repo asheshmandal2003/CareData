@@ -390,6 +390,21 @@
   font-size: 1.1em;
 }
 
+.settings-actions {
+  max-width: 400px;
+  margin: 20px auto 0 auto;
+  padding-top: 10px;
+}
+
+.settings-actions .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.1em;
+  padding: 12px 20px;
+}
+
 @media (max-width: 1090px) {
   .profile-outer {
     flex-direction: column;

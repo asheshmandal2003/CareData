@@ -4,11 +4,17 @@ const moment = require("moment");
 
 function generateTimeSlots(openStr, closeStr) {
   const slots = [];
-  let open = moment(openStr, "hh:mm A");
-  const close = moment(closeStr, "hh:mm A");
+  // Try 24h first. If invalid, fall back to 12h AM/PM.
+  let open = moment(openStr, "HH:mm", true);
+  let close = moment(closeStr, "HH:mm", true);
+
+  if (!open.isValid()) open = moment(openStr, "hh:mm A", true);
+  if (!close.isValid()) close = moment(closeStr, "hh:mm A", true);
+
+  if (!open.isValid() || !close.isValid()) return slots; // Bad input
 
   while (open.isBefore(close)) {
-    slots.push(open.format("HH:mm")); // store in 24-hour format
+    slots.push(open.format("HH:mm"));
     open.add(30, "minutes");
   }
   return slots;
@@ -25,26 +31,27 @@ module.exports.appointmentForm = async (req, res, next) => {
       return res.redirect("/caredata/doctors");
     }
 
-    // Get clinic timings from doctor details
-    const clinicTimings = doctor.doctorDetails.clinicTimings || [];
+    const allClinicTimings = doctor.doctorDetails.clinicTimings || [];
+    // Filter to only days with both open and close
+    const validClinicTimings = allClinicTimings.filter(
+      (ct) => ct.open && ct.close && ct.open.trim() && ct.close.trim()
+    );
 
-    // Generate timeslots per day upfront
-    // e.g. { Monday: ["09:00", "09:30", ...], Wednesday: [...] }
+    // Build slots only for those days
     const slotsByDay = {};
-    clinicTimings.forEach(({ day, open, close }) => {
+    validClinicTimings.forEach(({ day, open, close }) => {
       slotsByDay[day] = generateTimeSlots(open, close);
     });
 
+    // Extract only valid days for frontend use
+    const clinicDays = validClinicTimings.map((ct) => ct.day);
+
     // Map appointments to simple objects with date and timeslot formatted for frontend
-    const appointments = doctor.appointments.map((app) => ({
+    const appointments = (doctor.appointments || []).map((app) => ({
       date: moment(app.date).format("YYYY-MM-DD"),
       timeslot: app.timeslot,
     }));
 
-    // Extract clinic days for frontend use (e.g., to enable picker days)
-    const clinicDays = clinicTimings.map((ct) => ct.day);
-
-    // Render template passing all relevant data
     res.render("appointment/index", {
       doctor,
       moment,
@@ -71,7 +78,7 @@ module.exports.bookAppointment = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     req.flash("error", "Can't book appointment");
-    res.redirect(`/caredata/doctors/${req.params.id}/book-appointment`);
+    res.redirect(`/caredata/users/${req.params.id}/book-appointment`);
   }
 };
 

@@ -52,6 +52,7 @@
           alt="Dr. <%= doctor.fullName %>"
         />
       </div>
+
       <div class="info-header-details">
         <h1><%= doctor.fullName %></h1>
         <div class="doctor-specialty">
@@ -209,11 +210,13 @@
       </a>
       <% } %> <% } %>
     </section>
+
     <% } else if (activeTab === 'files') { %>
     <section class="files-section">
       <h2>Shared Files</h2>
       <p>No files uploaded yet.</p>
     </section>
+
     <% } else if (activeTab === 'appointments') { %>
     <section class="appointments-section">
       <h2>Your Appointments</h2>
@@ -241,16 +244,69 @@
         <% }) %>
       </div>
     </section>
+
     <% } else if (activeTab === 'video') { %>
     <section class="video-section">
       <h2>Video Consultation</h2>
       <p>Video call feature coming soon.</p>
     </section>
+
     <% } else if (activeTab === 'settings') { %>
     <section class="settings-section">
       <h2>Settings</h2>
-      <p>Manage your profile and account settings here.</p>
+      <% if (user && user.username === doctor.username) { %>
+      <div class="settings-actions">
+        <a
+          href="/caredata/users/<%= doctor._id %>/edit"
+          class="btn btn-primary btn-lg mb-3 w-100"
+        >
+          <ion-icon name="create-outline"></ion-icon> Edit Profile
+        </a>
+
+        <a
+          href="/caredata/doctors/<%= doctor._id %>/add"
+          class="btn btn-success btn-lg mb-3 w-100"
+        >
+          <ion-icon name="add-circle-outline"></ion-icon> Add Details
+        </a>
+
+        <form
+          action="/logout"
+          method="post"
+          onsubmit="return confirm('Are you sure you want to log out?');"
+        >
+          <button type="submit" class="btn btn-danger btn-lg w-100">
+            <ion-icon name="log-out-outline"></ion-icon> Log Out
+          </button>
+        </form>
+      </div>
+      <% } else { %>
+      <p>You do not have access to this section.</p>
+      <% } %>
     </section>
     <% } %>
   </main>
+
+  <% /* Patient booking sidebar: show only for logged-in users who are NOT
+  doctors */ %> <% if (user && user.entryType !== 'doctor') { %>
+  <aside class="booking-sidebar">
+    <div class="clinic-hours">
+      <h3>Clinic Hours</h3>
+      <p>
+        <%= doctor.doctorDetails?.clinicTimings &&
+        doctor.doctorDetails.clinicTimings.length ?
+        doctor.doctorDetails.clinicTimings.map(t => `${t.day}:
+        ${t.open}-${t.close}`).join(', ') : "N/A" %>
+      </p>
+    </div>
+    <div class="booking-actions">
+      <a
+        href="/caredata/users/<%= doctor._id %>/book-appointment"
+        class="btn booking primary-btn"
+        >Book Appointment</a
+      >
+      <button class="btn booking secondary-btn">Video Consult</button>
+    </div>
+  </aside>
+  <% } %>
 </div>

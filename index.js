@@ -94,7 +94,7 @@ app.use((req, res, next) => {
 app.use("/", loginRoute);
 app.use("/caredata", patientRoute);
 app.use("/caredata/doctors", doctorRoute);
-app.use("/caredata/doctors", appointmentRoute);
+app.use("/caredata/users", appointmentRoute);
 
 /* ======== ROUTE PROTECTION SECTION ======= */
 

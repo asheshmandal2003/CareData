@@ -5,6 +5,9 @@ const {
   doctorDetailsValidation,
 } = require("../validation/doctorDetailsValidation");
 const doctor = require("../controllers/doctor");
+const multer = require("multer");
+const { storage } = require("../clodinary");
+const upload = multer({ storage });
 
 const router = express.Router();
 
@@ -12,19 +15,24 @@ const router = express.Router();
 router.get("/", doctor.doctors);
 
 // Route: GET /doctors/:id - show doctor profile (require login)
-router.get("/:id", isLoggedIn, authorizedRoute, doctor.doctorProfile);
+router.get("/:id", isLoggedIn, doctor.doctorProfile);
 
-// Route: GET /doctors/:id/:tab - show doctor profile with specific tab
-router.get("/:id/:tab", isLoggedIn, authorizedRoute, doctor.doctorProfile);
 // Routes for adding/updating doctor details (only authorized doctors):
 router
+  .route("/:id/add")
+  .get(isLoggedIn, authorizedRoute, doctor.addDetailsPage);
+
+router
   .route("/:id/adddetails")
-  .get(isLoggedIn, authorizedRoute, doctor.addDetailsPage)
   .post(
     isLoggedIn,
     authorizedRoute,
     doctorDetailsValidation,
-    doctor.addOrUpdateDetails // updated function name here
+    upload.single("profilePhoto"),
+    doctor.addOrUpdateDetails
   );
+
+// Route: GET /doctors/:id/:tab - show doctor profile with specific tab
+router.get("/:id/:tab", isLoggedIn, doctor.doctorProfile);
 
 module.exports = router;
