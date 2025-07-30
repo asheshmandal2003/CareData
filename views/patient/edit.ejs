@@ -1,38 +1,325 @@
 <% layout('layout/boilerplate') %>
 
-<h2>Edit Details</h2>
-<form
-  method="POST"
-  action="/caredata/users/<%= user._id %>?_method=PUT"
-  class="container"
-  novalidate
->
-  <label for="fullName" class="form-label">Full Name</label>
-  <input
-    type="text"
-    name="fullName"
-    id="fullName"
-    class="form-control mb-3"
-    placeholder="Full Name"
-    value="<%= user.fullName %>"
-  />
-  <label for="username" class="form-label">Username</label>
-  <input
-    type="text"
-    name="username"
-    id="username"
-    class="form-control mb-3"
-    placeholder="Username"
-    value="<%= user.username %>"
-  />
-  <label for="emailId" class="form-label">Email</label>
-  <input
-    type="email"
-    name="emailId"
-    id="emailId"
-    class="form-control mb-3"
-    placeholder="name@example.com"
-    value="<%= user.emailId %>"
-  />
-  <button class="btn btn-info mb-3 w-100">Update</button>
-</form>
+<div class="container my-5" style="max-width: 600px;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="card-title mb-4 text-center">Edit Your Details</h2>
+
+      <form
+        id="editUserForm"
+        method="POST"
+        action="/caredata/users/<%= user._id %>?_method=PUT"
+        enctype="multipart/form-data"
+        novalidate
+        aria-describedby="formInstructions"
+      >
+        <div id="formInstructions" class="visually-hidden">
+          Use the form below to update your profile details. Fields marked as required must be filled.
+        </div>
+
+        <!-- Full Name -->
+        <div class="mb-4">
+          <label for="fullName" class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            name="fullName"
+            id="fullName"
+            class="form-control"
+            value="<%= user.fullName %>"
+            required
+            minlength="3"
+            maxlength="100"
+            placeholder="Enter your full name"
+            autocomplete="name"
+            aria-describedby="fullNameHelp"
+          />
+          <div id="fullNameHelp" class="form-text">
+            3 to 100 characters.
+          </div>
+          <div class="invalid-feedback">
+            Please provide your full name (3-100 characters).
+          </div>
+        </div>
+
+        <!-- Username -->
+        <div class="mb-4 position-relative">
+          <label for="username" class="form-label fw-semibold">Username <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            class="form-control"
+            value="<%= user.username %>"
+            required
+            minlength="3"
+            maxlength="30"
+            placeholder="Choose your username"
+            autocomplete="username"
+            aria-describedby="usernameHelp usernameFeedback"
+            pattern="^[a-zA-Z0-9._-]+$"
+            spellcheck="false"
+          />
+          <div id="usernameHelp" class="form-text">
+            Letters, numbers, dots, underscores, and dashes allowed.
+          </div>
+          <div id="usernameFeedback" class="form-text fw-semibold"></div>
+          <div class="invalid-feedback" id="usernameInvalidFeedback">
+            Please provide a valid username (3-30 alphanumeric characters, dots, underscores, or dashes).
+          </div>
+        </div>
+
+        <!-- Password with toggle eye -->
+        <div class="mb-4 position-relative">
+          <label for="password" class="form-label fw-semibold">New Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            class="form-control"
+            placeholder="Leave blank if you do not want to change"
+            minlength="6"
+            maxlength="50"
+            autocomplete="new-password"
+            aria-describedby="passwordHelp"
+          />
+          <button type="button" class="btn btn-outline-secondary position-absolute top-50 end-0 translate-middle-y me-2" id="togglePassword" aria-label="Toggle password visibility" tabindex="-1">
+            <i class="bi bi-eye" id="togglePasswordIcon"></i>
+          </button>
+          <div id="passwordHelp" class="form-text">
+            Must be 6 to 50 characters.
+          </div>
+          <div class="invalid-feedback">
+            Password must be between 6 and 50 characters.
+          </div>
+        </div>
+
+        <!-- Entry Type -->
+        <div class="mb-4">
+          <label for="entryType" class="form-label fw-semibold">Role <span class="text-danger">*</span></label>
+          <select
+            name="entryType"
+            id="entryType"
+            class="form-select"
+            required
+            aria-describedby="entryTypeHelp"
+          >
+            <option value="" disabled>Choose your role</option>
+            <option value="patient" <%= user.entryType === "patient" ? "selected" : "" %>>Patient</option>
+            <option value="doctor" <%= user.entryType === "doctor" ? "selected" : "" %>>Doctor</option>
+          </select>
+          <div id="entryTypeHelp" class="form-text">
+            Select your role in the system.
+          </div>
+          <div class="invalid-feedback">
+            Please select a role.
+          </div>
+        </div>
+
+        <!-- Profile Image -->
+        <fieldset class="mb-4">
+          <legend class="h6 fw-semibold">Profile Image</legend>
+          <% if (user.image && user.image.path) { %>
+            <div class="mb-3 text-center">
+              <img
+                src="<%= user.image.path %>"
+                alt="Current Profile Image"
+                class="img-thumbnail rounded"
+                style="max-width: 150px;"
+                id="existingImage"
+              />
+            </div>
+          <% } %>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            class="form-control"
+            aria-describedby="imageHelp"
+          />
+          <div id="imageHelp" class="form-text d-flex justify-content-between align-items-center">
+            Upload an optional profile image (JPG, PNG, GIF).
+            <button type="button" class="btn btn-sm btn-outline-primary" id="previewImageBtn" disabled>Preview</button>
+          </div>
+        </fieldset>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100 d-flex justify-content-center align-items-center"
+          id="submitBtn"
+          disabled
+          aria-disabled="true"
+        >
+          <span id="submitBtnText">Update</span>
+          <span
+            id="submitSpinner"
+            class="spinner-border spinner-border-sm ms-2 visually-hidden"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap icons CDN for eye icon; optional: -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+
+<script>
+  (() => {
+    'use strict';
+
+    const form = document.getElementById('editUserForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const usernameInput = document.getElementById('username');
+    const usernameFeedback = document.getElementById('usernameFeedback');
+    const usernameInvalidFeedback = document.getElementById('usernameInvalidFeedback');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+    const previewImageBtn = document.getElementById('previewImageBtn');
+    const imageInput = document.getElementById('image');
+    const existingUsername = '<%= user.username %>';
+    const currentUserId = '<%= user._id.toString() %>';
+
+    let debounceTimer;
+    let lastUsernameChecked = '';
+    let usernameAvailable = false;
+
+    // Toggle submit button enabled/disabled state
+    function toggleSubmit() {
+      const formValid = form.checkValidity();
+      submitBtn.disabled = !(formValid && usernameAvailable);
+      submitBtn.setAttribute('aria-disabled', submitBtn.disabled);
+    }
+
+    // Initial call to disable submit on page load
+    toggleSubmit();
+
+    // Username input listener
+    usernameInput.addEventListener('input', () => {
+      clearTimeout(debounceTimer);
+      usernameFeedback.textContent = '';
+      usernameInput.classList.remove('is-invalid', 'is-valid');
+      usernameAvailable = false;
+      toggleSubmit();
+
+      const username = usernameInput.value.trim();
+
+      if (username === existingUsername) {
+        // Username not changed, always valid
+        usernameInput.classList.remove('is-invalid');
+        usernameInput.classList.add('is-valid');
+        usernameFeedback.textContent = 'Username unchanged.';
+        usernameAvailable = true;
+        toggleSubmit();
+        return;
+      }
+
+      if (username.length < 3 || username.length > 30) {
+        // Let browser validation handle length issues
+        return;
+      }
+
+      if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+        usernameInput.classList.add('is-invalid');
+        usernameInvalidFeedback.textContent =
+          'Username can only contain letters, numbers, dots, underscores, and dashes.';
+        usernameAvailable = false;
+        toggleSubmit();
+        return;
+      } else {
+        usernameInvalidFeedback.textContent = '';
+      }
+
+      // Debounce API call by 700ms
+      debounceTimer = setTimeout(() => {
+        if (username === lastUsernameChecked) return;
+        lastUsernameChecked = username;
+
+        usernameFeedback.innerHTML =
+          `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking availability...`;
+
+        fetch(`/caredata/check-username?username=${encodeURIComponent(username)}&currentUserId=${encodeURIComponent(currentUserId)}`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' }
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.available) {
+              usernameInput.classList.remove('is-invalid');
+              usernameInput.classList.add('is-valid');
+              usernameFeedback.textContent = 'Username is available';
+              usernameAvailable = true;
+            } else {
+              usernameInput.classList.remove('is-valid');
+              usernameInput.classList.add('is-invalid');
+              usernameFeedback.textContent = 'Username is taken, please choose another.';
+              usernameAvailable = false;
+            }
+            toggleSubmit();
+          })
+          .catch(() => {
+            usernameFeedback.textContent = 'Could not verify username availability.';
+            usernameAvailable = false;
+            toggleSubmit();
+          });
+      }, 700);
+    });
+
+    // Password toggle button
+    togglePasswordBtn.addEventListener('click', () => {
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        togglePasswordIcon.classList.remove('bi-eye');
+        togglePasswordIcon.classList.add('bi-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        togglePasswordIcon.classList.remove('bi-eye-slash');
+        togglePasswordIcon.classList.add('bi-eye');
+      }
+      passwordInput.focus();
+    });
+
+    // Image preview functionality
+    previewImageBtn.addEventListener('click', () => {
+      const file = imageInput.files[0];
+      if (!file) {
+        alert('Please select an image file first.');
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <title>Image Preview</title>
+        <img src="${url}" alt="Image Preview" style="max-width:100%;height:auto;">
+      `);
+      win.document.close();
+    });
+
+    // Enable preview button only when a file is selected
+    imageInput.addEventListener('change', () => {
+      previewImageBtn.disabled = !imageInput.files.length;
+    });
+
+    // Initial preview button state
+    previewImageBtn.disabled = true;
+
+    // Form submit handler with loading spinner and button disable
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity() || !usernameAvailable) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-disabled', 'true');
+
+        document.getElementById('submitBtnText').textContent = 'Updating...';
+        document.getElementById('submitSpinner').classList.remove('visually-hidden');
+      }
+      form.classList.add('was-validated');
+      toggleSubmit();
+    });
+  })();
+</script>

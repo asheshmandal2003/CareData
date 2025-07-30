@@ -6,25 +6,36 @@
   <% if (user && user.username === doctor.username) { %>
   <aside class="sidebar-menu">
     <nav class="menu-nav" aria-label="Profile navigation">
-      <button
-        class="menu-option active"
-        role="button"
-        aria-label="Show profile"
+      <a
+        href="/caredata/doctors/<%= doctor._id %>/profile"
+        class="menu-option<%= activeTab === 'profile' ? ' active' : '' %>"
       >
         <ion-icon name="person-circle-outline"></ion-icon>Profile
-      </button>
-      <button class="menu-option" role="button" aria-label="Shared files">
+      </a>
+      <a
+        href="/caredata/doctors/<%= doctor._id %>/files"
+        class="menu-option<%= activeTab === 'files' ? ' active' : '' %>"
+      >
         <ion-icon name="documents-outline"></ion-icon>Files
-      </button>
-      <button class="menu-option" role="button" aria-label="Show appointments">
+      </a>
+      <a
+        href="/caredata/doctors/<%= doctor._id %>/appointments"
+        class="menu-option<%= activeTab === 'appointments' ? ' active' : '' %>"
+      >
         <ion-icon name="calendar-outline"></ion-icon>Appointments
-      </button>
-      <button class="menu-option" role="button" aria-label="Video call">
+      </a>
+      <a
+        href="/caredata/doctors/<%= doctor._id %>/video"
+        class="menu-option<%= activeTab === 'video' ? ' active' : '' %>"
+      >
         <ion-icon name="videocam-outline"></ion-icon>Video
-      </button>
-      <button class="menu-option" role="button" aria-label="Settings">
+      </a>
+      <a
+        href="/caredata/doctors/<%= doctor._id %>/settings"
+        class="menu-option<%= activeTab === 'settings' ? ' active' : '' %>"
+      >
         <ion-icon name="settings-outline"></ion-icon>Settings
-      </button>
+      </a>
     </nav>
   </aside>
   <% } %>
@@ -32,6 +43,7 @@
   <main
     class="profile-main <%= (user && user.username === doctor.username) ? 'has-sidebar' : '' %>"
   >
+    <% if (activeTab === 'profile') { %>
     <section class="info-header">
       <div>
         <img
@@ -47,26 +59,25 @@
         </div>
         <div class="doctor-tags">
           <% if (doctor.doctorDetails?.subSpecialities?.length) {
-          doctor.doctorDetails.subSpecialities.forEach(tag=>{ %>
+          doctor.doctorDetails.subSpecialities.forEach(tag => { %>
           <span class="tag"><%= tag %></span>
           <% }) } %>
         </div>
         <div class="exp-fees">
-          <span
-            ><i class="fa-solid fa-hourglass-half"></i> <%=
-            doctor.doctorDetails?.experience != null ?
-            `${doctor.doctorDetails.experience} yrs` : '-' %></span
-          >
-          <span
-            ><i class="fa-solid fa-dollar-sign"></i> ₹<%=
+          <span>
+            <i class="fa-solid fa-hourglass-half"></i>
+            <%= doctor.doctorDetails?.experience != null ?
+            `${doctor.doctorDetails.experience} yrs` : '-' %>
+          </span>
+          <span>
+            <i class="fa-solid fa-dollar-sign"></i> ₹ <%=
             doctor.doctorDetails?.fees != null ? doctor.doctorDetails.fees : '-'
-            %></span
-          >
+            %>
+          </span>
         </div>
       </div>
     </section>
 
-    <% if (doctor.doctorDetails) { %>
     <section class="info-section">
       <div class="info-grid">
         <div>
@@ -81,9 +92,9 @@
           </div>
           <div class="val"><%= doctor.doctorDetails.clinicName || '-' %></div>
           <div class="minor">
-            <i class="fa-solid fa-location-dot"></i> <%=
-            doctor.doctorDetails.clinicAddress || doctor.doctorDetails.location
-            || '-' %>
+            <i class="fa-solid fa-location-dot"></i>
+            <%= doctor.doctorDetails.clinicAddress ||
+            doctor.doctorDetails.location || '-' %>
           </div>
         </div>
         <div>
@@ -158,84 +169,56 @@
             <span class="chip timing"
               ><%= ct.day %>: <%= ct.open %>-<%= ct.close %></span
             >
-            <% }) %> <% if (!(doctor.doctorDetails.clinicTimings||[]).length) {
-            %>
+            <% }) %> <% if (!(doctor.doctorDetails.clinicTimings || []).length)
+            { %>
             <span>-</span>
             <% } %>
           </div>
         </div>
       </div>
     </section>
+
     <section class="about-section">
       <h2>About Doctor</h2>
       <p>
         <%= doctor.doctorDetails.aboutDoctor || 'No biography available.' %>
       </p>
     </section>
+
     <section class="sociallinks-section">
       <% if (doctor.doctorDetails.socialLinks) { const s =
-      doctor.doctorDetails.socialLinks; %> <% if(s.website) { %><a
-        href="<%=s.website%>"
-        target="_blank"
-        aria-label="Website"
-        ><ion-icon name="globe-outline"></ion-icon></a
-      ><% } %> <% if(s.linkedin) { %><a
-        href="<%=s.linkedin%>"
-        target="_blank"
-        aria-label="LinkedIn"
-        ><ion-icon name="logo-linkedin"></ion-icon></a
-      ><% } %> <% if(s.facebook) { %><a
-        href="<%=s.facebook%>"
-        target="_blank"
-        aria-label="Facebook"
-        ><ion-icon name="logo-facebook"></ion-icon></a
-      ><% } %> <% if(s.twitter) { %><a
-        href="<%=s.twitter%>"
-        target="_blank"
-        aria-label="Twitter"
-        ><ion-icon name="logo-twitter"></ion-icon></a
-      ><% } %> <% if(s.instagram) { %><a
-        href="<%=s.instagram%>"
-        target="_blank"
-        aria-label="Instagram"
-        ><ion-icon name="logo-instagram"></ion-icon></a
-      ><% } %> <% } %>
-    </section>
-    <% } %> <% if (user && user.username === doctor.username) { %>
-    <div class="profile-actions">
-      <!-- <a href="/users/<%= doctor._id %>/edit" class="btn-action edit"
-        >Edit Profile</a
-      >
-      <form action="/logout" method="POST" class="logout-form">
-        <button type="submit" class="btn-action logout">Log Out</button>
-      </form>
-      <a
-        href="/doctors/<%= doctor._id %>/adddetails"
-        class="btn-action add-details"
-        >Add Details</a
-      > -->
-      <a
-        type="button"
-        href="/caredata/users/<%= doctor._id %>/edit"
-        class="btn btn-warning w-100"
-        >Edit
+      doctor.doctorDetails.socialLinks; %> <% if (s.website) { %>
+      <a href="<%= s.website %>" target="_blank" aria-label="Website">
+        <ion-icon name="globe-outline"></ion-icon>
       </a>
-      <form action="/logout" method="post" class="w-100">
-        <button class="btn btn-danger w-100">Log Out</button>
-      </form>
-      <a
-        href="/caredata/doctors/<%= doctor._id %>/adddetails"
-        type="button"
-        class="btn btn-success w-100"
-        >Add Details</a
-      >
-    </div>
-    <% } %> <% if (user && user.username === doctor.username &&
-    doctor.appointments) { %>
+      <% } %> <% if (s.linkedin) { %>
+      <a href="<%= s.linkedin %>" target="_blank" aria-label="LinkedIn">
+        <ion-icon name="logo-linkedin"></ion-icon>
+      </a>
+      <% } %> <% if (s.facebook) { %>
+      <a href="<%= s.facebook %>" target="_blank" aria-label="Facebook">
+        <ion-icon name="logo-facebook"></ion-icon>
+      </a>
+      <% } %> <% if (s.twitter) { %>
+      <a href="<%= s.twitter %>" target="_blank" aria-label="Twitter">
+        <ion-icon name="logo-twitter"></ion-icon>
+      </a>
+      <% } %> <% if (s.instagram) { %>
+      <a href="<%= s.instagram %>" target="_blank" aria-label="Instagram">
+        <ion-icon name="logo-instagram"></ion-icon>
+      </a>
+      <% } %> <% } %>
+    </section>
+    <% } else if (activeTab === 'files') { %>
+    <section class="files-section">
+      <h2>Shared Files</h2>
+      <p>No files uploaded yet.</p>
+    </section>
+    <% } else if (activeTab === 'appointments') { %>
     <section class="appointments-section">
       <h2>Your Appointments</h2>
       <div class="appointments-grid">
-        <% doctor.appointments.forEach((appointment, idx) => { %>
+        <% (doctor.appointments || []).forEach((appointment, idx) => { %>
         <div class="appointment-card">
           <div class="apt-row">
             <strong>#<%= idx + 1 %></strong>
@@ -251,35 +234,23 @@
             <ion-icon name="mail-outline"></ion-icon> <%= appointment.email %>
           </div>
           <div class="apt-row">
-            <ion-icon name="calendar-clear-outline"></ion-icon> <%=
-            appointment.date %> at <%= appointment.timeslot %> AM
+            <ion-icon name="calendar-clear-outline"></ion-icon>
+            <%= appointment.date %> at <%= appointment.timeslot %>
           </div>
         </div>
         <% }) %>
       </div>
     </section>
-    <% } %> <% if (user && user.entryType !== 'doctor') { %>
-    <aside class="booking-sidebar">
-      <div class="clinic-hours">
-        <h3>Clinic Hours</h3>
-        <p>
-          <%= doctor.doctorDetails?.clinicTimings &&
-          doctor.doctorDetails.clinicTimings.length ?
-          doctor.doctorDetails.clinicTimings.map(t => `${t.day}:
-          ${t.open}-${t.close}`).join(', ') : "N/A" %>
-        </p>
-      </div>
-      <div class="booking-actions">
-        <a
-          href="/doctors/<%= doctor._id %>/bookappointment"
-          class="btn booking primary-btn"
-          >Book Appointment</a
-        >
-        <button class="btn booking secondary-btn">Video Consult</button>
-      </div>
-    </aside>
+    <% } else if (activeTab === 'video') { %>
+    <section class="video-section">
+      <h2>Video Consultation</h2>
+      <p>Video call feature coming soon.</p>
+    </section>
+    <% } else if (activeTab === 'settings') { %>
+    <section class="settings-section">
+      <h2>Settings</h2>
+      <p>Manage your profile and account settings here.</p>
+    </section>
     <% } %>
   </main>
 </div>
-
-<script src="/js/doctorProfile.js"></script>

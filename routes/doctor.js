@@ -12,8 +12,10 @@ const router = express.Router();
 router.get("/", doctor.doctors);
 
 // Route: GET /doctors/:id - show doctor profile (require login)
-router.get("/:id", isLoggedIn, doctor.doctorProfile);
+router.get("/:id", isLoggedIn, authorizedRoute, doctor.doctorProfile);
 
+// Route: GET /doctors/:id/:tab - show doctor profile with specific tab
+router.get("/:id/:tab", isLoggedIn, authorizedRoute, doctor.doctorProfile);
 // Routes for adding/updating doctor details (only authorized doctors):
 router
   .route("/:id/adddetails")

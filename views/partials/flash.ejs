@@ -1,9 +1,9 @@
-<% if(success.length){ %>
+<% if (typeof success !== 'undefined' && success.length) { %>
 <div
   aria-live="polite"
   aria-atomic="true"
   class="position-fixed top-0 end-0 p-3"
-  style="z-index: 1080; right: 1rem; top: 1rem"
+  style="z-index: 1080"
   id="successToast"
 >
   <div
@@ -12,8 +12,7 @@
   >
     <div class="d-flex">
       <div class="toast-body">
-        <i class="fas fa-check-circle me-2"></i>
-        <%= success %>
+        <i class="fas fa-check-circle me-2"></i> <%= success %>
       </div>
       <button
         type="button"
@@ -24,12 +23,12 @@
     </div>
   </div>
 </div>
-<% } %> <% if(error.length){ %>
+<% } %> <% if (typeof error !== 'undefined' && error.length) { %>
 <div
   aria-live="polite"
   aria-atomic="true"
   class="position-fixed top-0 end-0 p-3"
-  style="z-index: 1080; right: 1rem; top: 1rem"
+  style="z-index: 1080"
   id="errorToast"
 >
   <div
@@ -38,8 +37,7 @@
   >
     <div class="d-flex">
       <div class="toast-body">
-        <i class="fas fa-times-circle me-2"></i>
-        <%= error %>
+        <i class="fas fa-times-circle me-2"></i> <%= error %>
       </div>
       <button
         type="button"
@@ -51,28 +49,27 @@
   </div>
 </div>
 <% } %>
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Util to auto-hide and fade out any toast by id
     function autoHideToast(toastId, closeBtnId, timeout) {
-      var toast = document.getElementById(toastId);
-      var closeBtn = document.getElementById(closeBtnId);
+      const toast = document.getElementById(toastId);
+      const closeBtn = document.getElementById(closeBtnId);
+
       if (!toast) return;
-      let fadeAndRemove = () => {
-        toast.style.transition = "opacity 0.4s";
+
+      const fadeAndRemove = () => {
+        toast.style.transition = "opacity 0.4s ease";
         toast.style.opacity = 0;
-        setTimeout(() => {
-          toast.remove();
-        }, 400);
+        setTimeout(() => toast.remove(), 400);
       };
-      // Auto-hide after timeout
-      setTimeout(() => {
-        fadeAndRemove();
-      }, timeout);
-      // Manual close
-      if (closeBtn) closeBtn.onclick = fadeAndRemove;
+
+      setTimeout(fadeAndRemove, timeout);
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", fadeAndRemove);
+      }
     }
+
     autoHideToast("successToast", "successToastClose", 4000);
     autoHideToast("errorToast", "errorToastClose", 6000);
   });

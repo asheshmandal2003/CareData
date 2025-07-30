@@ -1,87 +1,224 @@
 <% layout('layout/boilerplate') %>
 <link rel="stylesheet" href="/css/appointmentForm.css" />
 
-<div class="row">
-  <div
-    class="col-6 offset-3 border shadow p-5 rounded d-flex flex-column align-items-center"
-  >
-    <h4 class="text-primary">Book Appointment</h4>
-    <input type="text" id="doctorId" value="<%= doctor._id %>" hidden />
-    <hr />
-    <form
-      action="/caredata/doctors/<%= doctor._id %>/book-appointment"
-      method="post"
-      class="w-100"
-    >
-    <input type="text" name="doctorId" value="<%= doctor._id %>" readonly hidden>
-    <input type="text" name="doctorName" value="<%= doctor.fullName %>" readonly hidden>
-    <input type="text" name="doctorAvatar" value="<%= doctor.image.path %>" readonly hidden>
-    <input type="text" name="location" value="<%= doctor.doctorDetails.location %>" readonly hidden>
-      <div class="mb-3 w-100">
-        <label for="name" class="form-label">Name</label>
-        <input
-          type="text"
-          value="<%= user.fullName %>"
-          class="form-control"
-          id="name"
-          name="name"
-        />
-      </div>
-      <div class="mb-3 w-100">
-        <label for="email" class="form-label">Email</label>
-        <input
-          type="email"
-          value="<%= user.emailId %>"
-          class="form-control"
-          id="email"
-          name="email"
-        />
-      </div>
-      <div class="mb-3 w-100">
-        <label for="phone" class="form-label">Phone Number</label>
-        <input type="text" class="form-control" id="phone" name="phone" />
-      </div>
+<!-- Flatpickr CSS CDN -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+/>
 
-      <div class="mb-3 w-100">
-        <label for="datepicker" class="form-label">Select a Date</label>
-        <input type="text" name="date" id="datepicker" class="form-control" />
-      </div>
-      <div class="mb-3 w-100">
-        <!-- timeslot -->
-        <label for="timeslot" class="form-label">Select a Time Slot</label>
-        <select name="timeslot" id="timeslot" class="form-select">
-          <option value="">Choose a timeslot</option>
-          <% const openIso =
-          moment(doctor.doctorDetails.open,"hh:mm").toISOString() %> <% const
-          closeIso = moment(doctor.doctorDetails.close, "hh:mm").toISOString()
-          %> <% for(let i = moment(openIso); i < moment(closeIso); i.add(30,
-          'minutes')){%>
+<div class="row justify-content-center mt-5">
+  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card shadow-sm rounded">
+      <div class="card-body p-4">
+        <h4 class="text-primary text-center mb-4">Book Appointment</h4>
 
-          <option value="<%= i.format("hh:mm") %>">
-            <%= i.format("hh:mm") %>
-          </option>
+        <form
+          action="/caredata/doctors/<%= doctor._id %>/book-appointment"
+          method="post"
+          class="needs-validation"
+          novalidate
+        >
+          <!-- Hidden doctor info inputs -->
+          <input type="hidden" name="doctorId" value="<%= doctor._id %>" />
+          <input
+            type="hidden"
+            name="doctorName"
+            value="<%= doctor.fullName %>"
+          />
+          <input
+            type="hidden"
+            name="doctorAvatar"
+            value="<%= doctor.image.path %>"
+          />
+          <input
+            type="hidden"
+            name="location"
+            value="<%= doctor.doctorDetails.location %>"
+          />
 
-          <% } %>
-        </select>
+          <!-- Patient Name -->
+          <div class="mb-3">
+            <label for="name" class="form-label fw-semibold">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              value="<%= user.fullName %>"
+              required
+            />
+            <div class="invalid-feedback">Please enter your name.</div>
+          </div>
+
+          <!-- Patient Email -->
+          <div class="mb-3">
+            <label for="email" class="form-label fw-semibold">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              value="<%= user.emailId %>"
+              required
+            />
+            <div class="invalid-feedback">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="mb-3">
+            <label for="phone" class="form-label fw-semibold"
+              >Phone Number</label
+            >
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              class="form-control"
+              placeholder="Enter your phone number"
+              pattern="^\\+?[0-9\\s\\-]{7,15}$"
+              required
+            />
+            <div class="invalid-feedback">
+              Please enter a valid phone number.
+            </div>
+          </div>
+
+          <!-- Date Picker (flatpickr) -->
+          <div class="mb-3">
+            <label for="datepicker" class="form-label fw-semibold"
+              >Select a Date</label
+            >
+            <input
+              type="text"
+              id="datepicker"
+              name="date"
+              class="form-control"
+              placeholder="Select date"
+              required
+              autocomplete="off"
+            />
+            <div class="invalid-feedback">Please select a valid date.</div>
+          </div>
+
+          <!-- Timeslot Select -->
+          <div class="mb-3">
+            <label for="timeslot" class="form-label fw-semibold"
+              >Select a Time Slot</label
+            >
+            <select name="timeslot" id="timeslot" class="form-select" required>
+              <option value="" disabled selected>Choose a timeslot</option>
+            </select>
+            <div class="invalid-feedback">Please select a time slot.</div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">
+              Book Appointment
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="mb-3 w-100">
-        <button type="submit" class="btn btn-primary w-100">Book</button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
+
+<!-- Moment.js CDN -->
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"
+  integrity="sha512-CxWbGQKxXK0SQWxZlMko6kjKGOluXG4lEA+pCqeQfsv5N2VH0m/jjASM3lCnBJBq7CN3tM5+49CXCPUe2pPQAg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+
+<!-- Flatpickr JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
-  $(function () {
-    $("#datepicker").datepicker();
-  });
-</script>
-<script>
-  const doctor = <%- JSON.stringify(doctor) %>
-  $("#datepicker").on("change", ()=>{
-    doctor.appointments.map(appointemt=>{
-      if(appointemt.date === $("#datepicker").val()){
-     $(`option[value|="${appointemt.timeslot}"]`).attr("disabled", "disabled")
+  (() => {
+    'use strict';
+
+    const form = document.querySelector('form.needs-validation');
+    const dateInput = document.getElementById('datepicker');
+    const timeslotSelect = document.getElementById('timeslot');
+
+    // Data from backend
+    const clinicDays = <%- JSON.stringify(clinicDays || []) %>;
+    const slotsByDay = <%- JSON.stringify(slotsByDay || {}) %>;
+    const appointments = <%- JSON.stringify(appointments || []) %>;
+
+    // Map day names to flatpickr weekday numbers
+    const dayNameToIndex = {
+      Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3,
+      Thursday: 4, Friday: 5, Saturday: 6,
+    };
+    const enabledDays = clinicDays.map(day => dayNameToIndex[day]);
+
+    // Helper: get day name from date string (YYYY-MM-DD)
+    function getDayName(dateStr) {
+      const dateObj = new Date(dateStr);
+      return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][dateObj.getDay()];
+    }
+
+    // Timeslot select population with disabled booked slots
+    function populateTimeslots(slots, bookedSlots) {
+      timeslotSelect.innerHTML = '';
+      timeslotSelect.appendChild(new Option('Choose a timeslot', '', true, true));
+
+      slots.forEach(slot => {
+        const option = document.createElement('option');
+        option.value = slot;
+        let [hh, mm] = slot.split(':');
+        hh = parseInt(hh, 10);
+        const ampm = hh >= 12 ? 'PM' : 'AM';
+        hh = hh % 12 || 12;
+        option.text = `${hh}:${mm} ${ampm}`;
+        if (bookedSlots.includes(slot)) option.disabled = true;
+        timeslotSelect.appendChild(option);
+      });
+    }
+
+    // Update timeslots when the user picks a date
+    function updateTimeslots(selectedDate) {
+      if (!selectedDate) {
+        timeslotSelect.innerHTML = '<option value="" disabled selected>Choose a timeslot</option>';
+        return;
       }
-    })
-    })
+      const dayName = getDayName(selectedDate);
+      const slots = slotsByDay[dayName] || [];
+
+      // Filter already booked slots for this date
+      const bookedSlots = appointments
+        .filter(app => app.date === selectedDate)
+        .map(app => app.timeslot);
+
+      populateTimeslots(slots, bookedSlots);
+      timeslotSelect.value = '';
+    }
+
+    // Initialize flatpickr with enabled days only
+    flatpickr(dateInput, {
+      dateFormat: "Y-m-d",
+      disableMobile: true,
+      minDate: "today",
+      enable: [
+        date => enabledDays.includes(date.getDay())
+      ],
+      onChange: (selectedDates, dateStr) => {
+        updateTimeslots(dateStr);
+      }
+    });
+
+    // Bootstrap validation on submit
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    });
+  })();
 </script>

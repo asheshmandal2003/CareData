@@ -18,33 +18,27 @@ module.exports.doctors = async (req, res, next) => {
   }
 };
 
-// Fetch detailed doctor profile with all populated relations
+// GET /doctors/:id or /doctors/:id/:tab
 module.exports.doctorProfile = async (req, res, next) => {
   try {
-    console.log("Fetching doctor profile for ID:", req.params.id);
+    const tab = req.params.tab || req.query.tab || "profile";
     const doctor = await User.findById(req.params.id)
       .populate("doctorDetails")
-      .populate("appointments"); // assuming appointments is referenced similarly
+      .populate("appointments");
     if (!doctor || doctor.entryType !== "doctor") {
-      console.warn("Doctor not found or not a doctor:", req.params.id);
       req.flash("error", "Doctor not found");
       return res.redirect("/caredata/doctors");
     }
-    console.log("Doctor profile found:", {
-      id: doctor._id,
-      name: doctor.fullName,
-      doctorDetails: !!doctor.doctorDetails,
-      appointmentsCount: Array.isArray(doctor.appointments)
-        ? doctor.appointments.length
-        : 0,
+    res.render("doctor/doctorProfile", {
+      doctor,
+      page: "profile",
+      activeTab: tab,
+      user: req.user,
     });
-    res.render("doctor/doctorProfile", { doctor, page: "profile" });
   } catch (error) {
-    console.error("Error fetching doctor profile:", error);
     next(error);
   }
 };
-
 // Render form to add or update doctor details (only for authorized doctors)
 module.exports.addDetailsPage = async (req, res, next) => {
   try {
