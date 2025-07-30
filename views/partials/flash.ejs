@@ -1,27 +1,53 @@
 <% if (typeof success !== 'undefined' && success.length) { %>
-  <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 1080;" id="successToast">
-    <div class="toast align-items-center text-bg-success border-0 show shadow" role="alert">
-      <div class="d-flex">
-        <div class="toast-body">
-          <i class="fas fa-check-circle me-2"></i> <%= success %>
-        </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Close" id="successToastClose"></button>
+<div
+  aria-live="polite"
+  aria-atomic="true"
+  class="position-fixed top-0 end-0 p-3"
+  style="z-index: 1080"
+  id="successToast"
+>
+  <div
+    class="toast align-items-center text-bg-success border-0 show shadow"
+    role="alert"
+  >
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="fas fa-check-circle me-2"></i> <%= success %>
       </div>
+      <button
+        type="button"
+        class="btn-close btn-close-white me-2 m-auto"
+        aria-label="Close"
+        id="successToastClose"
+      ></button>
     </div>
   </div>
-<% } %>
-
-<% if (typeof error !== 'undefined' && error.length) { %>
-  <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 1080;" id="errorToast">
-    <div class="toast align-items-center text-bg-danger border-0 show shadow" role="alert">
-      <div class="d-flex">
-        <div class="toast-body">
-          <i class="fas fa-times-circle me-2"></i> <%= error %>
-        </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" aria-label="Close" id="errorToastClose"></button>
+</div>
+<% } %> <% if (typeof error !== 'undefined' && error.length) { %>
+<div
+  aria-live="polite"
+  aria-atomic="true"
+  class="position-fixed top-0 end-0 p-3"
+  style="z-index: 1080"
+  id="errorToast"
+>
+  <div
+    class="toast align-items-center text-bg-danger border-0 show shadow"
+    role="alert"
+  >
+    <div class="d-flex">
+      <div class="toast-body">
+        <i class="fas fa-times-circle me-2"></i> <%= error %>
       </div>
+      <button
+        type="button"
+        class="btn-close btn-close-white me-2 m-auto"
+        aria-label="Close"
+        id="errorToastClose"
+      ></button>
     </div>
   </div>
+</div>
 <% } %>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
