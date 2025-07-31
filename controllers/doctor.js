@@ -39,20 +39,46 @@ module.exports.doctorProfile = async (req, res, next) => {
     next(error);
   }
 };
-// Render form to add or update doctor details (only for authorized doctors)
+
+// Helper to parse comma-separated inputs into array safely
+const toArray = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  return val
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+};
+
+// Helper to parse clinicTimings input and normalize time strings (optional)
+const processClinicTimings = (clinicTimings) => {
+  if (!Array.isArray(clinicTimings)) return [];
+
+  return clinicTimings.map((t) => {
+    // Normalize time if you want (optional)
+    const openTime = t.open || "";
+    const closeTime = t.close || "";
+
+    // Example: format HH:mm (24hr) or pass as is (adjust per your needs)
+    // Here, just pass as is assuming the form inputs are in proper format
+    return {
+      day: t.day,
+      open: openTime,
+      close: closeTime,
+    };
+  });
+};
+
+// Render Add or Update Doctor Details Page (GET)
 module.exports.addDetailsPage = async (req, res, next) => {
   try {
-    console.log("Fetching add/update details page for user ID:", req.params.id);
     const user = await User.findById(req.params.id).populate("doctorDetails");
+
     if (!user || user.entryType !== "doctor") {
-      console.warn(
-        "Unauthorized access or invalid doctor for addDetailsPage:",
-        req.params.id
-      );
       req.flash("error", "Unauthorized access or invalid doctor.");
       return res.redirect("/caredata/doctors");
     }
-    console.log("Rendering add/update details page for:", user.fullName);
+
     res.render("doctor/addDoctorDetails", { user, page: "addDetails" });
   } catch (error) {
     console.error("Error rendering addDetailsPage:", error);
@@ -60,19 +86,19 @@ module.exports.addDetailsPage = async (req, res, next) => {
   }
 };
 
-// Add or update doctor details form submission handler
+// Add or Update Doctor Details (POST) with image upload handling
 module.exports.addOrUpdateDetails = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log("Handling addOrUpdateDetails for user ID:", id);
+
     const user = await User.findById(id).populate("doctorDetails");
+
     if (!user || user.entryType !== "doctor") {
-      console.warn("Unauthorized access or invalid doctor on save:", id);
       req.flash("error", "Unauthorized access or invalid doctor.");
       return res.redirect("/caredata/doctors");
     }
 
-    // Build doctorDetails object - extract and sanitize fields from req.body
+    // Extract incoming form fields
     const {
       education,
       speciality,
@@ -96,66 +122,70 @@ module.exports.addOrUpdateDetails = async (req, res, next) => {
       profilePhotoUrl,
     } = req.body;
 
-    // Check incoming body (for debug):
+    // Debug log
     console.log("Form submission body:", req.body);
+    if (req.file) {
+      console.log("Uploaded file info:", req.file);
+    }
 
-    // Process arrays: ensure arrays if single string input is sent
-    const ensureArray = (input) => {
-      if (!input) return [];
-      if (Array.isArray(input)) return input;
-      return [input];
-    };
-
+    // Parse arrays from comma separated strings or checkbox arrays
     const updatedDetails = {
       education: education?.trim(),
       speciality: speciality?.trim(),
-      subSpecialities: ensureArray(subSpecialities).map((s) =>
-        (s || "").trim()
-      ),
+      subSpecialities: toArray(subSpecialities),
       clinicName: clinicName?.trim(),
       clinicAddress: clinicAddress?.trim(),
-      fees: parseFloat(fees),
+      fees: fees ? parseFloat(fees) : undefined,
       location: location?.trim(),
       contactNumber: contactNumber?.trim(),
       email: email?.toLowerCase().trim(),
-      language: ensureArray(language).map((l) => (l || "").trim()),
+      language: toArray(language),
       aboutDoctor: aboutDoctor?.trim(),
-      experience: parseInt(experience),
+      experience: experience ? parseInt(experience) : undefined,
       regId: regId?.trim(),
-      awards: ensureArray(awards).map((a) => (a || "").trim()),
-      certifications: ensureArray(certifications).map((c) => (c || "").trim()),
-      services: ensureArray(services).map((s) => (s || "").trim()),
-      consultationTypes: ensureArray(consultationTypes),
-      clinicTimings: Array.isArray(clinicTimings)
-        ? clinicTimings.map((t) => ({
-            day: t.day,
-            open: t.open,
-            close: t.close,
-          }))
+      awards: toArray(awards),
+      certifications: toArray(certifications),
+      services: toArray(services),
+      consultationTypes: Array.isArray(consultationTypes)
+        ? consultationTypes
+        : consultationTypes
+        ? [consultationTypes]
         : [],
-      socialLinks: socialLinks || {},
-      profilePhotoUrl: profilePhotoUrl?.trim(),
+      clinicTimings: processClinicTimings(
+        Array.isArray(clinicTimings)
+          ? clinicTimings
+          : clinicTimings
+          ? [clinicTimings]
+          : []
+      ),
+      socialLinks: {
+        website: socialLinks?.website?.trim() || "",
+        linkedin: socialLinks?.linkedin?.trim() || "",
+        facebook: socialLinks?.facebook?.trim() || "",
+        twitter: socialLinks?.twitter?.trim() || "",
+        instagram: socialLinks?.instagram?.trim() || "",
+      },
+      // Handle image URL prioritizing uploaded file path
+      profilePhotoUrl: req.file?.path || profilePhotoUrl?.trim() || "",
+      updatedAt: new Date(),
     };
 
-    console.log("Prepared doctor details for save/update:", updatedDetails);
-
+    // Save or update doctor's details
     if (user.doctorDetails) {
-      // Update existing doctor's details
-      console.log("Updating doctor details for:", user.fullName);
       await DoctorDetails.findByIdAndUpdate(
         user.doctorDetails._id,
         updatedDetails,
         { new: true, runValidators: true }
       );
-      console.log("Doctor details updated.");
+      console.log(`Doctor details updated for user: ${user.fullName}`);
     } else {
-      // Create new details and link to user
-      console.log("Creating new doctor details for:", user.fullName);
       const newDetails = new DoctorDetails(updatedDetails);
       await newDetails.save();
       user.doctorDetails = newDetails._id;
       await user.save();
-      console.log("Doctor details created and linked to user.");
+      console.log(
+        `Doctor details created and linked for user: ${user.fullName}`
+      );
     }
 
     req.flash("success", "Doctor details saved successfully.");
