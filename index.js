@@ -114,30 +114,7 @@ app.get("/caredata/doctors", async (req, res, next) => {
   }
 });
 
-/* --- PROTECT ALL LABTEST ROUTES BELOW THIS LINE --- */
-
-// List LabTests
-app.get("/labtests", isLoggedIn, async (req, res, next) => {
-  try {
-    const labTests = await LabTest.find({}).sort({ name: 1 });
-    res.render("labtests/labtests", { labTests, page: "labtests" });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// LabTest Details
-app.get("/labtests/:id", isLoggedIn, async (req, res, next) => {
-  try {
-    const labTest = await LabTest.findById(req.params.id);
-    if (!labTest) {
-      return next(new AppError(404, "Lab Test Not Found"));
-    }
-    res.render("labtests/show", { labTest, page: "labtests" });
-  } catch (error) {
-    next(error);
-  }
-});
+app.use("/labtests", require("./routes/labTestRoutes"));
 
 /* === END LABTEST PROTECTION === */
 

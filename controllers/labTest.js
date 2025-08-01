@@ -1,11 +1,12 @@
 const LabTest = require("../models/labTest");
 const LabBooking = require("../models/labBooking");
+const User = require("../models/user");
 
 // List all lab tests
 module.exports.getAllLabTests = async (req, res, next) => {
   try {
     const labTests = await LabTest.find({}).sort({ name: 1 });
-    res.render("labtests/index", { labTests });
+    res.render("labtests/labtests", { labTests, page: "labtests" });
   } catch (e) {
     next(e);
   }
@@ -95,17 +96,25 @@ module.exports.renderBookingForm = async (req, res, next) => {
   }
 };
 
-// Handle booking POST
 module.exports.createBooking = async (req, res, next) => {
   try {
     const { id } = req.params;
+
+    // Fetch lab test
     const labTest = await LabTest.findById(id);
     if (!labTest) {
       req.flash("error", "Lab test not found");
       return res.redirect("/labtests");
     }
 
-    // Destructure and sanitize the patient booking form
+    // Get the currently logged-in user
+    const user = req.user;
+    if (!user) {
+      req.flash("error", "You must be logged in to book a lab test.");
+      return res.redirect("/login");
+    }
+
+    // Validate and build booking object
     const {
       patientName,
       patientEmail,
@@ -118,28 +127,68 @@ module.exports.createBooking = async (req, res, next) => {
       notes,
     } = req.body;
 
-    // You may want to validate more strictly here (left minimal)
+    // Ensure all required fields are present and types are correct
+    if (
+      !patientName ||
+      !patientEmail ||
+      !phone ||
+      !age ||
+      !gender ||
+      !appointmentDate
+    ) {
+      req.flash("error", "Please fill all required fields!");
+      return res.redirect("/labtests/" + id + "/book");
+    }
+
+    // Build new booking
     const booking = new LabBooking({
       labTest: labTest._id,
+      user: user._id,
       patientName,
       patientEmail,
       phone,
-      age,
+      age: Number(age),
       gender,
       address,
-      appointmentDate,
+      appointmentDate, // Mongoose should auto-cast if ISO string, else new Date(appointmentDate)
       timeSlot,
       notes,
     });
 
     await booking.save();
 
-    req.flash(
-      "success",
-      "Your booking has been submitted! We'll contact you soon."
-    );
+    user.labBookings = user.labBookings || [];
+    user.labBookings.push(booking._id);
+    await user.save();
+
+    req.flash("Your booking has been submitted! We'll contact you soon.");
     res.redirect("/labtests/" + id);
   } catch (e) {
-    next(e);
+    console.error("LAB_BOOKING_ERROR: ", e);
+    req.flash(
+      "error",
+      "Booking creation failed: " + (e.message || "Unknown error")
+    );
+    res.redirect("/labtests/" + (req.params.id || ""));
+  }
+};
+
+module.exports.getUserLabBookings = async (req, res, next) => {
+  try {
+    // Ensure user is logged in
+    if (!req.user) {
+      req.flash("error", "You must be logged in to view your lab bookings.");
+      return res.redirect("/login");
+    }
+
+    // Fetch all lab bookings for this user, with populated lab test info
+    const bookings = await LabBooking.find({ user: req.user._id })
+      .populate("labTest")
+      .sort({ appointmentDate: -1, createdAt: -1 });
+
+    // Render your view (adjust 'labtests/myBookings' as needed)
+    res.render("labtests/myBookings", { bookings });
+  } catch (error) {
+    next(error);
   }
 };
