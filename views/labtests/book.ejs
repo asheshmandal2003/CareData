@@ -1,0 +1,41 @@
+<%- layout('layout/boilerplate') %>
+<h2>Book Lab Test: <%= labTest.name %></h2>
+<form
+  method="POST"
+  action="/book-labtest/<%= labTest._id %>"
+  class="booking-form"
+>
+  <label>Patient Name</label>
+  <input type="text" name="patientName" required />
+
+  <label>Email</label>
+  <input type="email" name="patientEmail" required />
+
+  <label>Phone</label>
+  <input type="tel" name="phone" required />
+
+  <label>Age</label>
+  <input type="number" name="age" min="0" />
+
+  <label>Gender</label>
+  <select name="gender">
+    <option value="">--Select--</option>
+    <option>Male</option>
+    <option>Female</option>
+    <option>Other</option>
+  </select>
+
+  <label>Appointment Date</label>
+  <input type="date" name="appointmentDate" required />
+
+  <label>Preferred Time Slot</label>
+  <input type="text" name="timeSlot" placeholder="10:00-11:00 AM" />
+
+  <label>Address (if home collection)</label>
+  <textarea name="address"></textarea>
+
+  <label>Notes for Lab</label>
+  <textarea name="notes"></textarea>
+
+  <button type="submit">Book Now</button>
+</form>

@@ -16,4 +16,7 @@ router.get("/", isLoggedIn, labTestController.getAllLabTests);
 // Lab Test Details (protected - user must be logged in)
 router.get("/:id", isLoggedIn, labTestController.getLabTestById);
 
+router.get("/book-labtest/:id", labTestController.renderBookingForm);
+router.post("/book-labtest/:id", labTestController.createBooking);
+
 module.exports = router;

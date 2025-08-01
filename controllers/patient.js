@@ -58,8 +58,10 @@ module.exports.edit = async (req, res, next) => {
     if (user.entryType === "doctor") {
       return res.redirect(`/caredata/doctors/${req.params.id}`);
     }
+    else {
+      return res.redirect(`/caredata/users/${req.params.id}`);
+    }
 
-    res.redirect(`/caredata/users/${req.params.id}`);
   } catch (error) {
     next(error);
   }
