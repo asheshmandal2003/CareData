@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const labTestController = require("../controllers/labTest");
 const { isLoggedIn } = require("../middleware/isLoggedIn");
-const { isAdminMiddleware } = require("../middleware/isAdminMiddleware");
 
 // All lab tests list (protected - user must be logged in)
 router.get("/", isLoggedIn, labTestController.getAllLabTests);
@@ -15,5 +14,9 @@ router.get("/", isLoggedIn, labTestController.getAllLabTests);
 
 // Lab Test Details (protected - user must be logged in)
 router.get("/:id", isLoggedIn, labTestController.getLabTestById);
+
+router.get("/book/:id", labTestController.renderBookingForm);
+router.post("/book/:id", labTestController.createBooking);
+router.get("/my-bookings", labTestController.getUserLabBookings);
 
 module.exports = router;

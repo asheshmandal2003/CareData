@@ -1,0 +1,260 @@
+<%- layout('layout/boilerplate') %>
+
+<div
+  class="container d-flex align-items-center justify-content-center min-vh-100 py-5"
+>
+  <div class="col-lg-9">
+    <div class="card bg-white bg-opacity-75 shadow-lg border-0 rounded-4">
+      <!-- Lab Test Summary Banner -->
+      <div
+        class="card-header border-bottom-0 bg-gradient bg-primary bg-opacity-75 text-white rounded-top-4"
+      >
+        <div
+          class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-2"
+        >
+          <div class="flex-grow-1">
+            <h3 class="mb-0 fw-bold">
+              <i class="fas fa-flask-vial me-2"></i>
+              Book Lab Test
+            </h3>
+            <span
+              class="badge bg-light text-primary mt-2 mb-1 px-3 py-2 rounded-pill shadow-sm fs-6"
+            >
+              <i class="fas fa-vial me-1"></i><%= labTest.name %>
+            </span>
+            <div class="text-white-50 small fst-italic">
+              <%= labTest.description ? labTest.description.substring(0, 70) +
+              (labTest.description.length > 70 ? "..." : "") : "No description."
+              %>
+            </div>
+          </div>
+          <div>
+            <span class="badge bg-warning text-dark fs-6 me-2">
+              ₹ <%= labTest.price?.toLocaleString() %>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <form
+          method="POST"
+          action="/labtests/book/<%= labTest._id %>"
+          class="row g-4 needs-validation"
+          novalidate
+          autocomplete="off"
+        >
+          <!-- Patient Information Section -->
+          <h5 class="mb-1 text-primary text-uppercase">
+            <i class="fas fa-user me-2"></i>Patient Info
+          </h5>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="patientName"
+                name="patientName"
+                required
+                placeholder="Full Name"
+                autocomplete="name"
+                data-bs-toggle="tooltip"
+                title="Enter the patient's full name"
+              />
+              <label for="patientName">
+                <i class="fas fa-user text-primary me-1"></i>Name
+              </label>
+              <div class="invalid-feedback">Name required.</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="email"
+                class="form-control"
+                id="patientEmail"
+                name="patientEmail"
+                required
+                placeholder="Email"
+                autocomplete="email"
+                data-bs-toggle="tooltip"
+                title="Confirmation and reports will be sent here"
+              />
+              <label for="patientEmail">
+                <i class="fas fa-envelope text-primary me-1"></i>Email address
+              </label>
+              <div class="invalid-feedback">Valid email required.</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="tel"
+                class="form-control"
+                id="phone"
+                name="phone"
+                required
+                placeholder="Phone"
+                autocomplete="tel"
+                pattern="[0-9\- ]{7,}"
+                data-bs-toggle="tooltip"
+                title="Your contact number, digits only"
+              />
+              <label for="phone">
+                <i class="fas fa-phone text-primary me-1"></i>Phone
+              </label>
+              <div class="invalid-feedback">Phone number required.</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="form-floating">
+              <input
+                type="number"
+                class="form-control"
+                id="age"
+                name="age"
+                min="0"
+                placeholder="Age"
+              />
+              <label for="age">
+                <i class="fas fa-birthday-cake text-primary me-1"></i>Age
+              </label>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="form-floating">
+              <select
+                class="form-select"
+                id="gender"
+                name="gender"
+                aria-label="Gender select"
+              >
+                <option value="" selected>--Select--</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+              <label for="gender">
+                <i class="fas fa-venus-mars text-primary me-1"></i>Gender
+              </label>
+            </div>
+          </div>
+
+          <!-- Appointment Details Section -->
+          <div class="col-12 mt-3">
+            <h5 class="mb-1 text-primary text-uppercase">
+              <i class="fas fa-calendar-alt me-2"></i>Appointment Details
+            </h5>
+          </div>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="date"
+                class="form-control"
+                id="appointmentDate"
+                name="appointmentDate"
+                required
+                placeholder="Appointment Date"
+                data-bs-toggle="tooltip"
+                title="Select your preferred test date"
+              />
+              <label for="appointmentDate">
+                <i class="far fa-calendar text-primary me-1"></i>Date
+              </label>
+              <div class="invalid-feedback">Date required.</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input
+                type="text"
+                class="form-control"
+                id="timeSlot"
+                name="timeSlot"
+                placeholder="10:00-11:00 AM"
+                data-bs-toggle="tooltip"
+                title="Example: 10:00-11:00 AM"
+              />
+              <label for="timeSlot">
+                <i class="fas fa-clock text-primary me-1"></i>Time Slot
+              </label>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="form-floating">
+              <textarea
+                class="form-control"
+                id="address"
+                name="address"
+                style="height: 65px"
+                placeholder="Address"
+              ></textarea>
+              <label for="address">
+                <i class="fas fa-home text-primary me-1"></i>Address (if home
+                collection)
+              </label>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="form-floating">
+              <textarea
+                class="form-control"
+                id="notes"
+                name="notes"
+                style="height: 60px"
+                placeholder="Notes"
+              ></textarea>
+              <label for="notes">
+                <i class="fas fa-sticky-note text-primary me-1"></i>Notes (for
+                lab)
+              </label>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="col-12 d-grid gap-2 justify-items-center"
+            style="justify-items: center;">
+            <button type="submit" class="btn btn-primary btn-lg shadow-sm col-4">
+              <i class="fas fa-paper-plane me-2"></i>
+              Book Now
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        class="card-footer border-top-0 bg-white bg-opacity-50 rounded-bottom-4 text-center small text-muted fst-italic"
+      >
+        <i class="fas fa-shield-alt me-1 text-primary"></i>
+        Your information is securely stored and used only to process your
+        booking.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Tooltips
+    const triggers = [].slice.call(
+      document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    triggers.forEach(function (trigger) {
+      new bootstrap.Tooltip(trigger);
+    });
+
+    // Bootstrap validation
+    var forms = document.querySelectorAll(".needs-validation");
+    Array.prototype.slice.call(forms).forEach(function (form) {
+      form.addEventListener(
+        "submit",
+        function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add("was-validated");
+        },
+        false
+      );
+    });
+  });
+</script>

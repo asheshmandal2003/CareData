@@ -11,7 +11,12 @@ module.exports.userPage = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id)
       .populate("doctorDetails")
-      .populate("appointments");
+      .populate("appointments")
+      .populate({
+        path: "labBookings",
+        populate: { path: "labTest" },
+      });
+
     res.render("patient/profilePage", { user });
   } catch (error) {
     next(error);
@@ -57,9 +62,9 @@ module.exports.edit = async (req, res, next) => {
     // Redirect to doctor's page if doctor, else patient page
     if (user.entryType === "doctor") {
       return res.redirect(`/caredata/doctors/${req.params.id}`);
+    } else {
+      return res.redirect(`/caredata/users/${req.params.id}`);
     }
-
-    res.redirect(`/caredata/users/${req.params.id}`);
   } catch (error) {
     next(error);
   }

@@ -1,135 +1,264 @@
 <% layout('layout/boilerplate') %>
 <link rel="stylesheet" href="/css/icon.css" />
-<link rel="stylesheet" href="/css/profilePage.css" />
-<% if(user.entryType === "patient"){ %>
-<div class="row">
-  <div class="col-5">
-    <div class="card p-3 profile">
-      <img src="<%= user.image.path ? user.image.path : "/image/defaultUser.png"
-      %>" alt="" class="card-img-top img-fluid profilePhoto mt-3" />
-      <div class="card-body">
-        <div class="profileDetails">
-          <b class="card-title">Full Name</b>
-          <span class="card-text"><%= user.fullName %></span>
+
+<% if (user.entryType === "patient") { %>
+<div class="container-xl py-5">
+  <div class="row g-4 justify-content-center">
+    <!-- Profile Sidebar Centered -->
+    <div class="col-12 col-md-4">
+      <div
+        class="card shadow border-0 px-2 py-4 mb-4 d-flex flex-column align-items-center"
+      >
+        <img
+          src="<%= user.image && user.image.path ? user.image.path : '/image/defaultUser.png' %>"
+          class="rounded-circle shadow mb-3 mx-auto"
+          style="width: 110px; height: 110px; object-fit: cover"
+        />
+        <h4 class="fw-bold mb-1"><%= user.fullName %></h4>
+        <span class="text-secondary small mb-2">@<%= user.username %></span>
+        <div class="mb-0 text-muted">
+          <ion-icon name="mail-outline"></ion-icon> <%= user.emailId %>
         </div>
-        <div class="profileDetails">
-          <b class="card-title">Username</b>
-          <span class="card-text"><%= user.username %></span>
-        </div>
-        <div class="profileDetails">
-          <b class="card-title">Email</b>
-          <span class="card-text"><%= user.emailId %></span>
-        </div>
-        <% if(user !== undefined && user.username ){ %>
-        <div class="profileButton d-flex gap-3 mb-3">
-          <a href="/caredata/users/<%= user._id %>/edit" class="w-100">
-            <button class="btn btn-warning w-100">Edit</button>
+        <hr class="my-3 w-75" />
+        <!-- Quick Actions -->
+        <div class="d-flex flex-column gap-2 mb-3 w-100">
+          <a
+            href="/caredata/users/<%= user._id %>/edit"
+            class="btn btn-outline-primary btn-sm"
+          >
+            <ion-icon name="create-outline"></ion-icon> Edit Profile
           </a>
-          <form action="/logout" method="post" class="w-100">
-            <button class="btn btn-danger w-100">Log Out</button>
+          <form method="POST" action="/logout">
+            <button class="btn btn-danger btn-sm w-100" type="submit">
+              <ion-icon name="log-out-outline"></ion-icon> Log Out
+            </button>
           </form>
         </div>
-        <% } %>
+        <!-- Stats -->
+        <div class="d-flex justify-content-center gap-4 mt-4">
+          <div class="text-center">
+            <div class="h5 mb-0"><%= user.appointments.length %></div>
+            <div class="small text-secondary">Appointments</div>
+          </div>
+          <div class="text-center">
+            <div class="h5 mb-0"><%= user.labBookings.length %></div>
+            <div class="small text-secondary">Lab Tests</div>
+          </div>
+        </div>
+        <hr class="my-3 w-75" />
+        <!-- Navigation -->
+        <div class="d-grid gap-2 w-100">
+          <a
+            href="/caredata/users/<%= user._id %>/upload"
+            class="btn btn-light border text-primary mb-1"
+          >
+            <ion-icon name="cloud-upload-outline"></ion-icon> Upload Data
+          </a>
+          <a
+            href="/caredata/doctors"
+            class="btn btn-light border text-secondary"
+          >
+            <ion-icon name="chatbox-ellipses-outline"></ion-icon> Consult Doctor
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="col-7 profile-features">
-    <a
-      class="redirection-box card me-3 mb-3 col profile-feature"
-      href="/caredata/users/<%= user._id %>/upload"
-    >
-      <div class="bg-white text-dark w-100" style="text-align: center">
-        <h4>Upload Data</h4>
+    <!-- Main Dashboard With Improved Lists -->
+    <div class="col-12 col-md-8">
+      <div class="mb-4">
+        <div
+          class="alert alert-primary d-flex gap-2 align-items-center mb-0"
+          role="alert"
+        >
+          <ion-icon name="happy-outline" class="fs-5"></ion-icon>
+          <span
+            ><b>Hello, <%= user.fullName.split(" ")[0] %>!</b> Welcome to your
+            Health Dashboard.</span
+          >
+        </div>
       </div>
-    </a>
-
-    <a class="redirection-box card me-3 mb-3 col profile-feature" href="">
-      <div class="bg-white text-dark w-100" style="text-align: center">
-        <h4>Consult With Doctor</h4>
+      <div class="card shadow border-0">
+        <div class="card-body">
+          <!-- Tabs -->
+          <ul
+            class="nav nav-tabs nav-justified mb-3"
+            id="profileTabs"
+            role="tablist"
+          >
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="appointments-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#appointments-panel"
+                type="button"
+                role="tab"
+              >
+                <ion-icon name="calendar-number-outline"></ion-icon>
+                <span class="ms-1 d-none d-md-inline">Appointments</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="labs-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#labs-panel"
+                type="button"
+                role="tab"
+              >
+                <ion-icon name="flask-outline"></ion-icon>
+                <span class="ms-1 d-none d-md-inline">Lab Bookings</span>
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="activity-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#activity-panel"
+                type="button"
+                role="tab"
+              >
+                <ion-icon name="pulse-outline"></ion-icon>
+                <span class="ms-1 d-none d-md-inline">Activity</span>
+              </button>
+            </li>
+          </ul>
+          <!-- Tab Content -->
+          <div class="tab-content pt-2">
+            <!-- Appointments Tab -->
+            <div
+              class="tab-pane fade show active"
+              id="appointments-panel"
+              role="tabpanel"
+            >
+              <% if (user.appointments && user.appointments.length) { %>
+              <div class="list-group list-group-flush">
+                <% user.appointments.forEach(app => { %>
+                <div
+                  class="list-group-item d-flex align-items-center border-0 border-bottom py-3"
+                >
+                  <img
+                    src="<%= app.doctorAvatar %>"
+                    class="rounded-circle me-3 border"
+                    style="width: 40px; height: 40px; object-fit: cover"
+                  />
+                  <div class="flex-fill">
+                    <div class="fw-semibold text-primary">
+                      <%= app.doctorName %>
+                    </div>
+                    <div class="small text-secondary">
+                      <ion-icon name="calendar-clear-outline"></ion-icon> <%=
+                      app.date %>, <%= app.timeslot %>AM
+                      <span class="mx-2">&#183;</span>
+                      <ion-icon name="location-outline"></ion-icon> <%=
+                      app.location %>
+                    </div>
+                  </div>
+                  <a
+                    href="/caredata/doctors/<%= app.doctorId %>"
+                    class="btn btn-sm btn-outline-secondary ms-2"
+                  >
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                  </a>
+                </div>
+                <% }) %>
+              </div>
+              <% } else { %>
+              <div class="alert alert-info">
+                You have no appointments.
+                <a href="/caredata/doctors" class="alert-link">Book now!</a>
+              </div>
+              <% } %>
+            </div>
+            <!-- Lab Bookings Tab (with More Readable Status) -->
+            <div class="tab-pane fade" id="labs-panel" role="tabpanel">
+              <% if (user.labBookings && user.labBookings.length) { %>
+              <div class="list-group list-group-flush">
+                <% user.labBookings.forEach(lb => { %>
+                <div
+                  class="list-group-item d-flex align-items-center border-0 border-bottom py-3"
+                >
+                  <% if (lb.labTest && lb.labTest.logoUrl) { %>
+                  <img
+                    src="<%= lb.labTest.logoUrl %>"
+                    class="rounded bg-light me-3"
+                    style="width: 36px; height: 36px; object-fit: cover"
+                  />
+                  <% } else { %>
+                  <ion-icon
+                    name="flask-outline"
+                    class="me-3 text-info"
+                    style="font-size: 2rem"
+                  ></ion-icon>
+                  <% } %>
+                  <div class="flex-fill">
+                    <div class="fw-semibold">
+                      <%= lb.labTest ? lb.labTest.name : "Lab Test" %> <% /*
+                      Conditionally colored badge for status */ %>
+                      <span
+                        class="ms-2 badge rounded-pill <% if(lb.status === 'Completed'){ %> bg-success text-light <% } else if(lb.status === 'Pending'){ %> bg-warning text-dark <% } else if(lb.status === 'Cancelled'){ %> bg-danger text-light <% } else { %> bg-secondary text-light <% } %>"
+                        ><%= lb.status %></span
+                      >
+                    </div>
+                    <div class="small text-secondary">
+                      <ion-icon name="calendar-clear-outline"></ion-icon>
+                      <%= lb.appointmentDate ?
+                      lb.appointmentDate.toISOString().substring(0,10) : "" %>
+                      <% if (lb.timeSlot) { %> at <%= lb.timeSlot %><% } %>
+                      <br />
+                      <ion-icon name="person-outline"></ion-icon> <%=
+                      lb.patientName %>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+              <% } else { %>
+              <div class="alert alert-info">
+                No lab test bookings yet.
+                <a href="/labtests" class="alert-link">See available tests</a>
+              </div>
+              <% } %>
+            </div>
+            <!-- Activity Feed Tab -->
+            <div class="tab-pane fade" id="activity-panel" role="tabpanel">
+              <ul class="list-group list-group-flush">
+                <% if ((user.labBookings && user.labBookings.length) ||
+                (user.appointments && user.appointments.length)) { %> <%
+                user.appointments.slice(0,3).forEach(app => { %>
+                <li class="list-group-item small py-3">
+                  <ion-icon
+                    name="calendar-outline"
+                    class="text-success"
+                  ></ion-icon>
+                  <strong><%= app.doctorName %></strong> appointment on <%=
+                  app.date %>
+                </li>
+                <% }); %> <% user.labBookings.slice(0,3).forEach(lb => { %>
+                <li class="list-group-item small py-3">
+                  <ion-icon name="flask-outline" class="text-info"></ion-icon>
+                  <strong
+                    ><%= lb.labTest ? lb.labTest.name : "Unknown" %></strong
+                  >
+                  test booked for <%= lb.appointmentDate ?
+                  lb.appointmentDate.toISOString().substring(0,10) : "" %>
+                </li>
+                <% }); %> <% } else { %>
+                <li class="list-group-item text-muted text-center">
+                  No recent activity.
+                </li>
+                <% } %>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-    </a>
-
-    <div
-      class="redirection-box card me-3 mb-3 col profile-feature"
-      type="button"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#offcanvasWithBothOptions"
-      aria-controls="offcanvasWithBothOptions"
-    >
-      <div class="bg-white text-dark w-100" style="text-align: center">
-        <h4>Appointments</h4>
+      <div class="text-center text-secondary small mt-4">
+        © 2025 CareData &mdash; All rights reserved
       </div>
     </div>
-
-    <a
-      class="redirection-box card me-3 mb-3 col profile-feature"
-      href="/caredata/doctors"
-    >
-      <div class="bg-white text-dark w-100" style="text-align: center">
-        <h4>Find Doctors</h4>
-      </div>
-    </a>
-  </div>
-</div>
-
-<div
-  class="offcanvas offcanvas-start p-3"
-  data-bs-scroll="true"
-  tabindex="-1"
-  id="offcanvasWithBothOptions"
-  aria-labelledby="offcanvasWithBothOptionsLabel"
->
-  <div class="offcanvas-header">
-    <h5
-      class="offcanvas-title text-primary offset-3"
-      id="offcanvasWithBothOptionsLabel"
-    >
-      Appointments
-    </h5>
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="offcanvas"
-      aria-label="Close"
-    ></button>
-  </div>
-  <div class="offcanvas-body">
-    <% user.appointments.map(appointment=>{ %>
-    <div
-      class="card border rounded p-4 shadow mb-3 d-flex flex-row"
-      style="width: 100%"
-    >
-      <a class="w-30" href="/caredata/doctors/<%= appointment.doctorId %>">
-        <img
-          class="img-fluid rounded-circle"
-          src="<%= appointment.doctorAvatar %>"
-          alt="doctor-avatar"
-          width="50px"
-          height="50px"
-        />
-      </a>
-      <div class="appointment-details ms-3 w-70 d-flex flex-column">
-        <span class="fw-medium d-flex mb-2"
-          ><ion-icon name="person-outline" class="icon"></ion-icon><%=
-          appointment.doctorName %></span
-        >
-        <span class="d-flex mb-2"
-          ><ion-icon name="location-outline" class="icon"></ion-icon><%=
-          appointment.location %></span
-        >
-        <span class="d-flex mb-2"
-          ><ion-icon name="calendar-clear-outline" class="icon"></ion-icon><%=
-          appointment.date %> at <%= appointment.timeslot %>AM</span
-        >
-      </div>
-      <ion-icon
-        name="trash-outline"
-        class="icon text-danger ms-auto"
-        style="cursor: pointer"
-      ></ion-icon>
-    </div>
-    <% }) %>
   </div>
 </div>
 <% } %>

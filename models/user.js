@@ -30,6 +30,12 @@ const userSchema = new Schema({
       ref: "Appointment",
     },
   ],
+  labBookings: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "LabBooking",
+    },
+  ],
 });
 
 userSchema.plugin(passportLocalMongoose);
