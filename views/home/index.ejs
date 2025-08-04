@@ -184,96 +184,45 @@
       And Tips To Stay Healthy.
     </h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
+      <% if (!latestBlogs || latestBlogs.length === 0) { %>
+      <div class="col">
+        <div class="alert alert-info text-center w-100" role="alert">
+          No blog posts found.
+        </div>
+      </div>
+      <% } else { %> <% latestBlogs.forEach(function(blog) { %>
       <div class="col">
         <article class="card blog-post h-100 shadow-sm border-0">
           <img
             class="card-img-top news-img img-fluid"
-            src="/image/img1.jpg"
+            src="<%= blog.image %>"
             alt="news-img"
           />
           <div class="card-body blog-details-container">
             <div class="blog-header d-flex justify-content-between">
-              <p class="badge bg-success">News</p>
-              <small class="date text-secondary">DD/MM/YYYY</small>
+              <p class="badge bg-success"><%= blog.category %></p>
+              <small class="date text-secondary">
+                <%= blog.publishedAt.toLocaleDateString("en-IN") %>
+              </small>
             </div>
-            <h3 class="card-title">Post Title 1</h3>
-            <p class="card-text blog-cont">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
-              corrupti velit rerum quas maiores ipsa?
-            </p>
+            <h3 class="card-title"><%= blog.title %></h3>
+            <p class="card-text blog-cont"><%= blog.summary %></p>
           </div>
           <span class="line"></span>
           <div
             class="card-footer d-flex align-items-center justify-content-between"
           >
             <span class="circle"></span>
-            <a class="rm ms-auto" href="blog/post1.html"
-              >Read More <i class="fa fa-arrow-right ms-1"></i
-            ></a>
+            <a class="rm ms-auto" href="/blogs/<%= blog._id %>">
+              Read More <i class="fa fa-arrow-right ms-1"></i>
+            </a>
           </div>
         </article>
       </div>
-      <div class="col">
-        <article class="card blog-post h-100 shadow-sm border-0">
-          <img
-            class="card-img-top news-img img-fluid"
-            src="/image/img6.jpg"
-            alt="news-img"
-          />
-          <div class="card-body blog-details-container">
-            <div class="blog-header d-flex justify-content-between">
-              <p class="badge bg-success">News</p>
-              <small class="date text-secondary">DD/MM/YYYY</small>
-            </div>
-            <h3 class="card-title">Post Title 2</h3>
-            <p class="card-text blog-cont">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
-              corrupti velit rerum quas maiores ipsa?
-            </p>
-          </div>
-          <span class="line"></span>
-          <div
-            class="card-footer d-flex align-items-center justify-content-between"
-          >
-            <span class="circle"></span>
-            <a class="rm ms-auto" href="blog/post2.html"
-              >Read More <i class="fa fa-arrow-right ms-1"></i
-            ></a>
-          </div>
-        </article>
-      </div>
-      <div class="col">
-        <article class="card blog-post h-100 shadow-sm border-0">
-          <img
-            class="card-img-top news-img img-fluid"
-            src="/image/img5.jpg"
-            alt="news-img"
-          />
-          <div class="card-body blog-details-container">
-            <div class="blog-header d-flex justify-content-between">
-              <p class="badge bg-success">News</p>
-              <small class="date text-secondary">DD/MM/YYYY</small>
-            </div>
-            <h3 class="card-title">Post Title 3</h3>
-            <p class="card-text blog-cont">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam
-              corrupti velit rerum quas maiores ipsa?
-            </p>
-          </div>
-          <span class="line"></span>
-          <div
-            class="card-footer d-flex align-items-center justify-content-between"
-          >
-            <span class="circle"></span>
-            <a class="rm ms-auto" href="blog/post3.html"
-              >Read More <i class="fa fa-arrow-right ms-1"></i
-            ></a>
-          </div>
-        </article>
-      </div>
+      <% }) %> <% } %>
     </div>
     <div class="text-center mt-4">
-      <a href="#" class="btn btn-primary btn-lg px-4">
+      <a href="/blogs" class="btn btn-primary btn-lg px-4">
         Browse all blogs <i class="fa fa-book-reader ms-2"></i>
       </a>
     </div>

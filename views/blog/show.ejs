@@ -1,0 +1,119 @@
+<%- layout('layout/boilerplate') %>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+
+<section class="py-5 bg-light min-vh-100">
+  <div class="container">
+    <div class="row gy-4">
+
+      <!-- TOC sidebar: sticky, scrollspy enhanced -->
+      <aside class="col-12 col-lg-4 d-none d-lg-block">
+        <div class="sticky-top pt-2" style="top:5rem;">
+          <div class="card border-0 shadow-sm bg-white">
+            <div class="card-body pb-1">
+              <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-list-task h4 mb-0 me-2 text-primary"></i>
+                <h6 class="mb-0 fw-bold text-secondary">In this article</h6>
+              </div>
+              <nav id="toc-nav" class="nav flex-column nav-scrollspy small" data-bs-spy="scroll" data-bs-target="#toc-nav" data-bs-offset="80" tabindex="0">
+                <% toc.forEach(function(h) { %>
+                  <a class="nav-link px-2 py-1 text-primary d-block <% if(h.tag==='h3'){%>ms-3<%}%>"
+                     href="#<%= h.id %>"
+                     style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                     title="<%= h.text %>">
+                    <%= h.text %>
+                  </a>
+                <% }) %>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main blog article -->
+      <div class="col-12 col-lg-8 mx-auto">
+        <article class="card shadow-sm border-0 rounded-4 px-2 px-sm-3 px-md-4 px-lg-5 py-3 py-lg-4">
+
+          <!-- IMAGE with fallback to svg, aspect ratio & variable height -->
+          <div class="mb-3 ratio ratio-21x9 rounded shadow-sm overflow-hidden">
+            <img
+              alt="<%= blog.title %>"
+              src="<%= blog.image ? blog.image : 'data:image/svg+xml;utf8,<svg width=\"800\" height=\"340\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"100%\" height=\"100%\" fill=\"%23e9ecef\"/><text x=\"50%25\" y=\"50%25\" fill=\"%237d8fa5\" font-size=\"30\" font-family=\"Arial, Helvetica, sans-serif\" dominant-baseline=\"middle\" text-anchor=\"middle\">No Image</text></svg>' %>"
+              class="object-fit-cover w-100 h-100"
+              style="border-radius: .9rem;"
+              loading="lazy"
+              decoding="async"
+              onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg width=&quot;800&quot; height=&quot;340&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;><rect width=&quot;100%25&quot; height=&quot;100%25&quot; fill=&quot;%23e9ecef&quot;/><text x=&quot;50%25&quot; y=&quot;50%25&quot; fill=&quot;%237d8fa5&quot; font-size=&quot;30&quot; font-family=&quot;Arial, Helvetica, sans-serif&quot; dominant-baseline=&quot;middle&quot; text-anchor=&quot;middle&quot;>No Image</text></svg>'"
+            />
+          </div>
+
+          <!-- Blog meta & title -->
+          <div class="mb-2 d-flex align-items-center gap-2 flex-wrap">
+            <span class="badge bg-primary bg-opacity-75 px-3 py-2 fs-6">
+              <i class="bi bi-bookmark-heart me-1"></i> <%= blog.category || "General" %>
+            </span>
+            <span class="badge bg-light text-secondary border px-3 py-2 fs-6 d-none d-md-inline">
+              <i class="bi bi-person-circle me-1"></i> <%= blog.author || "Admin" %>
+            </span>
+            <span class="text-muted ms-auto small">
+              <i class="bi bi-calendar3 me-1"></i>
+              <%= blog.publishedAt ? blog.publishedAt.toLocaleDateString("en-IN") : "" %>
+            </span>
+            <button class="btn btn-light btn-sm border ms-2 d-none d-md-inline"
+              title="Copy Link"
+              onclick="navigator.clipboard.writeText(window.location.href)">
+              <i class="bi bi-link-45deg"></i>
+            </button>
+          </div>
+
+          <h1 class="mt-3 mb-2 fw-bold lh-1" style="word-break:break-word; font-size:clamp(1.25rem,2.2vw,2.15rem);"><%= blog.title %></h1>
+          <div class="d-md-none mb-2">
+            <span class="badge bg-light text-secondary border px-3 py-2 fs-6">
+              <i class="bi bi-person-circle me-1"></i> <%= blog.author || "Admin" %>
+            </span>
+          </div>
+          <hr class="my-2">
+
+          <!-- Blog content: smaller, elegant and readable -->
+          <main class="fs-6 lh-base mb-1" style="word-break:break-word;">
+            <%- preparedContent %>
+          </main>
+
+          <hr class="my-3">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <a href="/blogs" class="btn btn-outline-primary rounded-pill px-4 mb-1 fw-semibold">
+              <i class="bi bi-arrow-left-short me-2"></i>
+              Back to Blogs
+            </a>
+            <div>
+              <button class="btn btn-light border btn-sm me-1" title="Share on Twitter"
+                onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title + ' ' + window.location.href),'_blank')">
+                <i class="bi bi-twitter text-primary"></i>
+              </button>
+              <button class="btn btn-light border btn-sm me-1" title="Share on WhatsApp"
+                onclick="window.open('https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + window.location.href), '_blank')">
+                <i class="bi bi-whatsapp text-success"></i>
+              </button>
+              <button class="btn btn-light border btn-sm" title="Copy Link"
+                onclick="navigator.clipboard.writeText(window.location.href);this.innerHTML='<i class=\'bi bi-clipboard-check\'></i>';">
+                <i class="bi bi-link-45deg"></i>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Optional: highlight nav as you scroll (Bootstrap 5.2+ scrollspy)
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.querySelector('#toc-nav')) {
+    var scrollSpy = new bootstrap.ScrollSpy(document.body, {
+      target: '#toc-nav',
+      offset: 80
+    });
+  }
+});
+</script>

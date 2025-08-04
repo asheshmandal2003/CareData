@@ -1,7 +1,72 @@
-<% layout('layout/boilerplate') %>
-<div class="alert alert-danger col-6 offset-3" role="alert">
-  <h4 class="alert-heading"><%= err.status %> <%= err.type %></h4>
-  <hr />
-  <p><%= err.message %></p>
-  <p class="mb-0"><%= %></p>
+<%- layout('layout/boilerplate') %>
+
+<style>
+  .error-container {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: #fff3f3;
+    border: 1px solid #ff4d4f;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(255, 77, 79, 0.4);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .error-status {
+    font-size: 8rem;
+    font-weight: 900;
+    color: #ff4d4f;
+    line-height: 1;
+  }
+  .error-message {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #a8071a;
+  }
+  .error-stack {
+    font-family: monospace;
+    font-size: 0.85rem;
+    background: #fff0f1;
+    border: 1px solid #ffa39e;
+    padding: 1rem;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    color: #a8071a;
+    margin-top: 1rem;
+  }
+  .home-link {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: #ff4d4f;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+  }
+  .home-link:hover {
+    background: #a8071a;
+  }
+</style>
+
+<div
+  class="error-container"
+  role="alert"
+  aria-live="assertive"
+  aria-atomic="true"
+>
+  <!-- <div class="error-status"><%= err.status %></div>
+  <h1 class="error-message"><%= err.message %></h1> -->
+
+  <% if (err.additionalInfo) { %>
+  <p><strong>More details:</strong> <%= err.additionalInfo %></p>
+  <% } %> <% if (err.stack) { %>
+  <pre class="error-stack"><%= err.stack %></pre>
+  <% } %>
+
+  <a href="/caredata" class="home-link" aria-label="Go back to homepage"
+    >Go Back Home</a
+  >
 </div>

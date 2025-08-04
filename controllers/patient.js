@@ -1,10 +1,16 @@
 const User = require("../models/user");
 const moment = require("moment");
+const Blog = require("../models/blog");
 
 moment().format();
 
-module.exports.homepage = (req, res) => {
-  res.render("home/index");
+module.exports.homepage = async (req, res, next) => {
+  try {
+    const latestBlogs = await Blog.find({}).sort({ publishedAt: -1 }).limit(3);
+    res.render("home/index", { latestBlogs });
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports.userPage = async (req, res, next) => {
