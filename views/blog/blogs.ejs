@@ -1,0 +1,183 @@
+<%- layout('layout/boilerplate') %>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+/>
+
+<section class="py-5">
+  <div class="container">
+    <!-- Blog Header + Tools -->
+    <div class="row align-items-end mb-4 gy-3">
+      <div class="col-12 col-md-7">
+        <h2 class="mb-0 text-center text-md-start fw-bold">
+          Browse All Healthcare & Wellness Articles
+        </h2>
+      </div>
+      <div class="col-12 col-md-5">
+        <div class="d-flex gap-2 justify-content-center justify-content-md-end">
+          <input
+            type="search"
+            id="blogSearch"
+            class="form-control w-50"
+            placeholder="Search articles..."
+            aria-label="Search blogs"
+          />
+          <select id="blogCategory" class="form-select w-auto">
+            <option value="">All Categories</option>
+            <% // This code block builds unique categories and options! const
+            catSet = new Set(); blogs.forEach(b => catSet.add(b.category ||
+            'General')); Array.from(catSet).forEach(cat => { %>
+            <option value="<%= cat %>">
+              <%= cat.charAt(0).toUpperCase() + cat.slice(1) %>
+            </option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Blogs Fallback -->
+    <% if (!blogs || blogs.length === 0) { %>
+    <div class="alert alert-info text-center fs-4 my-5">
+      <i class="bi bi-info-circle me-2"></i>
+      No blog articles found.
+    </div>
+    <% } else { %>
+    <!-- Blog Cards Grid -->
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="blogCardsGrid">
+      <% blogs.forEach(function(blog) { %>
+      <div
+        class="col d-flex blog-card-col"
+        data-title="<%= blog.title.toLowerCase() %>"
+        data-category="<%= (blog.category || 'General').toLowerCase() %>"
+        data-author="<%= (blog.author || '').toLowerCase() %>"
+        data-summary="<%= blog.summary.toLowerCase() %>"
+      >
+        <div class="card shadow-sm border-0 w-100 h-100 d-flex flex-column">
+          <div class="position-relative" style="height: 210px">
+            <img class="card-img-top rounded-top"
+                  src="<%= blog.image ? blog.image : 'data:image/svg+xml;utf8,<svg width=\"400\" height=\"210\" xmlns=\"http://www.w3.org/2000/svg\"><rect width=\"100%\" height=\"100%\" fill=\"%23e9ecef\"/><text x=\"50%25\" y=\"50%25\" fill=\"%237d8fa5\" font-size=\"22\" font-family=\"Arial, Helvetica, sans-serif\" dominant-baseline=\"middle\" text-anchor=\"middle\">No Image</text></svg>' %>"
+                  alt="<%= blog.title %>"
+                  style="object-fit:cover;height:100%;width:100%;"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg width=&quot;400&quot; height=&quot;210&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;><rect width=&quot;100%&quot; height=&quot;100%&quot; fill=&quot;%23e9ecef&quot;/><text x=&quot;50%25&quot; y=&quot;50%25&quot; fill=&quot;%237d8fa5&quot; font-size=&quot;22&quot; font-family=&quot;Arial, Helvetica, sans-serif&quot; dominant-baseline=&quot;middle&quot; text-anchor=&quot;middle&quot;>No Image</text></svg>'" />
+            <span
+              class="position-absolute top-0 end-0 m-2 badge bg-primary px-3 py-2 shadow-sm"
+            >
+              <i class="bi bi-bookmark-heart me-1"></i> <%= blog.category ||
+              'General' %>
+            </span>
+            <span
+              class="position-absolute bottom-0 start-0 m-2 badge bg-light text-dark shadow-sm px-3 py-2 d-none d-md-inline"
+            >
+              <i class="bi bi-person-circle me-1"></i> <%= blog.author ||
+              "Admin" %>
+            </span>
+          </div>
+          <div class="card-body d-flex flex-column flex-grow-1 pb-0">
+            <h3 class="card-title fs-5 fw-bold text-primary">
+              <%= blog.title %>
+            </h3>
+            <div class="d-flex align-items-center mb-2 gap-2">
+              <small class="text-secondary">
+                <i class="bi bi-calendar3 me-1"></i>
+                <%= blog.publishedAt ?
+                blog.publishedAt.toLocaleDateString("en-IN") : "" %>
+              </small>
+              <small
+                class="text-muted d-inline-flex align-items-center ms-auto d-md-none"
+              >
+                <i class="bi bi-person-circle me-1"></i> <%= blog.author ||
+                "Admin" %>
+              </small>
+            </div>
+            <p class="card-text text-muted mb-0 flex-grow-1">
+              <%= blog.summary %>
+            </p>
+          </div>
+          <!-- Divider using Bootstrap utility -->
+          <hr
+            class="border-primary mx-auto w-75 opacity-50 my-2"
+            style="height: 2.5px"
+          />
+          <div
+            class="card-footer bg-transparent border-0 d-flex align-items-center justify-content-between pb-3 pt-0"
+          >
+            <span
+              class="rounded-circle d-inline-flex align-items-center justify-content-center bg-info bg-opacity-25 text-primary me-2"
+              style="width: 2.2rem; height: 2.2rem; font-size: 1.3rem"
+            >
+              <i class="bi bi-layout-text-window-reverse"></i>
+            </span>
+            <a
+              class="btn btn-outline-primary px-3 fw-bold rounded-pill ms-auto"
+              href="/blogs/<%= blog._id %>"
+            >
+              Read More <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+    <% } %>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Card hover shadow animation (purely for UX polish)
+    document.querySelectorAll(".card").forEach((card) => {
+      card.addEventListener("mouseenter", () =>
+        card.classList.add("shadow-lg")
+      );
+      card.addEventListener("mouseleave", () =>
+        card.classList.remove("shadow-lg")
+      );
+    });
+    // Live Search & Category Filter (no jQuery, just Bootstrap/vanilla JS)
+    const searchInput = document.getElementById("blogSearch");
+    const catSelect = document.getElementById("blogCategory");
+    const cards = Array.from(
+      document.querySelectorAll("#blogCardsGrid .blog-card-col")
+    );
+    function filterCards() {
+      let q = (searchInput.value || "").toLowerCase();
+      let cat = (catSelect.value || "").toLowerCase();
+      let noMatch = true;
+      cards.forEach((card) => {
+        let matches =
+          (q === "" ||
+            card.dataset.title.includes(q) ||
+            card.dataset.author.includes(q) ||
+            card.dataset.summary.includes(q)) &&
+          (cat === "" || card.dataset.category === cat);
+        card.style.display = matches ? "" : "none";
+        if (matches) noMatch = false;
+      });
+      // Show "No matches" message if nothing visible
+      const fallback = document.getElementById("blogNoMatch");
+      if (noMatch) {
+        if (!fallback && cards.length > 0) {
+          let col = document.createElement("div");
+          col.className = "col";
+          col.id = "blogNoMatch";
+          col.innerHTML =
+            '<div class="alert alert-warning text-center fs-5 w-100 my-4"><i class="bi bi-emoji-frown me-2"></i>No blog articles match your search.</div>';
+          document.getElementById("blogCardsGrid").appendChild(col);
+        }
+      } else {
+        if (fallback) fallback.remove();
+      }
+    }
+    if (searchInput && catSelect)
+      [searchInput, catSelect].forEach((e) =>
+        e.addEventListener("input", filterCards)
+      );
+  });
+</script>

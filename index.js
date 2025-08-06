@@ -116,7 +116,7 @@ app.get("/caredata/doctors", async (req, res, next) => {
 
 app.use("/labtests", require("./routes/labTestRoutes"));
 
-/* === END LABTEST PROTECTION === */
+app.use("/blogs", require("./routes/blogRoutes"));
 
 // Video consultation dashboard route
 app.get("/video", (req, res) => {
@@ -187,11 +187,21 @@ app.all("*", (req, res, next) => {
 
 // Global error handler
 app.use((err, req, res, next) => {
-  if (!err.message || !err.status) {
-    err.message = "Something Went Wrong!";
-    err.status = 500;
+  err.status = err.status || 500;
+  err.message = err.message || "Something Went Wrong!";
+
+  if (err.status === 500) {
+    console.error(err.stack);
   }
-  res.status(err.status).render("error/error", { err });
+
+  res.status(err.status).render("error/error", {
+    err: {
+      status: err.status,
+      message: err.message,
+      stack: process.env.NODE_ENV === "production" ? null : err.stack,
+      additionalInfo: err.additionalInfo || null,
+    },
+  });
 });
 
 server.listen(PORT, () => {

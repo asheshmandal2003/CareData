@@ -357,8 +357,9 @@ a:focus {
 
 .specialities h2 {
   font-size: 2.25rem;
+  font-weight: 700;
   text-align: left;
-  color: var(--bg-white);
+  color: var(--bg-dark-blue);
   margin: 2rem 0 3rem 3rem;
   max-width: 900px;
   user-select: text;
